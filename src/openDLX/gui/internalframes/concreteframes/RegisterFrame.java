@@ -26,20 +26,21 @@ import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import niosSimulator.NiosValue32;
-import niosSimulator.RegisterFile;
+
 import openDLX.config.ArchCfg;
 import openDLX.gui.MainFrame;
 import openDLX.gui.Preference;
 import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
 import openDLX.gui.internalframes.factories.tableFactories.RegisterTableFactory;
 import openDLX.gui.internalframes.util.TableSizeCalculator;
+import riscvSimulator.RegisterFileRiscV;
+import riscvSimulator.RiscVValue32;
 
 @SuppressWarnings("serial")
 public final class RegisterFrame extends OpenDLXSimInternalFrame
 {
 
-    private RegisterFile rs;
+    private RegisterFileRiscV rs;
     private JTable registerTable;
 
     public RegisterFrame(String title)
@@ -55,7 +56,7 @@ public final class RegisterFrame extends OpenDLXSimInternalFrame
         for (int i = 0; i < 32; ++i)
         {
             final String value;
-            final NiosValue32 register_value = rs.get(i);
+            final RiscVValue32 register_value = rs.get(i);
             if (Preference.displayRegistersAsHex())
                 value = Integer.toHexString((int) register_value.getUnsignedValue());
             else

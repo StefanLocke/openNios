@@ -28,19 +28,19 @@ import java.awt.event.MouseEvent;
 import javax.swing.JTable;
 import javax.swing.table.TableColumnModel;
 
-import niosSimulator.RegisterFile;
 import openDLX.config.ArchCfg;
 import openDLX.gui.Preference;
 import openDLX.gui.command.userLevel.CommandChangeRegister;
 import openDLX.gui.internalframes.renderer.ChangeableFrameTableCellRenderer;
 import openDLX.gui.internalframes.util.NotSelectableTableModel;
+import riscvSimulator.RegisterFileRiscV;
 
 public class RegisterTableFactory extends TableFactory
 {
 
-    private RegisterFile rs;
+    private RegisterFileRiscV rs;
 
-    public RegisterTableFactory(RegisterFile rs)
+    public RegisterTableFactory(RegisterFileRiscV rs)
     {
         this.rs = rs;
     }

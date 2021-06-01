@@ -36,7 +36,6 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import niosSimulator.Instruction;
 import alternateSimulator.CycleDescription;
 import alternateSimulator.Simulator;
 import openDLX.gui.GUI_CONST;
@@ -45,6 +44,7 @@ import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
 import openDLX.gui.internalframes.renderer.ClockCycleFrameTableCellRenderer;
 import openDLX.gui.internalframes.util.NotSelectableTableModel;
 import openDLX.util.ClockCycleLog;
+import riscvSimulator.InstructionRiscV;
 
 @SuppressWarnings("serial")
 public final class ClockCycleFrame extends OpenDLXSimInternalFrame implements GUI_CONST
@@ -332,9 +332,9 @@ public final class ClockCycleFrame extends OpenDLXSimInternalFrame implements GU
 
 		    model.addColumn(oneCycleDescription.getCycleNumber());
 
-		    final HashMap<Instruction, String> pipelineMap =  oneCycleDescription.getPipelineMap();
+		    final HashMap<InstructionRiscV, String> pipelineMap =  oneCycleDescription.getPipelineMap();
 		    
-		    for (Instruction instr : pipelineMap.keySet())
+		    for (InstructionRiscV instr : pipelineMap.keySet())
 		        for (int instructionNumber = cycleModel.getRowCount() - 1; instructionNumber >= 0; --instructionNumber)
 		        	if (cycleModel.getValueAt(instructionNumber, 0).equals(Long.toString(instr.getCycleNumber())))
 		                model.setValueAt(pipelineMap.get(instr), instructionNumber, oneCycleDescription.getCycleNumber());

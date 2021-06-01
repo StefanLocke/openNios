@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import alternateSimulator.CycleDescription;
 import alternateSimulator.InterfaceGUI;
+/*
 import niosSimulator.Decode;
 import niosSimulator.Execute;
 import niosSimulator.Fetch;
@@ -16,12 +17,21 @@ import niosSimulator.RegisterFile;
 import niosSimulator.WriteBack;
 import niosSimulator.niosOpCode;
 import niosSimulator.niosOpxCode;
+*/
 import openDLX.config.ArchCfg;
+
 import openDLX.exception.PipelineException;
 import openDLX.gui.GUI_CONST;
 import openDLX.util.Statistics;
-
-
+import riscvSimulator.DecodeRiscV;
+import riscvSimulator.ExecuteRiscV;
+import riscvSimulator.FetchRiscV;
+import riscvSimulator.InstructionRiscV;
+import riscvSimulator.MemoryRiscV;
+import riscvSimulator.RegisterFileRiscV;
+import riscvSimulator.RiscVMemory;
+import riscvSimulator.RiscVOpCode;
+import riscvSimulator.WriteBackRiscV;
 import elfParser.ElfFileParser;
 
 public class Simulator{
@@ -37,41 +47,41 @@ public class Simulator{
     
     private long numberFetch;
     
-    private NiosMemory memory;
-    private RegisterFile registerFile;
-    private ArrayList<Fetch> fetchStages;
-    public ArrayList<Fetch> getFetchStages() {
+    private RiscVMemory memory;
+    private RegisterFileRiscV registerFile;
+    private ArrayList<FetchRiscV> fetchStages;
+    public ArrayList<FetchRiscV> getFetchStages() {
 		return fetchStages;
 	}
 
 
 
-	public ArrayList<Decode> getDecodeStages() {
+	public ArrayList<DecodeRiscV> getDecodeStages() {
 		return decodeStages;
 	}
 
 
 
-	public ArrayList<Execute> getExecuteStages() {
+	public ArrayList<ExecuteRiscV> getExecuteStages() {
 		return executeStages;
 	}
 
 
 
-	public ArrayList<Memory> getMemoryStages() {
+	public ArrayList<MemoryRiscV> getMemoryStages() {
 		return memoryStages;
 	}
 
 
 
-	public ArrayList<WriteBack> getWriteBackStages() {
+	public ArrayList<WriteBackRiscV> getWriteBackStages() {
 		return writeBackStages;
 	}
 
-	private ArrayList<Decode> decodeStages;
-    private ArrayList<Execute> executeStages;
-    private ArrayList<Memory> memoryStages;
-    private ArrayList<WriteBack> writeBackStages;
+	private ArrayList<DecodeRiscV> decodeStages;
+    private ArrayList<ExecuteRiscV> executeStages;
+    private ArrayList<MemoryRiscV> memoryStages;
+    private ArrayList<WriteBackRiscV> writeBackStages;
   
     
     private InterfaceGUI gui;
@@ -134,26 +144,26 @@ public class Simulator{
              ******************************/
             
             //First we initialize data structures
-            this.fetchStages = new ArrayList<Fetch>();
-            this.decodeStages = new ArrayList<Decode>();
-            this.executeStages = new ArrayList<Execute>();
-            this.memoryStages = new ArrayList<Memory>();
-            this.writeBackStages = new ArrayList<WriteBack>();
+            this.fetchStages = new ArrayList<FetchRiscV>();
+            this.decodeStages = new ArrayList<DecodeRiscV>();
+            this.executeStages = new ArrayList<ExecuteRiscV>();
+            this.memoryStages = new ArrayList<MemoryRiscV>();
+            this.writeBackStages = new ArrayList<WriteBackRiscV>();
             
             int numberExecute = ArchCfg.execute_stage;
             int numberMemory = ArchCfg.memory_stage;
             
             
-            this.registerFile = new RegisterFile();
-            this.memory = new NiosMemory();
+            this.registerFile = new RegisterFileRiscV();
+            this.memory = new RiscVMemory();
             
-            this.fetchStages.add(new Fetch(registerFile, memory, true));
-            this.decodeStages.add(new Decode(registerFile));
+            this.fetchStages.add(new FetchRiscV(registerFile, memory, true));
+            this.decodeStages.add(new DecodeRiscV(registerFile));
             for (int i=0; i<numberExecute; i++)
-            	this.executeStages.add(new Execute(registerFile, i==numberExecute-1));
+            	this.executeStages.add(new ExecuteRiscV(registerFile, i==numberExecute-1));
             for (int i=0; i<numberMemory; i++)
-            	this.memoryStages.add(new Memory(registerFile, memory, i==numberMemory-1));
-            this.writeBackStages.add(new WriteBack(registerFile));
+            	this.memoryStages.add(new MemoryRiscV(registerFile, memory, i==numberMemory-1));
+            this.writeBackStages.add(new WriteBackRiscV(registerFile));
             
             //Initialization of memory
             initializeMemory();
@@ -190,9 +200,9 @@ public class Simulator{
                 CycleDescription cycleDescription = new CycleDescription(clock_cycle);
                 cycleDescription.addPipelineState(this.fetchStages.get(0).getCurrentInstruction(), GUI_CONST.FETCH);
                 cycleDescription.addPipelineState(this.decodeStages.get(0).getCurrentInstruction(), GUI_CONST.DECODE);
-                for (Execute oneExecuteStage : executeStages)
+                for (ExecuteRiscV oneExecuteStage : executeStages)
                 	cycleDescription.addPipelineState(oneExecuteStage.getCurrentInstruction(), GUI_CONST.EXECUTE);
-                for (Memory oneMemoryStage : memoryStages)
+                for (MemoryRiscV oneMemoryStage : memoryStages)
                 	cycleDescription.addPipelineState(oneMemoryStage.getCurrentInstruction(), GUI_CONST.MEMORY);
                 cycleDescription.addPipelineState(this.writeBackStages.get(0).getCurrentInstruction(), GUI_CONST.WRITEBACK);
                 cycleDescription.setFetchedInstruction(this.fetchStages.get(0).getCurrentInstruction());
@@ -265,7 +275,7 @@ public class Simulator{
                 }
 
             	this.decodeStages.get(0).setCurrentInstruction(createBubble());
-            	for (Execute oneExecuteStage : this.executeStages)
+            	for (ExecuteRiscV oneExecuteStage : this.executeStages)
             		oneExecuteStage.setCurrentInstruction(createBubble());
             }
             else if (this.decodeStages.get(0).hasJumped()){
@@ -279,23 +289,23 @@ public class Simulator{
             //We perform each step
             this.writeBackStages.get(0).doStep();
             
-            for (Memory oneMemory : this.memoryStages)
+            for (MemoryRiscV oneMemory : this.memoryStages)
             	oneMemory.doStep();
 
-            for (Execute oneExecute : this.executeStages)
+            for (ExecuteRiscV oneExecute : this.executeStages)
             	oneExecute.doStep();
             
             this.decodeStages.get(0).doStep();
   
             //We need to verify if system stall or not. 
             ArrayList<Integer> writtenRegisters = new ArrayList<Integer>();
-            for (Memory oneMemory : this.memoryStages){
+            for (MemoryRiscV oneMemory : this.memoryStages){
             	int usedRegister = oneMemory.getCurrentInstruction().getWrittenRegister();
             	if (usedRegister != -1)
             		writtenRegisters.add(usedRegister);
             }
             
-            for (Execute oneExecute : this.executeStages){
+            for (ExecuteRiscV oneExecute : this.executeStages){
             	int usedRegister = oneExecute.getCurrentInstruction().getWrittenRegister();
             	if (usedRegister != -1)
             		writtenRegisters.add(usedRegister);
@@ -306,15 +316,15 @@ public class Simulator{
             	this.decodeStages.get(0).setStalled(true);
             
             //We check if WB stage is executing a trap.
-            if (writeBackStages.get(0).getCurrentInstruction().getOp().equals(niosOpCode.RTYPE) && writeBackStages.get(0).getCurrentInstruction().getOpx().equals(niosOpxCode.trap))
-            	this.finished = true;
+           // if (writeBackStages.get(0).getCurrentInstruction().getOp().equals(RiscVOpCode.RTYPE) && writeBackStages.get(0).getCurrentInstruction().getOpx().equals(niosOpxCode.trap))
+           // 	this.finished = true; //TODO FIX
             
             return caught_break;
         }
 
-        private Instruction createBubble(){
+        private InstructionRiscV createBubble(){
         	//Nop instruction is op=0x3a opx=0x2c
-        	return new Instruction(0x0e03a, -1, -1);
+        	return new InstructionRiscV(0x0e03a, -1, -1);
         }
         
         public int getSimCycles()
@@ -332,10 +342,10 @@ public class Simulator{
            this.fetchStages.get(0).setCurrentInstruction(createBubble());
            this.decodeStages.get(0).setCurrentInstruction(createBubble());
            
-           for (Execute oneExecute : executeStages)
+           for (ExecuteRiscV oneExecute : executeStages)
         	   oneExecute.setCurrentInstruction(createBubble());
            
-           for (Memory oneMemory : this.memoryStages)
+           for (MemoryRiscV oneMemory : this.memoryStages)
         	   oneMemory.setCurrentInstruction(createBubble());
            
            this.writeBackStages.get(0).setCurrentInstruction(createBubble());
@@ -426,11 +436,11 @@ public class Simulator{
             finished = true;
         }
         
-        public NiosMemory getMemory(){
+        public RiscVMemory getMemory(){
         	return this.memory;
         }
         
-        public RegisterFile getRegisterFile(){
+        public RegisterFileRiscV getRegisterFile(){
         	return this.registerFile;
         }
 

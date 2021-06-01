@@ -28,13 +28,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 
-import niosSimulator.Execute;
-import niosSimulator.Memory;
 import alternateSimulator.Simulator;
 import openDLX.gui.MainFrame;
 import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
 import openDLX.gui.internalframes.factories.tableFactories.CodeTableFactory;
 import openDLX.gui.internalframes.util.TableSizeCalculator;
+import riscvSimulator.ExecuteRiscV;
+import riscvSimulator.MemoryRiscV;
 
 @SuppressWarnings("serial")
 public final class CodeFrame extends OpenDLXSimInternalFrame
@@ -63,11 +63,11 @@ public final class CodeFrame extends OpenDLXSimInternalFrame
         IFValue = simulator.getFetchStages().get(0).getCurrentInstruction().getPC();
         IDValue = simulator.getDecodeStages().get(0).getCurrentInstruction().getPC();
         EXValues.clear();
-        for(Execute oneExecute : simulator.getExecuteStages())
+        for(ExecuteRiscV oneExecute : simulator.getExecuteStages())
         	EXValues.add(oneExecute.getCurrentInstruction().getPC());
         
         MemValues.clear();
-        for(Memory oneMemory : simulator.getMemoryStages())
+        for(MemoryRiscV oneMemory : simulator.getMemoryStages())
         	MemValues.add(oneMemory.getCurrentInstruction().getPC());
         
         WBValue = simulator.getWriteBackStages().get(0).getCurrentInstruction().getPC();

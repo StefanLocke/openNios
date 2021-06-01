@@ -5,15 +5,18 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import niosSimulator.NiosMemory;
-import niosSimulator.NiosValue32;
-import niosSimulator.NiosValue8;
+import riscvSimulator.RiscVMemory;
+import riscvSimulator.RiscVValue32;
+import riscvSimulator.RiscVValue8;
+//import niosSimulator.NiosMemory;
+//import niosSimulator.NiosValue32;
+//import niosSimulator.NiosValue8;
 
 public class ElfFileParser {
 	
 
 	
-	public ElfFileParser(NiosMemory memory){
+	public ElfFileParser(RiscVMemory memory){
 		byte[] elfBytes=null;
 		try {
 			elfBytes = Files.readAllBytes(Paths.get("./", "./file.elf"));
@@ -78,7 +81,7 @@ public class ElfFileParser {
 
 				
 				for (long byteNumber=startOfTextSection; byteNumber<startOfTextSection+sizeOfSection; byteNumber++){
-					memory.set(destination, new NiosValue8(toUnsignedChar(elfBytes[(int) byteNumber])));
+					memory.set(destination, new RiscVValue8(toUnsignedChar(elfBytes[(int) byteNumber])));
 					destination++;
 				}
 			}
@@ -110,7 +113,7 @@ public class ElfFileParser {
 	
 				
 				for (long byteNumber=startOfTextSection; byteNumber<startOfTextSection+sizeOfSection; byteNumber++){
-					memory.set(destination, new NiosValue8(toUnsignedChar(elfBytes[(int) byteNumber])));
+					memory.set(destination, new RiscVValue8(toUnsignedChar(elfBytes[(int) byteNumber])));
 					destination++;
 				}
 			}
@@ -170,7 +173,7 @@ public class ElfFileParser {
 						
 						long instruction = memory.loadWord(relocationAddress).getUnsignedValue(); //This is the previous instruction
 						instruction = instruction | value; //We add the immediate value
-						memory.setWord(relocationAddress, new NiosValue32(instruction, false));
+						memory.setWord(relocationAddress, new RiscVValue32(instruction, false));
 						
 					}
 					else if (relocationType == 10){
@@ -181,7 +184,7 @@ public class ElfFileParser {
 						long instruction = memory.loadWord(relocationAddress).getUnsignedValue(); //This is the previous instruction
 						instruction = instruction | value; //We add the immediate value
 
-						memory.setWord(relocationAddress, new NiosValue32(instruction, false));
+						memory.setWord(relocationAddress, new RiscVValue32(instruction, false));
 					}
 					else if (relocationType == 3){
 						//This is a %pcrel16 relocation
@@ -192,7 +195,7 @@ public class ElfFileParser {
 						long instruction = memory.loadWord(relocationAddress).getUnsignedValue(); //This is the previous instruction
 						instruction = instruction | value; //We add the immediate value
 
-						memory.setWord(relocationAddress, new NiosValue32(instruction, false));
+						memory.setWord(relocationAddress, new RiscVValue32(instruction, false));
 					}
 					
 					System.out.println("Relocating (type " + Long.toHexString(relocationType)+ ") at address 0x" + Long.toHexString(relocationAddress) + " value 0x" + Long.toHexString(relocationValue));

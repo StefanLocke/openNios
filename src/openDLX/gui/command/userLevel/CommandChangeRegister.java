@@ -23,12 +23,12 @@ package openDLX.gui.command.userLevel;
 
 import javax.swing.JOptionPane;
 
-import niosSimulator.NiosValue32;
 import alternateSimulator.Simulator;
 import openDLX.gui.MainFrame;
 import openDLX.gui.command.Command;
 import openDLX.gui.command.systemLevel.CommandUpdateFrames;
 import openDLX.gui.internalframes.util.ValueInput;
+import riscvSimulator.RiscVValue32;
 
 public class CommandChangeRegister implements Command
 {
@@ -54,7 +54,7 @@ public class CommandChangeRegister implements Command
                 Integer value = ValueInput.getValue("change register value: ",0);
                 if (value != null)
                 {
-                	simulator.getRegisterFile().set(row, new NiosValue32(value, true));
+                	simulator.getRegisterFile().set(row, new RiscVValue32(value, true));
                     new CommandUpdateFrames(mf).execute();
                 }
             }

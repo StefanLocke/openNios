@@ -24,13 +24,14 @@ package openDLX.gui.internalframes.factories.tableFactories;
 import javax.swing.JTable;
 import javax.swing.table.TableColumnModel;
 
-import niosSimulator.Instruction;
-import niosSimulator.NiosValue32;
+
 import alternateSimulator.Simulator;
 import openDLX.exception.MemoryException;
 import openDLX.gui.MainFrame;
 import openDLX.gui.internalframes.renderer.CodeFrameTableCellRenderer;
 import openDLX.gui.internalframes.util.NotSelectableTableModel;
+import riscvSimulator.InstructionRiscV;
+import riscvSimulator.RiscVValue32;
 
 public class CodeTableFactory extends TableFactory
 {
@@ -77,9 +78,9 @@ public class CodeTableFactory extends TableFactory
 
         for (long addr = start; addr < end; addr += 4)
 		{
-        	NiosValue32 instBinary = simulator.getMemory().loadWord(addr);
+        	RiscVValue32 instBinary = simulator.getMemory().loadWord(addr);
 		    
-        	Instruction instr = new Instruction(instBinary.getUnsignedValue(), addr, -1);
+        	InstructionRiscV instr = new InstructionRiscV(instBinary.getUnsignedValue(), addr, -1);
 		    
 
 		    model.addRow(new Object[]

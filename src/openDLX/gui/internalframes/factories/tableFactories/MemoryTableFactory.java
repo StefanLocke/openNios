@@ -28,7 +28,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JTable;
 import javax.swing.table.TableColumnModel;
 
-import niosSimulator.NiosValue32;
+
 import alternateSimulator.Simulator;
 import openDLX.exception.MemoryException;
 import openDLX.gui.MainFrame;
@@ -36,6 +36,7 @@ import openDLX.gui.Preference;
 import openDLX.gui.command.userLevel.CommandChangeMemory;
 import openDLX.gui.internalframes.renderer.ChangeableFrameTableCellRenderer;
 import openDLX.gui.internalframes.util.NotSelectableTableModel;
+import riscvSimulator.RiscVValue32;
 
 public class MemoryTableFactory extends TableFactory
 {
@@ -62,7 +63,7 @@ public class MemoryTableFactory extends TableFactory
 
         for (long i = 0; i < rows; ++i)
 		{
-        	NiosValue32 value = simulator.getMemory().loadWord(startAddr + i * 4);
+        	RiscVValue32 value = simulator.getMemory().loadWord(startAddr + i * 4);
 
 		    final Object secondItem;
 		    if (Preference.displayMemoryAsHex())

@@ -36,9 +36,22 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
+import com.sun.org.slf4j.internal.Logger;
+
 public class CommandCompileCode implements Command
 {
-
+	static final String compilerNameWindowsNios = "/external_bin/win-nios2-elf-as";
+	static final String compilerNameMacNios= "/external_bin/mac-nios2-elf-as";
+	static final String compilerNameLinuxNios = "/external_bin/lnx-nios2-elf-as";
+	
+	static final String compilerNameWindowsRV = "/external_bin/riscv32-unknown-elf-as";
+	static final String compilerNameMacRV= "/external_bin/riscv32-unknown-elf-as";
+	static final String compilerNameLinuxRV = "/external_bin/riscv32-unknown-elf-as";
+	
+	static final String outPutNameNios = "./nios2-elf-as";
+	static final String outPutNameRV = "./rv-elf-as";
+	
+	
     private File codeFile = null; // in 
     private File configFile = null; // out
     private MainFrame mf;
@@ -69,14 +82,14 @@ public class CommandCompileCode implements Command
                 String system = System.getProperty("os.name");
                 System.out.println("Current system is : " + system);
                 if (system.matches(".*Windows.*"))
-            		is = this.getClass().getResource("/external_bin/win-nios2-elf-as").openStream();
+            		is = this.getClass().getResource(compilerNameWindowsRV).openStream();
                 else if (system.matches(".*Mac.*"))
-        			is = this.getClass().getResource("/external_bin/mac-nios2-elf-as").openStream();
+        			is = this.getClass().getResource(compilerNameMacRV).openStream();
         		else
-        			is = this.getClass().getResource("/external_bin/lnx-nios2-elf-as").openStream();
+        			is = this.getClass().getResource(compilerNameLinuxRV).openStream();
                 			
-                
-                OutputStream os = new FileOutputStream("./nios2-elf-as");
+                System.out.println("Reached 91");
+                OutputStream os = new FileOutputStream(outPutNameRV);
                 
                 byte[] b = new byte[2048];
                 int length;
@@ -88,15 +101,16 @@ public class CommandCompileCode implements Command
                 is.close();
                 os.close();
                 
-                File file = new File("./nios2-elf-as");
+                File file = new File(outPutNameRV);
                 file.setExecutable(true);
                 
-                Process ps = rt.exec("./nios2-elf-as" + " " + codeFilePath + " -o ./file.elf");
+                //Process ps = rt.exec(outPutNameRV + " " + codeFilePath + " -o ./file.elf");
+                Process ps = rt.exec("riscv32-unknown-elf-as.exe" + " " + codeFilePath + " -o ./file.elf");
                 ps.waitFor();
                 ArrayList<String> errorMessage = getStringFromInputStream(ps.getErrorStream());
                 
                 if (errorMessage.size() != 0){
-                
+                	System.out.println("Errors while compiling");
 	                String errorDisplayed = "";
 	                for (String oneLine : errorMessage){
 //	                	int index = 0;
