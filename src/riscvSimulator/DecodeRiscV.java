@@ -1,7 +1,5 @@
 package riscvSimulator;
 
-import niosSimulator.NiosValue16;
-import niosSimulator.NiosValue32;
 
 public class DecodeRiscV {
 
@@ -21,25 +19,25 @@ public class DecodeRiscV {
 		//Main job of this part is to access registers and extend/select immediate values
 		switch(currentInstruction.getType()){
 		case BTYPE:
-			currentInstruction.setValueA(registers.get(currentInstruction.getRa()));
-			currentInstruction.setValueB(registers.get(currentInstruction.getRb()));
-			currentInstruction.setValueToStore(new RiscVValue32(currentInstruction.getImm12(), true));
+			currentInstruction.setValueA(registers.get(currentInstruction.getRd()));
+			currentInstruction.setValueB(registers.get(currentInstruction.getRs1()));
+			currentInstruction.setValueToStore(new RiscVValue32(((currentInstruction.getImm12() >> 11) & 0b1) == 0b1 ? 0xfffff << 12 | currentInstruction.getImm12() & 0xfff : 0x00000 << 12 | currentInstruction.getImm12() & 0xfff, true));
 			break;
 		case ITYPE:
-			currentInstruction.setValueA(registers.get(currentInstruction.getRa()));
+			currentInstruction.setValueA(registers.get(currentInstruction.getRd()));
 			currentInstruction.setValueB(new RiscVValue32(currentInstruction.getImm12(), true));
 			break;
-		case JTYPE:
-			currentInstruction.setValueA(new RiscVValue32(currentInstruction.getImm20(), true));
+		case JTYPE: // we add the correct bit to fill the 32 bit java integer so we can have a correctly signed value
+			currentInstruction.setValueA(new RiscVValue32(((currentInstruction.getImm20() >> 19) & 0b1) == 0b1 ? 0xfff << 20 | currentInstruction.getImm20() & 0xfffff : 0x000 << 20 | currentInstruction.getImm20() & 0xfffff, true));
 			break;
 		case RTYPE:
-			currentInstruction.setValueA(registers.get(currentInstruction.getRa()));
-			currentInstruction.setValueB(registers.get(currentInstruction.getRb()));
+			currentInstruction.setValueA(registers.get(currentInstruction.getRd()));
+			currentInstruction.setValueB(registers.get(currentInstruction.getRs1()));
 			break;
 		case STYPE:
-			currentInstruction.setValueA(registers.get(currentInstruction.getRa()));
+			currentInstruction.setValueA(registers.get(currentInstruction.getRd()));
 			currentInstruction.setValueB(new RiscVValue32((new RiscVValue16(currentInstruction.getImm12())).getSignedValue(), true));
-			currentInstruction.setValueToStore(registers.get(currentInstruction.getRb()));
+			currentInstruction.setValueToStore(registers.get(currentInstruction.getRs1()));
 			break;
 		case UTYPE:
 			currentInstruction.setValueA(new RiscVValue32(currentInstruction.getImm20(), true));
@@ -47,11 +45,45 @@ public class DecodeRiscV {
 		default:
 			break;
 		}
+		
+		
+		//For unconditional jumps, we perform the jump now
+		jumped = false;
+		switch (currentInstruction.getOp()) {
+		case jalr :
+		case jal : { //TODO clean this
+			//find out if signed positiv or negative by cheking the 20th bit (imm20)
+			//we then add on the LSB 
+			//we can then add this to the Pc to determine the target address
+			//WE need to apply the offset to the address
+			int offset = (int) currentInstruction.getValueA().getUnsignedValue();
+			System.out.println(offset);
+			System.out.println(Integer.toHexString(offset));
+			/*System.out.println("imm " + offset);
+			System.out.println("value " + currentInstruction.getValueA().getSignedValue());
+			System.out.println(offset & 0xfffff);
+			System.out.println(Integer.toHexString(offset & 0xfffff));*/
+			offset = ((offset) << 1 | 0b0);
+			/*System.out.println(offset);
+			System.out.println(offset & 0xfffff);
+			System.out.println(Integer.toHexString(offset & 0xfffff));
+			System.out.println(currentInstruction.getPC() + " + " + offset);*/
+			
+			
+			currentInstruction.setAluResult(registers.getPC());
+			registers.setPC(new RiscVValue32(currentInstruction.getPC() + offset, false));
+			jumped = true;
+			break;
+		}
+		default:
+			break;
+		}
+		
+		
 	}
 	
 	
-		//For unconditional jumps, we perform the jump now
-		//TODO
+		
 	
 	public InstructionRiscV getCurrentInstruction(){
 		return this.currentInstruction;

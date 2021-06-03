@@ -18,7 +18,7 @@ public class ExecuteRiscV {
 		if (isLast){
 			switch(currentInstruction.getOp()){
 			case op : 
-				switch (currentInstruction.getOpx()) {
+				switch (currentInstruction.getFunc()) {
 				case add :
 					currentInstruction.setAluResult(new RiscVValue32(currentInstruction.getValueA().getSignedValue() + currentInstruction.getValueB().getSignedValue(), true));
 					break;
@@ -69,8 +69,10 @@ public class ExecuteRiscV {
 					break;
 				}
 				break;
+				
+				
 			case opimm :
-				switch (currentInstruction.getOpx()) {
+				switch (currentInstruction.getFunc()) {
 				case addi :
 					currentInstruction.setAluResult(new RiscVValue32(currentInstruction.getValueA().getSignedValue() + currentInstruction.getValueB().getSignedValue(), true));
 					break;
@@ -103,40 +105,42 @@ public class ExecuteRiscV {
 				
 				
 			case branch :
-				switch (currentInstruction.getOpx()) {
+				switch (currentInstruction.getFunc()) {
 				case beq :
 					if (currentInstruction.getValueA().getSignedValue() == currentInstruction.getValueB().getSignedValue()) {
-						registers.setPC(new RiscVValue32(currentInstruction.getPC() + currentInstruction.getValueToStore().getSignedValue(), hasJumped));
+						System.out.println(Integer.toHexString((int)currentInstruction.getPC()) + " jumping to " + Integer.toHexString((int) (currentInstruction.getPC() + (currentInstruction.getValueToStore().getSignedValue() << 1 | 0b0))));
+						registers.setPC(new RiscVValue32(currentInstruction.getPC() + (currentInstruction.getValueToStore().getSignedValue()<< 1 | 0b0), true));
 						this.hasJumped = true;
 					}	
 					break;
 				case bne :
 					if (currentInstruction.getValueA().getSignedValue() != currentInstruction.getValueB().getSignedValue()) {
-						registers.setPC(new RiscVValue32(currentInstruction.getPC() + currentInstruction.getValueToStore().getSignedValue(), hasJumped));
+						registers.setPC(new RiscVValue32(currentInstruction.getPC() + (currentInstruction.getValueToStore().getSignedValue()<< 1 | 0b0), true));
 						this.hasJumped = true;
 					}
 					break;
 				case blt :
 					if (currentInstruction.getValueA().getSignedValue() < currentInstruction.getValueB().getSignedValue()) {
-						registers.setPC(new RiscVValue32(currentInstruction.getPC() + currentInstruction.getValueToStore().getSignedValue(), hasJumped));
+						registers.setPC(new RiscVValue32(currentInstruction.getPC() + (currentInstruction.getValueToStore().getSignedValue() << 1 | 0b0), true));
 						this.hasJumped = true;
 					}
 					break;
 				case bge :
 					if (currentInstruction.getValueA().getSignedValue() >= currentInstruction.getValueB().getSignedValue()) {
-						registers.setPC(new RiscVValue32(currentInstruction.getPC() + currentInstruction.getValueToStore().getSignedValue(), hasJumped));
+						System.out.println(currentInstruction.getPC() + " jumping to " + currentInstruction.getPC() + (currentInstruction.getValueToStore().getSignedValue() << 1 | 0b0));
+						registers.setPC(new RiscVValue32(currentInstruction.getPC() + (currentInstruction.getValueToStore().getSignedValue() << 1 | 0b0), true));
 						this.hasJumped = true;
 					}
 					break;
 				case bltu :
 					if (currentInstruction.getValueA().getUnsignedValue() < currentInstruction.getValueB().getUnsignedValue()) {
-						registers.setPC(new RiscVValue32(currentInstruction.getPC() + currentInstruction.getValueToStore().getSignedValue(), hasJumped));
+						registers.setPC(new RiscVValue32(currentInstruction.getPC() + (currentInstruction.getValueToStore().getSignedValue() << 1 | 0b0), true));
 						this.hasJumped = true;
 					}
 					break;
 				case bgeu :
 					if (currentInstruction.getValueA().getUnsignedValue()  >= currentInstruction.getValueB().getUnsignedValue()) {
-						registers.setPC(new RiscVValue32(currentInstruction.getPC() + currentInstruction.getValueToStore().getSignedValue(), hasJumped));
+						registers.setPC(new RiscVValue32(currentInstruction.getPC() + (currentInstruction.getValueToStore().getSignedValue() << 1 | 0b0), true));
 						this.hasJumped = true;
 					}
 					break;
@@ -146,12 +150,33 @@ public class ExecuteRiscV {
 				}
 				break;
 				
+				
 			case system ://TODO
+				switch (currentInstruction.getFunc()) {
+				case ecall :
+					break;
+				case ebreak :
+					break;
+				case csrrw :
+					break;
+				case csrrs :
+					break;
+				case csrrc :
+					break;
+				case csrrwi :
+					break;
+				case csrrsi :
+					break;
+				case csrrci :
+					break;
+				default:
+					break;
+				}
 				break;
 				
 				
 			case load :
-				switch (currentInstruction.getOpx()) {
+				switch (currentInstruction.getFunc()) {
 				case lb :
 				case lh :
 				case lw :
@@ -164,12 +189,9 @@ public class ExecuteRiscV {
 				}
 				break;
 				
-				
-				
-				
-				
+
 			case store :
-				switch (currentInstruction.getOpx()) {
+				switch (currentInstruction.getFunc()) {
 				case sb :
 				case sh :
 				case sw :
@@ -179,27 +201,24 @@ public class ExecuteRiscV {
 					break;	
 				}
 				break;
+						
 				
-				
-				
-				
-				
-			case jalr: //TODO
+			case jalr:
+			case jal:
+				System.out.println("Instruction already managed(unconditionnal jump)");
 				break;
+				
+				
 			case miscmem : //TODO
+				switch (currentInstruction.getFunc()) {
+				case fence :
+					break;
+				case fencei :
+					break;
+				default :
+					break;
+				}
 				break;
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
 				
 				
 			default:

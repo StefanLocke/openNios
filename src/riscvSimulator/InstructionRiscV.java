@@ -55,7 +55,7 @@ public class InstructionRiscV {
 		this.isExecuteDone = false; 
 		this.isMemoryDone = false;
 		this.isWritebackDone = false;
-		
+		/*
 		switch(op){
 		
 		case load: {
@@ -182,6 +182,130 @@ public class InstructionRiscV {
 		default :
 			//TODO REST
 			break;
+		}*/
+		
+		
+		
+		switch (op) {
+		
+		case branch: {// CASE OF B-TYPE
+			this.type = RiscVType.BTYPE;
+			int func3Binary = (int) ((binaryInstruction >> 12) & 0x7); //get the func3 binary value
+			for (RiscVFunc func3 : RiscVFunc.values()) {
+				if (func3.getFunc3Code() == func3Binary  && func3.getOpCode() == op) {
+					this.func = func3;
+					break;
+				}
+			}
+			
+			int firstPart = (int) ((binaryInstruction >> 8) & 0xf);
+			int secondPart = (int) ((binaryInstruction >> 25) & 0x3f);
+			int thirdPart = (int) ((binaryInstruction >> 7) & 0x1);
+			int fourthPart =(int) ((binaryInstruction >> 31) & 0x1);
+			
+			int tmp1 = ( (firstPart & 0xf) << 6) | secondPart & 0x3f;
+			int tmp2 = ( (thirdPart & 0x1) << 1) | fourthPart & 0x1;
+			this.imm12 = (((tmp1 & 0x7ff)<< 2) | tmp2 & 0x3) << 1;
+			
+			this.r1 = (int) ((binaryInstruction >> 15) & 0x1f);
+			this.r2 = (int) ((binaryInstruction >> 20) & 0x1f);
+			break;
+		}
+		case miscmem:
+		case system:
+		case load:
+		case jalr: 
+		case opimm:{//I-TYPE
+			this.type = RiscVType.ITYPE;
+			int func3Binary = (int) ((binaryInstruction >> 12) & 0x7); //get the func3 binary value
+			for (RiscVFunc func : RiscVFunc.values()) {
+				if (func.getFunc3Code() == func3Binary && func.getOpCode() == op) {
+					this.func = func;
+					break;
+				}
+			}
+			this.imm12 = (int) ((binaryInstruction >> 20) & 0xfff);
+			this.rd = (int) ((binaryInstruction >> 7) & 0x1f);
+			this.r1 = (int) ((binaryInstruction >> 15) & 0x1f);
+			break;
+		}
+		case jal:{//J-TYPE		
+			this.type = RiscVType.JTYPE;
+			
+			//reconstruction of the mixed up imm20 value
+			int firstPart = (int) ((binaryInstruction >> 21) & 0x3ff);
+			int secondPart = (int) ((binaryInstruction >> 20) & 0x1);
+			int thirdPart = (int) ((binaryInstruction >> 12) & 0xff);
+			int fourthPart =(int) ((binaryInstruction >> 31) & 0x1);		
+			
+			int tmp1 = ( (secondPart & 0x1 )<< 10) | (firstPart & 0x3ff);
+			int tmp2 = ( (fourthPart & 0x1) << 8) | (thirdPart & 0xff);
+			
+			//we also add the current pc to the offset to get the target address
+			this.imm20 = (int) ((tmp2 & 0x1ff) << 11) | (tmp1 & 0x7ff);
+			
+			this.rd = (int) ((binaryInstruction >> 7) & 0x1f);
+			break;
+		}
+		case op:{//R-TYPE		
+			this.type = RiscVType.RTYPE;
+			int func3Binary = (int) ((binaryInstruction >> 12) & 0x7);  //get the func3 binary value
+			int func7Binary = (int) ((binaryInstruction >> 25) & 0x7f); //get the func7 binary value
+			for (RiscVFunc func : RiscVFunc.values()) {
+				if (func.getFunc3Code() == func3Binary && func.getFunc7Code() == func7Binary && func.getOpCode() == op) {
+					this.func = func;
+					break;
+				}
+			}
+			
+			this.rd = (int) ((binaryInstruction >> 7) & 0x1f);
+			this.r1 = (int) ((binaryInstruction >> 15) & 0x1f);
+			this.r2 = (int) ((binaryInstruction >> 20) & 0x1f);
+			break;
+		}
+		case store:{//S-TYPE
+			this.type = RiscVType.STYPE;
+			int func3Binary = (int) ((binaryInstruction >> 12) & 0x7); //get the func3 binary value
+			for (RiscVFunc func : RiscVFunc.values()) {
+				
+				if (func.getFunc3Code() == func3Binary && func.getOpCode() == op) {
+					this.func = func;
+					break;
+				}
+			}
+			
+			int firstPart = (int)((binaryInstruction >> 25) & 0x7f);
+			int secondPart = (int) ((binaryInstruction >> 7) & 0x1f);
+			this.imm12 = ( firstPart << 5 & 0x7f) | secondPart & 0x1f;
+			
+			this.r1 = (int) ((binaryInstruction >> 15) & 0x1f);
+			this.r2 = (int) ((binaryInstruction >> 20) & 0x1f);
+			break;
+		}
+		case auipc:
+		case lui:{
+			this.type = RiscVType.UTYPE;
+				
+			this.imm20 = (int) ((binaryInstruction >> 12) & 0xfffff);
+			
+			this.rd = (int) ((binaryInstruction >> 7) & 0x1f);
+			break;
+		}
+		
+		
+		case unknown:		
+		case amo:
+		case loadfp:
+		case madd:
+		case msub:
+		case nmadd:
+		case nmsub:
+		case op32:
+		case opfp:
+		case opimm32:
+		case storefp:
+		default:
+			type = RiscVType.UNKNOWN;	
 		}
 		
 	}
@@ -190,8 +314,6 @@ public class InstructionRiscV {
 	public int getWrittenRegister(){	
 		
 		switch (this.getType()) {
-		
-
 		case JTYPE:
 			return rd;
 		case RTYPE:
@@ -299,7 +421,7 @@ public class InstructionRiscV {
 	}
 
 
-	public RiscVFunc getOpx() {
+	public RiscVFunc getFunc() {
 		return func;
 	}
 
@@ -314,17 +436,17 @@ public class InstructionRiscV {
 	}
 
 
-	public int getRa() {
+	public int getRd() {
 		return rd;
 	}
 
 
-	public int getRb() {
+	public int getRs1() {
 		return r1;
 	}
 
 
-	public int getRc() {
+	public int getRs2() {
 		return r2;
 	}
 	
@@ -333,14 +455,23 @@ public class InstructionRiscV {
 	}
 
 	public String toString(){ //TODO maybe just use types ?
-		switch (op) {
-		case op :
-			return func.name() + " r" + rd + ", r" + r1 + ", r"+ r2; 
-		case opimm :
-			return func.name() + " r" + rd + ", r" + r1 + ", " + imm12; 
+		switch (type) {
+		case BTYPE:
+			return this.getFunc().name() + " rs" + r1 + ", rs" + r2 + ", " + imm12 ;
+		case ITYPE:
+			return this.getFunc().name() + " rs" + rd + ", rs" + r1 + ", " + imm12 ;
+		case JTYPE:
+			return this.getOp().name() + " rs" + rd + ", " + Integer.toHexString(imm20) ;
+		case RTYPE:
+			return this.getFunc().name() + " rs" + rd + ", rs" + r1 + ", rs" + r2 ;
+		case STYPE:
+			return this.getFunc().name() + " rs" + r1 + ", rs" + r2 + ", " + imm12 ;
+		case UTYPE:
+			return this.getOp().name() + " rs" + rd + ", " + imm12 ;
+		case UNKNOWN:
+			break;	
 		default:
 			break;
-		
 		}
 		return "NOT YET IMPL IN TOSTRING";
 		

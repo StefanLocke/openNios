@@ -20,7 +20,7 @@ public class MemoryRiscV {
 		if (!isLast){
 				switch (currentInstruction.getOp()) {
 					case store :
-						switch (currentInstruction.getOpx()) {
+						switch (currentInstruction.getFunc()) {
 						case sb :
 							System.err.println("Operation not implemented in memory stage !");
 							break;
@@ -35,7 +35,7 @@ public class MemoryRiscV {
 						}
 						break;
 					case load :
-						switch (currentInstruction.getOpx()) {
+						switch (currentInstruction.getFunc()) {
 						case lb :
 							System.err.println("Operation not implemented in memory stage !");
 							break;

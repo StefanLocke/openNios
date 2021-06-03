@@ -9,6 +9,7 @@ public class RiscVValue32 extends RiscVValue {
 	}
 	
 	public RiscVValue32(long value, boolean isSigned){
+		byte b = 0b00000000;
 		this.value = value;
 	}
 
@@ -16,7 +17,7 @@ public class RiscVValue32 extends RiscVValue {
 		if (value>>31 != 0)
 			return (long) (value - Math.pow(2, 32));
 		else
-			return value;
+			return value & 0xffffffff;
 	}
 	
 	public long getUnsignedValue(){

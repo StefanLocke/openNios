@@ -44,12 +44,12 @@ public class CommandCompileCode implements Command
 	static final String compilerNameMacNios= "/external_bin/mac-nios2-elf-as";
 	static final String compilerNameLinuxNios = "/external_bin/lnx-nios2-elf-as";
 	
-	static final String compilerNameWindowsRV = "/external_bin/riscv32-unknown-elf-as";
-	static final String compilerNameMacRV= "/external_bin/riscv32-unknown-elf-as";
-	static final String compilerNameLinuxRV = "/external_bin/riscv32-unknown-elf-as";
+	static final String compilerNameWindowsRV = "/external_bin/riscv32-unknown-elf-as.exe";
+	static final String compilerNameMacRV= "/external_bin/riscv32-unknown-elf-as.exe";
+	static final String compilerNameLinuxRV = "/external_bin/riscv32-unknown-elf-as.exe";
 	
 	static final String outPutNameNios = "./nios2-elf-as";
-	static final String outPutNameRV = "./rv-elf-as";
+	static final String outPutNameRV = "./rv-elf-as.exe";
 	
 	
     private File codeFile = null; // in 
@@ -88,7 +88,6 @@ public class CommandCompileCode implements Command
         		else
         			is = this.getClass().getResource(compilerNameLinuxRV).openStream();
                 			
-                System.out.println("Reached 91");
                 OutputStream os = new FileOutputStream(outPutNameRV);
                 
                 byte[] b = new byte[2048];
@@ -104,8 +103,8 @@ public class CommandCompileCode implements Command
                 File file = new File(outPutNameRV);
                 file.setExecutable(true);
                 
-                //Process ps = rt.exec(outPutNameRV + " " + codeFilePath + " -o ./file.elf");
-                Process ps = rt.exec("riscv32-unknown-elf-as.exe" + " " + codeFilePath + " -o ./file.elf");
+                Process ps = rt.exec(outPutNameRV + " " + codeFilePath + " -o ./file.elf");
+                //Process ps = rt.exec("riscv32-unknown-elf-as.exe" + " " + codeFilePath + " -o ./file.elf");
                 ps.waitFor();
                 ArrayList<String> errorMessage = getStringFromInputStream(ps.getErrorStream());
                 

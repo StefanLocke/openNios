@@ -86,7 +86,8 @@ public class CodeTableFactory extends TableFactory
 		    model.addRow(new Object[]
 		            {
 		                Long.toHexString(addr),
-		                Long.toHexString(instBinary.getUnsignedValue()),
+		                //Long.toHexString(instBinary.getUnsignedValue()),
+		                String.format("%1$08x",instBinary.getUnsignedValue()),
 		                instr.toString()
 		            });
 		}
