@@ -241,7 +241,7 @@ public class InstructionRiscV {
 			int tmp1 = ( (secondPart & 0x1 )<< 10) | (firstPart & 0x3ff);
 			int tmp2 = ( (fourthPart & 0x1) << 8) | (thirdPart & 0xff);
 			
-			//we also add the current pc to the offset to get the target address
+	
 			this.imm20 = (int) ((tmp2 & 0x1ff) << 11) | (tmp1 & 0x7ff);
 			
 			this.rd = (int) ((binaryInstruction >> 7) & 0x1f);

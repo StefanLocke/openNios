@@ -28,7 +28,7 @@ public class DecodeRiscV {
 			currentInstruction.setValueB(new RiscVValue32(currentInstruction.getImm12(), true));
 			break;
 		case JTYPE: // we add the correct bit to fill the 32 bit java integer so we can have a correctly signed value
-			currentInstruction.setValueA(new RiscVValue32(((currentInstruction.getImm20() >> 19) & 0b1) == 0b1 ? 0xfff << 20 | currentInstruction.getImm20() & 0xfffff : 0x000 << 20 | currentInstruction.getImm20() & 0xfffff, true));
+			currentInstruction.setValueA(new RiscVValue20(currentInstruction.getImm20()).toValue32());
 			break;
 		case RTYPE:
 			currentInstruction.setValueA(registers.get(currentInstruction.getRd()));
@@ -56,9 +56,10 @@ public class DecodeRiscV {
 			//we then add on the LSB 
 			//we can then add this to the Pc to determine the target address
 			//WE need to apply the offset to the address
-			int offset = (int) currentInstruction.getValueA().getUnsignedValue();
-			System.out.println(offset);
-			System.out.println(Integer.toHexString(offset));
+			System.out.println("Jal :" + new RiscVValue20(currentInstruction.getImm20()).getSignedValue());
+			System.out.println("Jal :" + currentInstruction.getValueA().getSignedValue());
+			
+			long offset = currentInstruction.getValueA().getSignedValue();
 			/*System.out.println("imm " + offset);
 			System.out.println("value " + currentInstruction.getValueA().getSignedValue());
 			System.out.println(offset & 0xfffff);
