@@ -23,15 +23,15 @@ import openDLX.config.ArchCfg;
 import openDLX.exception.PipelineException;
 import openDLX.gui.GUI_CONST;
 import openDLX.util.Statistics;
-import riscvSimulator.DecodeRiscV;
-import riscvSimulator.ExecuteRiscV;
-import riscvSimulator.FetchRiscV;
 import riscvSimulator.InstructionRiscV;
-import riscvSimulator.MemoryRiscV;
 import riscvSimulator.RegisterFileRiscV;
 import riscvSimulator.RiscVMemory;
 import riscvSimulator.RiscVOpCode;
-import riscvSimulator.WriteBackRiscV;
+import riscvSimulator.steps.DecodeRiscV;
+import riscvSimulator.steps.ExecuteRiscV;
+import riscvSimulator.steps.FetchRiscV;
+import riscvSimulator.steps.MemoryRiscV;
+import riscvSimulator.steps.WriteBackRiscV;
 import elfParser.ElfFileParser;
 
 public class Simulator{
@@ -176,7 +176,7 @@ public class Simulator{
         }
 
         private void initializeMemory() {
-        	new ElfFileParser(memory);
+        	new ElfFileParser(memory,registerFile);
         }
 
 

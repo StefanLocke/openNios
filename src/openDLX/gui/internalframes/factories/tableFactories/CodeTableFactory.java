@@ -31,7 +31,7 @@ import openDLX.gui.MainFrame;
 import openDLX.gui.internalframes.renderer.CodeFrameTableCellRenderer;
 import openDLX.gui.internalframes.util.NotSelectableTableModel;
 import riscvSimulator.InstructionRiscV;
-import riscvSimulator.RiscVValue32;
+import riscvSimulator.values.RiscVValue32;
 
 public class CodeTableFactory extends TableFactory
 {
@@ -53,7 +53,7 @@ public class CodeTableFactory extends TableFactory
 
         model.addColumn("address");
         model.addColumn("code hex");
-        model.addColumn("code DLX");
+        model.addColumn("code Risc-V");
 
         //default max width values change here
         TableColumnModel tcm = table.getColumnModel();

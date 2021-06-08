@@ -5,21 +5,19 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import riscvSimulator.RegisterFileRiscV;
 import riscvSimulator.RiscVMemory;
-import riscvSimulator.RiscVValue32;
-import riscvSimulator.RiscVValue8;
-//import niosSimulator.NiosMemory;
-//import niosSimulator.NiosValue32;
-//import niosSimulator.NiosValue8;
+import riscvSimulator.values.RiscVValue32;
+import riscvSimulator.values.RiscVValue8;
 
 public class ElfFileParser {
 	
 
 	
-	public ElfFileParser(RiscVMemory memory){
+	public ElfFileParser(RiscVMemory memory,RegisterFileRiscV registers){
 		byte[] elfBytes=null;
 		try {
-			elfBytes = Files.readAllBytes(Paths.get("./", "./file.elf"));
+			elfBytes = Files.readAllBytes(Paths.get("./", "./fileLinked.elf"));
 		} catch (IOException e) {
 			System.err.println("Error while loading elf file !");
 			e.printStackTrace();
@@ -51,7 +49,7 @@ public class ElfFileParser {
 			indexSection++;
 			
 		}
-		int destination = 0;
+		long destination = 0;
 		long idOfText = -1;
 		long idOfData = -1;
 
@@ -78,12 +76,22 @@ public class ElfFileParser {
 						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 22)], 
 						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 23)]);
 				
-
+				long addressOfSection = toUnsignedInt(elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 12)], 
+						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 13)], 
+						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 14)], 
+						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 15)]);
 				
+				System.out.println("Text start : " + Long.toHexString(startOfTextSection));
+				System.out.println("Text size : " + Long.toHexString(sizeOfSection));
+				System.out.println("Text address : " + Long.toHexString(addressOfSection));
+
+				destination = addressOfSection;
+				registers.setPC(new RiscVValue32(addressOfSection));
 				for (long byteNumber=startOfTextSection; byteNumber<startOfTextSection+sizeOfSection; byteNumber++){
-					memory.set(destination, new RiscVValue8(toUnsignedChar(elfBytes[(int) byteNumber])));
+					memory.set((int)destination, new RiscVValue8(toUnsignedChar(elfBytes[(int) byteNumber])));
 					destination++;
 				}
+				
 			}
 		}
 
@@ -110,18 +118,121 @@ public class ElfFileParser {
 						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 22)], 
 						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 23)]);
 				
-	
+				long addressOfSection = toUnsignedInt(elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 12)], 
+						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 13)], 
+						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 14)], 
+						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 15)]);
 				
+				System.out.println("data start : " + Long.toHexString(startOfTextSection));
+				System.out.println("data size : " + Long.toHexString(sizeOfSection));
+				System.out.println("data address : " + Long.toHexString(addressOfSection));
+				destination = addressOfSection;
 				for (long byteNumber=startOfTextSection; byteNumber<startOfTextSection+sizeOfSection; byteNumber++){
-					memory.set(destination, new RiscVValue8(toUnsignedChar(elfBytes[(int) byteNumber])));
+					memory.set((int)destination, new RiscVValue8(toUnsignedChar(elfBytes[(int) byteNumber])));
 					destination++;
 				}
 			}
 			
 			
+			
 		}
-		//We handle relocation of .text section
+		long strTabStart = 0 ;
 		for (int sectionNumber=0; sectionNumber< numberSections; sectionNumber++){
+			long indexOfName = toUnsignedInt(elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 0)], 
+					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 1)], 
+					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 2)], 
+					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 3)]);
+			
+			if (getStringFrom(indexOfName+startOfSymbolTable, elfBytes).equals(".strtab")) {
+				strTabStart = toUnsignedInt(elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 16)], 
+						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 17)], 
+						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 18)], 
+						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 19)]);
+				System.out.println("str tab starts at " + Long.toHexString(strTabStart));
+			}
+		}
+		
+		
+		//We go find the stack pointer address
+		for (int sectionNumber=0; sectionNumber< numberSections; sectionNumber++){
+			
+			long indexOfName = toUnsignedInt(elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 4)], 
+					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 5)], 
+					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 6)], 
+					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 7)]);
+			System.out.println("Section : " + sectionNumber +" Header id : " + Long.toHexString(indexOfName));
+			
+			if (indexOfName == 0x2) {
+				System.out.println("We are in the SymbTab header");
+				
+				long tabsymbStart = toUnsignedInt(elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 16)], 
+						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 17)], 
+						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 18)], 
+						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 19)]);
+				System.out.println("The SymbTab is at " + Long.toHexString(tabsymbStart));
+				
+				long tabsymbsize = toUnsignedInt(elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 20)], 
+						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 21)], 
+						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 22)], 
+						elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 23)]);
+			
+				long actualSize = tabsymbsize/16;
+				System.out.println("The SymbTab size is " + tabsymbsize + " with " + actualSize + " entries");
+				for (int index = 0 ; index < actualSize; index++) {
+					long name = toUnsignedInt(elfBytes[(int) (tabsymbStart + index * 16)], 
+							elfBytes[(int) (tabsymbStart + index * 16) + 1 ], 
+							elfBytes[(int) (tabsymbStart + index * 16) + 2 ], 
+							elfBytes[(int) (tabsymbStart + index * 16) + 3 ]);
+					
+					
+					long value = toUnsignedInt(elfBytes[(int) (tabsymbStart + index * 16) + 4], 
+							elfBytes[(int) (tabsymbStart + index * 16) + 5 ], 
+							elfBytes[(int) (tabsymbStart + index * 16) + 6 ], 
+							elfBytes[(int) (tabsymbStart + index * 16) + 7 ]);
+					
+					if (getStringFrom(name+strTabStart, elfBytes).equals("__global_pointer$")) {
+						registers.set(3, new RiscVValue32(value));
+					}
+					System.out.println("--Symbol : " + index + " value : " + Long.toHexString(value) + " name : " + getStringFrom(name+strTabStart, elfBytes));
+				}
+				
+				
+				
+
+			/*
+			long tabsymbStart =toUnsignedInt(elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 16)], 
+					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 17)], 
+					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 18)], 
+					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 19)]);
+					/*
+					toUnsignedInt(elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 0x10)], 
+					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 0x11)], 
+					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 0x12)], 
+					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 0x13)])
+			
+			
+			long tabsumbsize = toUnsignedInt(elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 0x1C)], 
+					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 0x1d)], 
+					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 0x1e)], 
+					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 0x1f)]);
+			
+			System.out.println("The SymbTab is at " + Long.toHexString(tabsumbsize));
+			System.out.println("The SymbTab size is " + tabsumbsize);
+			int symbIndex = 0;
+			long symbAddress = tabsymbStart;
+			*/
+			
+			
+			}
+			
+			
+			
+			
+			
+		}
+		
+		//We handle relocation of .text section
+		/*for (int sectionNumber=0; sectionNumber< numberSections; sectionNumber++){
 			
 			long indexOfName = toUnsignedInt(elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 0)], 
 					elfBytes[(int) (placeOfSectionTable + sectionNumber * sizeOfSectionHeader + 1)], 
@@ -173,7 +284,7 @@ public class ElfFileParser {
 						
 						long instruction = memory.loadWord(relocationAddress).getUnsignedValue(); //This is the previous instruction
 						instruction = instruction | value; //We add the immediate value
-						memory.setWord(relocationAddress, new RiscVValue32(instruction, false));
+						memory.setWord(relocationAddress, new RiscVValue32(instruction));
 						
 					}
 					else if (relocationType == 10){
@@ -184,7 +295,7 @@ public class ElfFileParser {
 						long instruction = memory.loadWord(relocationAddress).getUnsignedValue(); //This is the previous instruction
 						instruction = instruction | value; //We add the immediate value
 
-						memory.setWord(relocationAddress, new RiscVValue32(instruction, false));
+						memory.setWord(relocationAddress, new RiscVValue32(instruction));
 					}
 					else if (relocationType == 3){
 						//This is a %pcrel16 relocation
@@ -195,14 +306,14 @@ public class ElfFileParser {
 						long instruction = memory.loadWord(relocationAddress).getUnsignedValue(); //This is the previous instruction
 						instruction = instruction | value; //We add the immediate value
 
-						memory.setWord(relocationAddress, new RiscVValue32(instruction, false));
+						memory.setWord(relocationAddress, new RiscVValue32(instruction));
 					}
 					
 					System.out.println("Relocating (type " + Long.toHexString(relocationType)+ ") at address 0x" + Long.toHexString(relocationAddress) + " value 0x" + Long.toHexString(relocationValue));
 					
 				}
 			}
-		}
+		}*/
 
 	}
 	

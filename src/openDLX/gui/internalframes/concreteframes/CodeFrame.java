@@ -33,8 +33,8 @@ import openDLX.gui.MainFrame;
 import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
 import openDLX.gui.internalframes.factories.tableFactories.CodeTableFactory;
 import openDLX.gui.internalframes.util.TableSizeCalculator;
-import riscvSimulator.ExecuteRiscV;
-import riscvSimulator.MemoryRiscV;
+import riscvSimulator.steps.ExecuteRiscV;
+import riscvSimulator.steps.MemoryRiscV;
 
 @SuppressWarnings("serial")
 public final class CodeFrame extends OpenDLXSimInternalFrame

@@ -34,7 +34,7 @@ import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
 import openDLX.gui.internalframes.factories.tableFactories.RegisterTableFactory;
 import openDLX.gui.internalframes.util.TableSizeCalculator;
 import riscvSimulator.RegisterFileRiscV;
-import riscvSimulator.RiscVValue32;
+import riscvSimulator.values.RiscVValue32;
 
 @SuppressWarnings("serial")
 public final class RegisterFrame extends OpenDLXSimInternalFrame
@@ -62,7 +62,7 @@ public final class RegisterFrame extends OpenDLXSimInternalFrame
             else
                 value = Integer.toString((int) register_value.getUnsignedValue());
             
-            registerTable.getModel().setValueAt(value, i, 1);
+            registerTable.getModel().setValueAt(value, i, 2);
         }
     }
 

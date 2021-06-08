@@ -3,6 +3,8 @@ package riscvSimulator;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import riscvSimulator.values.RiscVValue32;
+
 public class RegisterFileRiscV {
 
 	private RiscVValue32 pc;
@@ -10,12 +12,12 @@ public class RegisterFileRiscV {
 	
 	public RegisterFileRiscV(){
 		this.registers = new HashMap<Integer, RiscVValue32>();
-		this.pc = new RiscVValue32(0, false);
+		this.pc = new RiscVValue32(0);
 	}
 	
 	public RiscVValue32 get(int index){
 		if (!registers.containsKey(index))
-			return new RiscVValue32(0, false);
+			return new RiscVValue32(0);
 		
 		return registers.get(index).copy();
 	}

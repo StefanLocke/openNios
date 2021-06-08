@@ -48,9 +48,12 @@ public class CommandCompileCode implements Command
 	static final String compilerNameMacRV= "/external_bin/riscv32-unknown-elf-as.exe";
 	static final String compilerNameLinuxRV = "/external_bin/riscv32-unknown-elf-as.exe";
 	
-	static final String outPutNameNios = "./nios2-elf-as";
-	static final String outPutNameRV = "./rv-elf-as.exe";
+	static final String linkerNameWindowsRV = "/external_bin/riscv32-unknown-elf-ld.exe";
 	
+	static final String outPutNameNios = "./nios2-elf-as";
+	static final String generatedAssemblerRV = "./rv-elf-as.exe";
+	
+	static final String generatedLinkerRV = "./external_bin/riscv32-unknown-elf-ld.exe";
 	
     private File codeFile = null; // in 
     private File configFile = null; // out
@@ -88,7 +91,7 @@ public class CommandCompileCode implements Command
         		else
         			is = this.getClass().getResource(compilerNameLinuxRV).openStream();
                 			
-                OutputStream os = new FileOutputStream(outPutNameRV);
+                OutputStream os = new FileOutputStream(generatedAssemblerRV);
                 
                 byte[] b = new byte[2048];
                 int length;
@@ -100,12 +103,14 @@ public class CommandCompileCode implements Command
                 is.close();
                 os.close();
                 
-                File file = new File(outPutNameRV);
+                File file = new File(generatedAssemblerRV);
                 file.setExecutable(true);
                 
-                Process ps = rt.exec(outPutNameRV + " " + codeFilePath + " -o ./file.elf");
+                Process ps = rt.exec(generatedAssemblerRV + " " + codeFilePath + " -o ./file.elf");
+                Process ps2 = rt.exec(generatedLinkerRV + " ./file.elf -o ./fileLinked.elf");
                 //Process ps = rt.exec("riscv32-unknown-elf-as.exe" + " " + codeFilePath + " -o ./file.elf");
                 ps.waitFor();
+                ps2.waitFor();
                 ArrayList<String> errorMessage = getStringFromInputStream(ps.getErrorStream());
                 
                 if (errorMessage.size() != 0){

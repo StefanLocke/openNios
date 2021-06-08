@@ -36,7 +36,7 @@ import openDLX.gui.Preference;
 import openDLX.gui.command.userLevel.CommandChangeMemory;
 import openDLX.gui.internalframes.renderer.ChangeableFrameTableCellRenderer;
 import openDLX.gui.internalframes.util.NotSelectableTableModel;
-import riscvSimulator.RiscVValue32;
+import riscvSimulator.values.RiscVValue32;
 
 public class MemoryTableFactory extends TableFactory
 {
@@ -72,7 +72,7 @@ public class MemoryTableFactory extends TableFactory
 		        secondItem = Long.toString(value.getUnsignedValue());
 
 		    model.addRow(new Object[]
-		            { "Ox"+Long.toHexString(startAddr + i * 4), secondItem });
+		            { "0x"+Long.toHexString(startAddr + i * 4), secondItem });
 		}
 
         TableColumnModel tcm = table.getColumnModel();

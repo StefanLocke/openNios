@@ -29,7 +29,7 @@ import openDLX.gui.MainFrame;
 import openDLX.gui.command.Command;
 import openDLX.gui.command.systemLevel.CommandUpdateFrames;
 import openDLX.gui.internalframes.util.ValueInput;
-import riscvSimulator.RiscVValue32;
+import riscvSimulator.values.RiscVValue32;
 
 public class CommandChangeMemory implements Command
 {
@@ -55,7 +55,7 @@ public class CommandChangeMemory implements Command
                 Integer value = ValueInput.getValue("change memory cell value", 0);
                 if (value != null)
                 {
-                    simulator.getMemory().setWord(address, new RiscVValue32(value, false));
+                    simulator.getMemory().setWord(address, new RiscVValue32(value));
                     new CommandUpdateFrames(mf).execute();
                 }
             }

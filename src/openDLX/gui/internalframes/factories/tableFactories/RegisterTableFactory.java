@@ -52,7 +52,10 @@ public class RegisterTableFactory extends TableFactory
         table = new JTable(model);
         table.setFocusable(false);
         model.addColumn("Register");
+        	model.addColumn("Register ABI");
+        	
         model.addColumn("Values");
+        	model.addColumn("Register Description");
 
         for (int i = 0; i < ArchCfg.getRegisterCount(); ++i)
         {
@@ -63,7 +66,7 @@ public class RegisterTableFactory extends TableFactory
                 secondItem = rs.get(i).getSignedValue();
 
             model.addRow(new Object[] {
-                    ArchCfg.getRegisterDescription(i), secondItem
+                    ArchCfg.getRegisterDescription(i),ArchCfg.getRegisterABI(i), secondItem, ArchCfg.getRegisterDescv(i)
             });
         }
 

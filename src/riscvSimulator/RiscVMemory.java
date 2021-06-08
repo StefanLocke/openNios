@@ -3,6 +3,10 @@ package riscvSimulator;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import riscvSimulator.values.RiscVValue;
+import riscvSimulator.values.RiscVValue32;
+import riscvSimulator.values.RiscVValue8;
+
 public class RiscVMemory {
 
 	private HashMap<Integer, RiscVValue8> memory;
@@ -34,7 +38,7 @@ public class RiscVMemory {
 		RiscVValue8 v3 = this.loadByteAsByte(addr+2);
 		RiscVValue8 v4 = this.loadByteAsByte(addr+3);
 		
-		return new RiscVValue32(v1.getUnsignedValue() + (v2.getUnsignedValue() << 8) + (v3.getUnsignedValue()<<16) + (v4.getUnsignedValue()<<24), false);
+		return new RiscVValue32(v1.getUnsignedValue() + (v2.getUnsignedValue() << 8) + (v3.getUnsignedValue()<<16) + (v4.getUnsignedValue()<<24));
 	}
 	
 	public RiscVValue32 loadWord(long addr){
@@ -43,7 +47,7 @@ public class RiscVMemory {
 		RiscVValue8 v3 = this.loadByteAsByte((int) (addr+2));
 		RiscVValue8 v4 = this.loadByteAsByte((int) (addr+3));
 		
-		return new RiscVValue32(v1.getUnsignedValue() + (v2.getUnsignedValue() << 8) + (v3.getUnsignedValue()<<16) + (v4.getUnsignedValue()<<24), false);
+		return new RiscVValue32(v1.getUnsignedValue() + (v2.getUnsignedValue() << 8) + (v3.getUnsignedValue()<<16) + (v4.getUnsignedValue()<<24));
 	}
 	
 	public RiscVValue32 loadHalf(long addr){
@@ -51,7 +55,7 @@ public class RiscVMemory {
 		RiscVValue8 v2 = this.loadByteAsByte((int) (addr+1));
 
 		
-		return new RiscVValue32(v1.getUnsignedValue() + (v2.getUnsignedValue() << 8), false);
+		return new RiscVValue32(v1.getUnsignedValue() + (v2.getUnsignedValue() << 8));
 	}
 	
 	public void set(int addr, RiscVValue8 value){

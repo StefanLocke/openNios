@@ -37,9 +37,23 @@ public class ArchCfg
 
     public static final String[] GP_NAMES_NIOS =
     {
-        "r0 ", "r1 ", "r2 ", "r3 ", "r4 ", "r5 ", "r6 ", "r7 ", "r8 ", "r9 ", "r10", "r11", "r12", "r13", "r14", "r15",
-        "r16", "r17", "r18", "r19", "r20", "r21", "r22", "r23", "et", "bt", "gp", "sp", "fp", "ea", "sstatus", "ra"
+        "x0 ", "x1 ", "x2 ", "x3 ", "x4 ", "x5 ", "x6 ", "x7 ", "x8 ", "x9 ", "x10", "x11", "x12", "x13", "x14", "x15",
+        "x16", "x17", "x18", "x19", "x20", "x21", "x22", "x23", "x24", "x25", "x26", "x27", "x28", "x29", "x30", "x31"
     };
+    
+    public static final String[] GP_NAMES_NIOS_ABI =
+        {
+            "zero ", "ra ", "sp ", "gp ", "tp ", "t0 ", "t1 ", "t2 ", "s0/fp ", "s1 ", "a0", "a1", "a2", "a3", "a4", "a5",
+            "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
+        };
+    
+    public static final String[] GP_NAMES_NIOS_DESCRIPTION =
+        {
+            "Hard-wired zero", "Return address", "Stack pointer", "Global pointer", "Thread pointer", "Temporaries", "Temporaries", "Temporaries", "Saved register/frame pointer", 
+            "Saved register ", "Function arguments/return values", "Function arguments/return values", "Function arguments", "Function arguments", "Function arguments", "Function arguments",
+            "Function arguments", "Function arguments", "Saved registers", "Saved registers", "Saved registers", "Saved registers", "Saved registers", "Saved registers", "Saved registers", "Saved registers", "Saved registers", "Saved registers",
+            "Temporaries", "Temporaries", "Temporaries", "Temporaries"
+        };
 
 //   public static String assemblerPath = "/home/nanjing/Documents/lab2/nios2-elf-as";
 
@@ -77,6 +91,16 @@ public class ArchCfg
     public static String getRegisterDescription(int reg_id)
     {
         return GP_NAMES_NIOS[reg_id];
+    }
+    
+    public static String getRegisterABI(int reg_id)
+    {
+        return GP_NAMES_NIOS_ABI[reg_id];
+    }
+    
+    public static String getRegisterDescv(int reg_id)
+    {
+        return GP_NAMES_NIOS_DESCRIPTION[reg_id];
     }
 
     public static int getRegisterCount()

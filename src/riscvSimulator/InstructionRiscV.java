@@ -4,7 +4,10 @@ import java.util.ArrayList;
 
 import com.sun.tools.javac.util.List;
 
-import riscvSimulator.func3.*;
+import riscvSimulator.values.RiscVValue;
+import riscvSimulator.values.RiscVValue12;
+import riscvSimulator.values.RiscVValue20;
+import riscvSimulator.values.RiscVValue32;
 
 public class InstructionRiscV {
 
@@ -203,9 +206,12 @@ public class InstructionRiscV {
 			int thirdPart = (int) ((binaryInstruction >> 7) & 0x1);
 			int fourthPart =(int) ((binaryInstruction >> 31) & 0x1);
 			
-			int tmp1 = ( (firstPart & 0xf) << 6) | secondPart & 0x3f;
+			/*int tmp1 = ( (firstPart & 0xf) << 6) | secondPart & 0x3f;
 			int tmp2 = ( (thirdPart & 0x1) << 1) | fourthPart & 0x1;
-			this.imm12 = (((tmp1 & 0x7ff)<< 2) | tmp2 & 0x3) << 1;
+			this.imm12 = (((tmp1 & 0x3ff)<< 2) | tmp2 & 0x3);*/
+			int tmp1 = ( (secondPart & 0x3f) << 4) | firstPart & 0xf;
+			int tmp2 = ( (fourthPart & 0x1) << 1) | thirdPart & 0x1;
+			this.imm12 = (((tmp2 & 0x3) << 10) | tmp1 & 0x3ff);
 			
 			this.r1 = (int) ((binaryInstruction >> 15) & 0x1f);
 			this.r2 = (int) ((binaryInstruction >> 20) & 0x1f);
@@ -221,12 +227,36 @@ public class InstructionRiscV {
 			for (RiscVFunc func : RiscVFunc.values()) {
 				if (func.getFunc3Code() == func3Binary && func.getOpCode() == op) {
 					this.func = func;
+					
+					if (func == RiscVFunc.srli ) {
+						int func7Binary = (int) ((binaryInstruction >> 25) & 0x7f); //get the func7 binary value
+						if (func7Binary == RiscVFunc.srai.getFunc7Code()) {
+							this.func = RiscVFunc.srai;
+							
+						}
+					}
+						
+					
+					
+					
 					break;
 				}
 			}
-			this.imm12 = (int) ((binaryInstruction >> 20) & 0xfff);
+			switch (this.func) {
+			case slli:
+			case srli :
+			case srai:
+				this.imm12 = (int) ((binaryInstruction >> 20) & 0x1f);
+				break;
+			default:
+				this.imm12 = (int) ((binaryInstruction >> 20) & 0xfff);
+				break;
+			
+			}
 			this.rd = (int) ((binaryInstruction >> 7) & 0x1f);
 			this.r1 = (int) ((binaryInstruction >> 15) & 0x1f);
+			//System.out.println("bin " + Long.toBinaryString(binaryInstruction));
+
 			break;
 		}
 		case jal:{//J-TYPE		
@@ -267,11 +297,13 @@ public class InstructionRiscV {
 			this.type = RiscVType.STYPE;
 			int func3Binary = (int) ((binaryInstruction >> 12) & 0x7); //get the func3 binary value
 			for (RiscVFunc func : RiscVFunc.values()) {
-				
+				//System.out.println(Integer.toBinaryString(func3Binary) + " - " + Integer.toBinaryString(func.getFunc3Code()));
 				if (func.getFunc3Code() == func3Binary && func.getOpCode() == op) {
 					this.func = func;
 					break;
 				}
+				
+				//this.func = RiscVFunc.sw;
 			}
 			
 			int firstPart = (int)((binaryInstruction >> 25) & 0x7f);
@@ -457,23 +489,23 @@ public class InstructionRiscV {
 	public String toString(){ //TODO maybe just use types ?
 		switch (type) {
 		case BTYPE:
-			return this.getFunc().name() + " rs" + r1 + ", rs" + r2 + ", " + imm12 ;
+			return this.getFunc().name() + " x" + r1 + ", x" + r2 + ", 0x" + Long.toHexString(new RiscVValue12(imm12).getSignedValue()) ;
 		case ITYPE:
-			return this.getFunc().name() + " rs" + rd + ", rs" + r1 + ", " + imm12 ;
+			return this.getFunc().name() + " x" + rd + ", x" + r1 + ", " + new RiscVValue12(imm12).getSignedValue() ;
 		case JTYPE:
-			return this.getOp().name() + " rs" + rd + ", " + Integer.toHexString(imm20) ;
+			return this.getOp().name() + " x" + rd + ", 0x" + Long.toHexString(new RiscVValue20(imm20).toValue32().getSignedValue()) ;
 		case RTYPE:
-			return this.getFunc().name() + " rs" + rd + ", rs" + r1 + ", rs" + r2 ;
+			return this.getFunc().name() + " x" + rd + ", x" + r1 + ", x" + r2 ;
 		case STYPE:
-			return this.getFunc().name() + " rs" + r1 + ", rs" + r2 + ", " + imm12 ;
+			return this.getFunc().name() + " x" + r2 + ", " + new RiscVValue12(imm12).getSignedValue() + "(x" + r1 + ")";
 		case UTYPE:
-			return this.getOp().name() + " rs" + rd + ", " + imm12 ;
+			return this.getOp().name() + " x" + rd + ", " + new RiscVValue12(imm12).getSignedValue() ;
 		case UNKNOWN:
 			break;	
 		default:
 			break;
 		}
-		return "NOT YET IMPL IN TOSTRING";
+		return "";
 		
 	}
 
