@@ -2,8 +2,6 @@ package riscvSimulator;
 
 public enum RiscVFunc {
 	
-	jalr(RiscVOpCode.jalr,0b0000000,0b000),
-	
 	beq(RiscVOpCode.branch,0b0000000,0b000),
 	bne(RiscVOpCode.branch,0b0000000,0b001),
 	blt(RiscVOpCode.branch,0b0000000,0b100),
@@ -62,7 +60,13 @@ public enum RiscVFunc {
 	csrrc(RiscVOpCode.system,0b0000000,0b011),
 	csrrwi(RiscVOpCode.system,0b0000000,0b101),
 	csrrsi(RiscVOpCode.system,0b0000000,0b110),
-	csrrci(RiscVOpCode.system,0b0000000,0b111);
+	csrrci(RiscVOpCode.system,0b0000000,0b111),
+	
+	lui(RiscVOpCode.lui,0b0000000,0b000),
+	auipc(RiscVOpCode.auipc,0b0000000,0b000),
+	
+	jal(RiscVOpCode.jal,0b0000000,0b000),
+	jalr(RiscVOpCode.jalr,0b0000000,0b000);
 	 
 	private RiscVOpCode OpCode;
 	private int Func3CodeValue;

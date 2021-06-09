@@ -1,6 +1,16 @@
 package riscvSimulator.tester;
 
+import java.util.Random;
+
+import riscvSimulator.InstructionRiscV;
+import riscvSimulator.RiscVFunc;
 import riscvSimulator.RiscVOpCode;
+import riscvSimulator.steps.DecodeRiscV;
+import riscvSimulator.steps.ExecuteRiscV;
+import riscvSimulator.steps.FetchRiscV;
+import riscvSimulator.steps.MemoryRiscV;
+import riscvSimulator.steps.WriteBackRiscV;
+import riscvSimulator.values.RiscVValue32;
 
 public enum TestBinaryInstructions {
 	
@@ -61,4 +71,6 @@ public enum TestBinaryInstructions {
 		//System.out.println("Using " + Integer.toBinaryString((int) Math.pow(2,size)-1));
 		return (tmp & (((long) Math.pow(2,size))-1)) & 0xffffffff;
 	}
+	
+	
 }
