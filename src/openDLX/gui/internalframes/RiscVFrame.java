@@ -22,35 +22,23 @@
 package openDLX.gui.internalframes;
 
 import javax.swing.JInternalFrame;
+import javax.swing.JPanel;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
 @SuppressWarnings("serial")
-public abstract class OpenDLXSimInternalFrame extends JInternalFrame implements Updateable, Cleanable
+public abstract class RiscVFrame extends JPanel implements Updateable, Cleanable
 {
 
 
-    public OpenDLXSimInternalFrame(String name, boolean maximizable)
+    public RiscVFrame(String name, boolean maximizable)
     {
-        super(name,
-                true, //resizable
-                true, //closable
-                maximizable, //maximizable
-                true //minimizable
-                );
+        super();
     }
 
     protected void initialize()
     {
-        addInternalFrameListener(new InternalFrameAdapter()
-        {
-            @Override
-            public void internalFrameClosing(InternalFrameEvent e)
-            {
-                setDefaultCloseOperation(HIDE_ON_CLOSE);
-            }
-
-        });
+       
     }
 
 }

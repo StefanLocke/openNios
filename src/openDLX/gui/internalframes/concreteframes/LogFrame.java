@@ -29,13 +29,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import openDLX.gui.MainFrame;
-import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
+import openDLX.gui.internalframes.RiscVFrame;
 import openDLX.gui.internalframes.renderer.LogFrameTableCellRenderer;
 import openDLX.gui.internalframes.util.LogReader;
 import openDLX.gui.internalframes.util.NotSelectableTableModel;
 
 @SuppressWarnings("serial")
-public final class LogFrame extends OpenDLXSimInternalFrame
+public final class LogFrame extends RiscVFrame
 {
 
     //tables, scrollpane and table models
@@ -91,7 +91,6 @@ public final class LogFrame extends OpenDLXSimInternalFrame
     public void clean()
     {
         setVisible(false);
-        dispose();
     }
 
     @Override

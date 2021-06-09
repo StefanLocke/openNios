@@ -22,6 +22,8 @@
 package openDLX.gui.command.systemLevel;
 
 import javax.swing.JInternalFrame;
+import javax.swing.JPanel;
+
 import openDLX.gui.MainFrame;
 import openDLX.gui.command.Command;
 import openDLX.gui.internalframes.FrameConfiguration;
@@ -39,8 +41,8 @@ public class CommandSaveFrameConfigurationSysLevel implements Command
     @Override
     public void execute()
     {
-        for (JInternalFrame internalFrame: mf.getinternalFrames())
-            new FrameConfiguration(internalFrame).saveFrameConfiguration();
+       
+   
     }
 
 }

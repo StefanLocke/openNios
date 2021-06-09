@@ -33,12 +33,16 @@ import java.beans.PropertyVetoException;
 import java.io.File;
 import java.util.Hashtable;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.undo.UndoManager;
 
 import alternateSimulator.Simulator;
@@ -48,7 +52,13 @@ import openDLX.gui.command.EventCommandLookUp;
 import openDLX.gui.command.userLevel.CommandExitProgram;
 import openDLX.gui.dialog.Input;
 import openDLX.gui.dialog.Output;
-import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
+import openDLX.gui.internalframes.RiscVFrame;
+import openDLX.gui.internalframes.concreteframes.ClockCycleFrame;
+import openDLX.gui.internalframes.concreteframes.CodeFrame;
+import openDLX.gui.internalframes.concreteframes.LogFrame;
+import openDLX.gui.internalframes.concreteframes.MemoryFrame;
+import openDLX.gui.internalframes.concreteframes.RegisterFrame;
+import openDLX.gui.internalframes.concreteframes.StatisticsFrame;
 import openDLX.gui.internalframes.concreteframes.editor.EditorFrame;
 import openDLX.gui.menubar.MainFrameMenuBarFactory;
 import openDLX.gui.menubar.StateValidator;
@@ -70,7 +80,17 @@ public class MainFrame extends JFrame implements ActionListener, ItemListener
     private Simulator simulator = null;
     private UndoManager undoMgr;
     private EditorFrame editor;
-    private JDesktopPane desktop;
+    private JPanel desktop;
+    
+    
+    private JPanel EditorFrameContainer;
+    private JPanel StatisticsFrameContainer;
+    private JPanel CodeFrameContainer;
+    private JPanel MemoryFrameContainer;
+    private JPanel RegisterFrameContainer;
+    private JPanel ClockCycleFrameContainer;
+    private JPanel LogFrameContainer;
+    
     private boolean updateAllowed = true;
     private int runSpeed = RUN_SPEED_DEFAULT;
     private boolean pause = false;
@@ -121,13 +141,71 @@ public class MainFrame extends JFrame implements ActionListener, ItemListener
         forwardingMenuItem = importantItems.get(MainFrameMenuBarFactory.STRING_MENU_SIMULATOR_FORWARDING);
 
         setMinimumSize(new Dimension(200, 200));
-        desktop = new JDesktopPane();
+        desktop = new JPanel();
+        desktop.setLayout(new BoxLayout(desktop, BoxLayout.X_AXIS));
         desktop.setBackground(Color.WHITE);
         setContentPane(desktop);
 
-        editor = EditorFrame.getInstance(this);
+        
+	   EditorFrameContainer = new JPanel();
+	   EditorFrameContainer.setBorder(new LineBorder(Color.black));
+	   EditorFrameContainer.setLayout(new BoxLayout(EditorFrameContainer,BoxLayout.Y_AXIS));
+	   
+	   StatisticsFrameContainer = new JPanel();
+	   StatisticsFrameContainer.setBorder(new LineBorder(Color.black));
+	   StatisticsFrameContainer.setLayout(new BoxLayout(StatisticsFrameContainer,BoxLayout.Y_AXIS));
+	   
+	   CodeFrameContainer = new JPanel();
+	   CodeFrameContainer.setBorder(new LineBorder(Color.black));
+	   CodeFrameContainer.setLayout(new BoxLayout(CodeFrameContainer,BoxLayout.Y_AXIS));
+	   
+	   MemoryFrameContainer = new JPanel();
+	   MemoryFrameContainer.setBorder(new LineBorder(Color.black));
+	   MemoryFrameContainer.setLayout(new BoxLayout(MemoryFrameContainer,BoxLayout.Y_AXIS));
+	   
+	   RegisterFrameContainer = new JPanel();
+	   RegisterFrameContainer.setBorder(new LineBorder(Color.black));
+	   RegisterFrameContainer.setLayout(new BoxLayout(RegisterFrameContainer,BoxLayout.Y_AXIS));
+	   
+	   ClockCycleFrameContainer = new JPanel();
+	   ClockCycleFrameContainer.setBorder(new LineBorder(Color.black));
+	   ClockCycleFrameContainer.setLayout(new BoxLayout(ClockCycleFrameContainer,BoxLayout.Y_AXIS));
+	   
+	   LogFrameContainer = new JPanel();
+	   LogFrameContainer.setBorder(new LineBorder(Color.black));
+	   LogFrameContainer.setLayout(new BoxLayout(LogFrameContainer,BoxLayout.Y_AXIS));
+	   
+       JPanel leftSection = new JPanel();
+       JPanel leftSectionLower = new JPanel();
+       leftSectionLower.setLayout(new BoxLayout(leftSectionLower, BoxLayout.Y_AXIS));
+       BoxLayout b = new BoxLayout(leftSectionLower, BoxLayout.Y_AXIS);
+  
+       leftSection.setLayout(new BoxLayout(leftSection, BoxLayout.Y_AXIS));
+       leftSection.add(EditorFrameContainer);
+       leftSection.add(leftSectionLower);
+       leftSectionLower.add(StatisticsFrameContainer);
+       leftSectionLower.add(LogFrameContainer);
+       
+       leftSection.setBackground(Color.RED);
+       
+       leftSectionLower.setBackground(Color.green);
+       
+       JPanel rightSection = new JPanel();
+       JPanel rightSectionUpper = new JPanel();
+       rightSection.setLayout(new BoxLayout(rightSection, BoxLayout.Y_AXIS));
+       rightSectionUpper.setLayout(new BoxLayout(rightSectionUpper, BoxLayout.X_AXIS));
+       rightSection.add(rightSectionUpper);
+       rightSection.add(ClockCycleFrameContainer);
+       rightSectionUpper.add(CodeFrameContainer);
+       rightSectionUpper.add(RegisterFrameContainer);
+       rightSectionUpper.add(MemoryFrameContainer);
+       
+       desktop.add(leftSection);
+       desktop.add(rightSection);
+       
+       editor = EditorFrame.getInstance(this);
         editor.setUndoManager(undoMgr);
-        desktop.add(editor);
+        EditorFrameContainer.add(editor);
 
         output = Output.getInstance(mf);
         input = Input.getInstance(mf);
@@ -137,15 +215,8 @@ public class MainFrame extends JFrame implements ActionListener, ItemListener
         setExtendedState(MAXIMIZED_BOTH);
         setVisible(true);
 
-        /// select editor frame
-        try
-        {
-            editor.setSelected(true);
-        } catch (PropertyVetoException e1)
-        {
-            e1.printStackTrace();
-        }
-
+       
+       
         setOpenDLXSimState(OpenDLXSimState.IDLE);
         pexHandler = new PipelineExceptionHandler(this);
 
@@ -170,9 +241,19 @@ public class MainFrame extends JFrame implements ActionListener, ItemListener
         return simulator;
     }
 
-    public JInternalFrame[] getinternalFrames()
+    public JPanel[] getinternalFrames()
     {
-        return desktop.getAllFrames();
+    	
+    	JPanel[] panes = new JPanel[100];
+    	panes[0] = (JPanel) EditorFrameContainer.getComponent(0);
+    	panes[1] = (JPanel) StatisticsFrameContainer.getComponent(0);
+    	panes[2] = (JPanel) CodeFrameContainer.getComponent(0);
+    	panes[3] = (JPanel) MemoryFrameContainer.getComponent(0);
+    	panes[4] = (JPanel) RegisterFrameContainer.getComponent(0);
+    	panes[5] = (JPanel) ClockCycleFrameContainer.getComponent(0);
+    	panes[6] = (JPanel) LogFrameContainer.getComponent(0);
+  
+        return panes;
     }
 
     public void setSimulator(Simulator openDLXSim)
@@ -218,10 +299,34 @@ public class MainFrame extends JFrame implements ActionListener, ItemListener
         this.updateAllowed = updateAllowed;
     }
 
-    public void addInternalFrame(OpenDLXSimInternalFrame mif)
+    public void addInternalFrame(RiscVFrame mif)
     {
-        desktop.add(mif);
+        if (mif instanceof ClockCycleFrame) {
+        	ClockCycleFrameContainer.add(mif);
+        	return;
+        }
+        if (mif instanceof CodeFrame) {
+        	CodeFrameContainer.add(mif);
+        	return;
+        }
+        if (mif instanceof LogFrame) {
+        	LogFrameContainer.add(mif);
+        	return;
+        }
+        if (mif instanceof MemoryFrame) {
+        	MemoryFrameContainer.add(mif);
+        	return;
+        }
+        if (mif instanceof RegisterFrame) {
+        	RegisterFrameContainer.add(mif);
+        	return;
+        }
+        if (mif instanceof StatisticsFrame) {
+        	StatisticsFrameContainer.add(mif);
+        	return;
+        }
     }
+   
 
     public String getEditorText()
     {

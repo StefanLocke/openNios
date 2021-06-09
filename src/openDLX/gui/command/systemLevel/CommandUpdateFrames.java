@@ -23,9 +23,11 @@ package openDLX.gui.command.systemLevel;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 import openDLX.gui.MainFrame;
 import openDLX.gui.command.Command;
-import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
+import openDLX.gui.internalframes.RiscVFrame;
 
 public class CommandUpdateFrames implements Command
 {
@@ -42,12 +44,12 @@ public class CommandUpdateFrames implements Command
     {
         try
         {
-            for (JInternalFrame internalFrame : mf.getinternalFrames())
+            for (JPanel internalFrame : mf.getinternalFrames())
             {
-                if (internalFrame instanceof OpenDLXSimInternalFrame)
+                if (internalFrame instanceof RiscVFrame)
                 {
-                    ((OpenDLXSimInternalFrame) internalFrame).update();
-                    ((OpenDLXSimInternalFrame) internalFrame).repaint();
+                    ((RiscVFrame) internalFrame).update();
+                    ((RiscVFrame) internalFrame).repaint();
                 }
             }
         }

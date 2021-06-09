@@ -54,11 +54,11 @@ import openDLX.gui.command.userLevel.CommandPerformEditorUndo;
 import openDLX.gui.command.userLevel.CommandRunFromEditor;
 import openDLX.gui.command.userLevel.CommandSave;
 import openDLX.gui.internalframes.FrameConfiguration;
-import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
+import openDLX.gui.internalframes.RiscVFrame;
 import openDLX.gui.internalframes.factories.InternalFrameFactory;
 
 @SuppressWarnings("serial")
-public final class EditorFrame extends OpenDLXSimInternalFrame implements ActionListener, KeyListener, UndoableEditListener
+public final class EditorFrame extends RiscVFrame implements ActionListener, KeyListener, UndoableEditListener
 {
     //the editor frame is a singleton
     
@@ -109,8 +109,6 @@ public final class EditorFrame extends OpenDLXSimInternalFrame implements Action
         if (instance == null)
         {
             instance = new EditorFrame(InternalFrameFactory.getFrameName(EditorFrame.class), mf);
-            FrameConfiguration fc = new FrameConfiguration(instance);
-            fc.loadFrameConfiguration();
         }
         return instance;
     }
@@ -229,7 +227,6 @@ public final class EditorFrame extends OpenDLXSimInternalFrame implements Action
         
         
         setPreferredSize(new Dimension(size_x, size_y));
-        pack();
         setVisible(true);
     }
 
@@ -347,14 +344,7 @@ public final class EditorFrame extends OpenDLXSimInternalFrame implements Action
     
     private void updateTitle()
     {
-        if(!isTextSaved())
-        {
-            setTitle("*"+editor_frame_title);
-        }
-        else
-        {
-            setTitle(editor_frame_title);
-        }
+        
     }
 
     public void setUndoManager(UndoManager UndoMgr) 

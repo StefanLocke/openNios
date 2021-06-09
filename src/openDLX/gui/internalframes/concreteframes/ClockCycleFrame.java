@@ -40,14 +40,14 @@ import alternateSimulator.CycleDescription;
 import alternateSimulator.Simulator;
 import openDLX.gui.GUI_CONST;
 import openDLX.gui.MainFrame;
-import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
+import openDLX.gui.internalframes.RiscVFrame;
 import openDLX.gui.internalframes.renderer.ClockCycleFrameTableCellRenderer;
 import openDLX.gui.internalframes.util.NotSelectableTableModel;
 import openDLX.util.ClockCycleLog;
 import riscvSimulator.InstructionRiscV;
 
 @SuppressWarnings("serial")
-public final class ClockCycleFrame extends OpenDLXSimInternalFrame implements GUI_CONST
+public final class ClockCycleFrame extends RiscVFrame implements GUI_CONST
 {
 
     private final Simulator simulator;
@@ -246,7 +246,6 @@ public final class ClockCycleFrame extends OpenDLXSimInternalFrame implements GU
         add(codeScrollPane, BorderLayout.WEST);
         add(cycleScrollPane, BorderLayout.WEST);
         add(clockCycleScrollPane, BorderLayout.CENTER);
-        pack();
         setVisible(true);
 
     }
@@ -361,7 +360,6 @@ public final class ClockCycleFrame extends OpenDLXSimInternalFrame implements GU
     public void clean()
     {
         setVisible(false);
-        dispose();
     }
 
 

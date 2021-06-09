@@ -22,6 +22,7 @@
 package openDLX.gui.internalframes.concreteframes;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -30,14 +31,14 @@ import javax.swing.JTable;
 import openDLX.config.ArchCfg;
 import openDLX.gui.MainFrame;
 import openDLX.gui.Preference;
-import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
+import openDLX.gui.internalframes.RiscVFrame;
 import openDLX.gui.internalframes.factories.tableFactories.RegisterTableFactory;
 import openDLX.gui.internalframes.util.TableSizeCalculator;
 import riscvSimulator.RegisterFileRiscV;
 import riscvSimulator.values.RiscVValue32;
 
 @SuppressWarnings("serial")
-public final class RegisterFrame extends OpenDLXSimInternalFrame
+public final class RegisterFrame extends RiscVFrame
 {
 
     private RegisterFileRiscV rs;
@@ -47,6 +48,7 @@ public final class RegisterFrame extends OpenDLXSimInternalFrame
     {
         super(title, false);
         this.rs = MainFrame.getInstance().getSimulator().getRegisterFile();
+        this.setBackground(Color.RED);
         initialize();
     }
 
@@ -75,12 +77,13 @@ public final class RegisterFrame extends OpenDLXSimInternalFrame
         JScrollPane scrollpane = new JScrollPane(registerTable);
         scrollpane.setFocusable(false);
         registerTable.setFillsViewportHeight(true);
+        
         TableSizeCalculator.setDefaultMaxTableSize(scrollpane, registerTable,
                 TableSizeCalculator.SET_SIZE_BOTH);
         //config internal frame
         setLayout(new BorderLayout());
+        this.setPreferredSize(scrollpane.getPreferredSize());
         add(scrollpane, BorderLayout.CENTER);
-        pack();
         setVisible(true);
     }
 
@@ -88,7 +91,6 @@ public final class RegisterFrame extends OpenDLXSimInternalFrame
     public void clean()
     {
         setVisible(false);
-        dispose();
     }
 
 }

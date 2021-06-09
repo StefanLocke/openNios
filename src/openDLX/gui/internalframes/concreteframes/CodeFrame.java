@@ -30,14 +30,14 @@ import javax.swing.table.TableModel;
 
 import alternateSimulator.Simulator;
 import openDLX.gui.MainFrame;
-import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
+import openDLX.gui.internalframes.RiscVFrame;
 import openDLX.gui.internalframes.factories.tableFactories.CodeTableFactory;
 import openDLX.gui.internalframes.util.TableSizeCalculator;
 import riscvSimulator.steps.ExecuteRiscV;
 import riscvSimulator.steps.MemoryRiscV;
 
 @SuppressWarnings("serial")
-public final class CodeFrame extends OpenDLXSimInternalFrame
+public final class CodeFrame extends RiscVFrame
 {
 
     private final Simulator simulator;
@@ -118,7 +118,7 @@ public final class CodeFrame extends OpenDLXSimInternalFrame
         //config internal frame
         setLayout(new BorderLayout());
         add(scrollpane, BorderLayout.CENTER);
-        pack();
+        this.setPreferredSize(scrollpane.getSize());
         setVisible(true);
     }
 
@@ -126,7 +126,6 @@ public final class CodeFrame extends OpenDLXSimInternalFrame
     public void clean()
     {
         setVisible(false);
-        dispose();
     }
 
 }

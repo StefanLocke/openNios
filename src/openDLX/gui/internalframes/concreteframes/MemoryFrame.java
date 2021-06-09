@@ -40,14 +40,14 @@ import javax.swing.table.TableModel;
 import openDLX.gui.MainFrame;
 import openDLX.gui.Preference;
 import openDLX.gui.command.systemLevel.CommandLoadFrameConfigurationSysLevel;
-import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
+import openDLX.gui.internalframes.RiscVFrame;
 import openDLX.gui.internalframes.factories.InternalFrameFactory;
 import openDLX.gui.internalframes.factories.tableFactories.MemoryTableFactory;
 import openDLX.gui.internalframes.util.TableSizeCalculator;
 import openDLX.gui.internalframes.util.ValueInput;
 
 @SuppressWarnings("serial")
-public final class MemoryFrame extends OpenDLXSimInternalFrame implements ActionListener, KeyListener, FocusListener
+public final class MemoryFrame extends RiscVFrame implements ActionListener, KeyListener, FocusListener
 {
 
     //tables, scrollpane and table models
@@ -125,7 +125,6 @@ public final class MemoryFrame extends OpenDLXSimInternalFrame implements Action
         reload.addActionListener(this);
         controlPanel.add(reload);
         add(controlPanel, BorderLayout.SOUTH);
-        pack();
         setVisible(true);
     }
 
@@ -133,7 +132,6 @@ public final class MemoryFrame extends OpenDLXSimInternalFrame implements Action
     public void clean()
     {
         setVisible(false);
-        dispose();
     }
 
     @Override

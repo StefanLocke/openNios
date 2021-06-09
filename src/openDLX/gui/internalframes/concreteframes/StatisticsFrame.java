@@ -23,11 +23,11 @@ package openDLX.gui.internalframes.concreteframes;
 
 import java.awt.Dimension;
 import javax.swing.JTextArea;
-import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
+import openDLX.gui.internalframes.RiscVFrame;
 import openDLX.util.Statistics;
 
 @SuppressWarnings("serial")
-public final class StatisticsFrame extends OpenDLXSimInternalFrame
+public final class StatisticsFrame extends RiscVFrame
 {
 
     private JTextArea statArea;
@@ -38,9 +38,7 @@ public final class StatisticsFrame extends OpenDLXSimInternalFrame
         super.initialize();
         statArea = new JTextArea();
         statArea.setEditable(false);
-        statArea.setPreferredSize(new Dimension(200, 200));
         add(statArea);
-        pack();
         setVisible(true);
 
     }
@@ -55,7 +53,6 @@ public final class StatisticsFrame extends OpenDLXSimInternalFrame
     public void clean()
     {
         setVisible(false);
-        dispose();
     }
 
 }

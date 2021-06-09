@@ -44,39 +44,7 @@ public class CommandChangeWindowVisibility implements Command
     @Override
     public void execute()
     {
-        for (JInternalFrame internalFrame : mf.getinternalFrames())
-        {
-            if (internalFrame.getTitle().equals(internalFrameMenuItem.getName()))
-            {
-                if (internalFrame.isIcon())
-                {
-                    try {
-                        internalFrame.setIcon(false);
-                    } catch (PropertyVetoException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (internalFrame.isClosed() || !internalFrame.isVisible() ||
-                        !internalFrame.isEnabled())
-                {
-                    internalFrame.setVisible(true);
-                }
-                internalFrame.moveToFront();
-
-                try
-                {
-                    internalFrame.setSelected(true);
-                }
-                catch (PropertyVetoException e)
-                {
-                    e.printStackTrace();
-                }
-
-                /* // if users closes or opens frame - should it be a preference automatically ?
-                 new FrameConfiguration(internalFrame).saveFrameConfiguration();*/
-                break;
-            }
-        }
+       
     }
 
 }
