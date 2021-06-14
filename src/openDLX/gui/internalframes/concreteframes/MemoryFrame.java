@@ -78,7 +78,7 @@ public final class MemoryFrame extends OpenDLXSimInternalFrame implements Action
             
             for (int i = 0; i < model.getRowCount(); ++i)
 			{
-            	int uint_val = (int) MainFrame.getInstance().getSimulator().getMemory().loadWord(Long.decode(startAddrString) + i*4).getUnsignedValue();
+            	int uint_val = (int) MainFrame.getInstance().getSimulator().getMemory().loadWord(Long.decode(startAddrString) + i*4,false).getUnsignedValue();
             	
 			    Object value;
 			    if (Preference.displayMemoryAsHex())

@@ -63,7 +63,7 @@ public class MemoryTableFactory extends TableFactory
 
         for (long i = 0; i < rows; ++i)
 		{
-        	RiscVValue32 value = simulator.getMemory().loadWord(startAddr + i * 4);
+        	RiscVValue32 value = simulator.getMemory().loadWord(startAddr + i * 4,false);
 
 		    final Object secondItem;
 		    if (Preference.displayMemoryAsHex())

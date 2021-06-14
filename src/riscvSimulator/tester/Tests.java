@@ -360,7 +360,7 @@ class Tests {
 	private void doSteps(TestInstruction instruction) {
 		System.out.println("\n\n\n");
 		System.out.println("Test  :");
-		memory.setWord(0, new RiscVValue32(instruction.getBinary()));
+		memory.storeWord(0, new RiscVValue32(instruction.getBinary()),false);
 		FetchRiscV fetch = new FetchRiscV(registers, memory, true);
 		fetch.doFetch(0);
 		InstructionRiscV currentI = fetch.getCurrentInstruction();

@@ -88,7 +88,7 @@ public class ElfFileParser {
 				destination = addressOfSection;
 				registers.setPC(new RiscVValue32(addressOfSection));
 				for (long byteNumber=startOfTextSection; byteNumber<startOfTextSection+sizeOfSection; byteNumber++){
-					memory.set((int)destination, new RiscVValue8(toUnsignedChar(elfBytes[(int) byteNumber])));
+					memory.storeByte((int)destination, new RiscVValue8(toUnsignedChar(elfBytes[(int) byteNumber])), false);
 					destination++;
 				}
 				
@@ -128,7 +128,7 @@ public class ElfFileParser {
 				System.out.println("data address : " + Long.toHexString(addressOfSection));
 				destination = addressOfSection;
 				for (long byteNumber=startOfTextSection; byteNumber<startOfTextSection+sizeOfSection; byteNumber++){
-					memory.set((int)destination, new RiscVValue8(toUnsignedChar(elfBytes[(int) byteNumber])));
+					memory.storeByte((int)destination, new RiscVValue8(toUnsignedChar(elfBytes[(int) byteNumber])), false);
 					destination++;
 				}
 			}

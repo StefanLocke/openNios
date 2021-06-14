@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import riscvSimulator.InstructionRiscV;
 import riscvSimulator.RegisterFileRiscV;
 import riscvSimulator.RiscVMemory;
+import riscvSimulator.values.RiscVValue32;
 
 public class MemoryRiscV {
 	private RegisterFileRiscV registers;
@@ -26,14 +27,13 @@ public class MemoryRiscV {
 					case store :
 						switch (currentInstruction.getFunc()) {
 						case sb :
-							System.err.println("Operation not implemented in memory stage !");
+							memory.storeByte(currentInstruction.getAluResult().getUnsignedValue(), currentInstruction.getValueToStore(), true);
 							break;
 						case sh :
-							System.err.println("Operation not implemented in memory stage !");
+							memory.storeHalf(currentInstruction.getAluResult().getUnsignedValue(), currentInstruction.getValueToStore(), true);
 							break;
 						case sw :
-							System.out.println("writing to " + Long.toHexString(currentInstruction.getAluResult().getUnsignedValue()));
-							memory.setWord(currentInstruction.getAluResult().getUnsignedValue(), currentInstruction.getValueToStore());
+							memory.storeWord(currentInstruction.getAluResult().getUnsignedValue(), currentInstruction.getValueToStore(),true);
 							break;
 						default:
 							break;
@@ -42,13 +42,13 @@ public class MemoryRiscV {
 					case load :
 						switch (currentInstruction.getFunc()) {
 						case lb :
-							System.err.println("Operation not implemented in memory stage !");
+							currentInstruction.setAluResult(new RiscVValue32(memory.loadByte(currentInstruction.getAluResult().getUnsignedValue(), true).getUnsignedValue()));
 							break;
 						case lh :
-							currentInstruction.setAluResult(memory.loadHalf(currentInstruction.getAluResult().getUnsignedValue()));
+							currentInstruction.setAluResult(new RiscVValue32(memory.loadHalf(currentInstruction.getAluResult().getUnsignedValue(), true).getUnsignedValue()));
 							break;
 						case lw :
-							currentInstruction.setAluResult(memory.loadWord(currentInstruction.getAluResult().getUnsignedValue()));
+							currentInstruction.setAluResult(memory.loadWord(currentInstruction.getAluResult().getUnsignedValue(),true));
 							break;
 						case lbu :
 							System.err.println("Operation not implemented in memory stage !");

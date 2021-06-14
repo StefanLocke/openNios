@@ -35,6 +35,7 @@ public class CommandStartExecuting implements Command
 
     public CommandStartExecuting(MainFrame mf, String[] intFrameOrder)
     {
+    	
         this.mf = mf;
         this.intFrameOrder = intFrameOrder;
     }

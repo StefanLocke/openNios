@@ -67,8 +67,8 @@ public class RiscVValue12 extends RiscVValue{
 	         else
 	             r = new RiscVValue32(value);
 			
-			System.out.println("Converting " + value + " to " + getSignedValue());
-			System.out.println("Converted signed :" + Long.toHexString(r.getSignedValue()) + " or unSigned :" + Long.toHexString(r.getUnsignedValue()));
+			//System.out.println("Converting " + value + " to " + getSignedValue());
+			//System.out.println("Converted signed :" + Long.toHexString(r.getSignedValue()) + " or unSigned :" + Long.toHexString(r.getUnsignedValue()));
 			return r;
 		}
 }

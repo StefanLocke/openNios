@@ -78,7 +78,7 @@ public class CodeTableFactory extends TableFactory
 
         for (long addr = start; addr < end; addr += 4)
 		{
-        	RiscVValue32 instBinary = simulator.getMemory().loadWord(addr);
+        	RiscVValue32 instBinary = simulator.getMemory().loadWord(addr,false);
 		    
         	InstructionRiscV instr = new InstructionRiscV(instBinary.getUnsignedValue(), addr, -1);
 		    

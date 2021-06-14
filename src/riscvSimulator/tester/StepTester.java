@@ -94,7 +94,7 @@ public class StepTester {
 	private void doSteps(TestBinaryInstructions instruction) {
 		System.out.println("\n\n\n");
 		System.out.println("Test -Instructuon :" + instruction.name());
-		memory.setWord(0, new RiscVValue32(instruction.getBinary()));
+		memory.storeWord(0, new RiscVValue32(instruction.getBinary()),false);
 		FetchRiscV fetch = new FetchRiscV(registers, memory, true);
 		fetch.doFetch(0);
 		InstructionRiscV currentI = fetch.getCurrentInstruction();

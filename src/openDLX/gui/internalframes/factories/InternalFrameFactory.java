@@ -26,6 +26,7 @@ import java.util.Hashtable;
 
 import openDLX.gui.MainFrame;
 import openDLX.gui.command.systemLevel.CommandLoadFrameConfigurationSysLevel;
+import openDLX.gui.internalframes.concreteframes.CacheFrame;
 import openDLX.gui.internalframes.concreteframes.ClockCycleFrame;
 import openDLX.gui.internalframes.concreteframes.CodeFrame;
 import openDLX.gui.internalframes.concreteframes.LogFrame;
@@ -48,6 +49,7 @@ public class InternalFrameFactory
     private static final String FRAME_NAME_STATS = "statistics";
     private static final String FRAME_NAME_LOG = "log";
     private static final String FRAME_NAME_CLOCKCYCLE = "cycles and pipeline";
+    private static final String FRAME_NAME_CACHE = "Cache";
     private MainFrame mf;
 
     static
@@ -60,6 +62,7 @@ public class InternalFrameFactory
         frameNames.put(StatisticsFrame.class, FRAME_NAME_STATS);
         frameNames.put(LogFrame.class, FRAME_NAME_LOG);
         frameNames.put(ClockCycleFrame.class, FRAME_NAME_CLOCKCYCLE);
+        frameNames.put(CacheFrame.class, FRAME_NAME_CACHE);
     }
 
     public static InternalFrameFactory getInstance()
@@ -104,6 +107,8 @@ public class InternalFrameFactory
                 createMemoryFrame(mf);
             else if (s.equals(FRAME_NAME_CLOCKCYCLE))
                 createClockCycleFrame();
+            else if (s.equals(FRAME_NAME_CACHE))
+                createCacheFrame();
         }
 
         new CommandLoadFrameConfigurationSysLevel(mf).execute();
@@ -148,4 +153,9 @@ public class InternalFrameFactory
         ClockCycleFrame ccf = new ClockCycleFrame(frameNames.get(ClockCycleFrame.class));
         mf.addInternalFrame(ccf);
     }
+     private void createCacheFrame()
+     {
+         CacheFrame cf = new CacheFrame(frameNames.get(CacheFrame.class));
+         mf.addInternalFrame(cf);
+     }
 }

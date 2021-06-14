@@ -96,7 +96,9 @@ public class Simulator{
             {
                 try
                 {
+                	
                     step();
+                   
                 }
                 catch (PipelineException e)
                 {
@@ -188,7 +190,7 @@ public class Simulator{
         {
             if (clock_cycle < sim_cycles && !caught_break)
             {
-
+         
             	//We store the current fetched instruction number to detect stall
             	long numberFetchedInstrBefore = this.numberFetch;
             	//We perform the cycle in the pipeline
@@ -210,7 +212,8 @@ public class Simulator{
                 	cycleDescription.setStall(true);
 
 
-                gui.addCycleLog(cycleDescription);            	
+                gui.addCycleLog(cycleDescription);         
+                
             }
             else if (caught_break)
             {

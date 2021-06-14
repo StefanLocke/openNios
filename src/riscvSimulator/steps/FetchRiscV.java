@@ -22,7 +22,7 @@ public class FetchRiscV {
 	}
 	
 	public void doFetch(long cycleNumber){
-		long binaryInstruction = this.memory.loadWord(this.registers.getPC().getUnsignedValue()).getUnsignedValue();
+		long binaryInstruction = this.memory.loadWord(this.registers.getPC().getUnsignedValue(),false).getUnsignedValue();
 
 		this.currentInstruction = new InstructionRiscV(binaryInstruction, this.registers.getPC().getUnsignedValue(), cycleNumber);
 

@@ -63,6 +63,7 @@ import openDLX.gui.command.userLevel.CommandSetLaF;
 import openDLX.gui.command.userLevel.CommandShowAbout;
 import openDLX.gui.command.userLevel.CommandShowOptionDialog;
 import openDLX.gui.command.userLevel.CommandStopRunning;
+import openDLX.gui.internalframes.concreteframes.CacheFrame;
 import openDLX.gui.internalframes.concreteframes.ClockCycleFrame;
 import openDLX.gui.internalframes.concreteframes.CodeFrame;
 import openDLX.gui.internalframes.concreteframes.LogFrame;
@@ -133,6 +134,8 @@ public class MainFrameMenuBarFactory
     private static final String STRING_MENU_WINDOW_DISPLAY_CC = "Display Clock Cycle Diagram";
     private static final String STRING_MENU_WINDOW_DISPLAY_STATS = "Display Statistics";
     private static final String STRING_MENU_WINDOW_DISPLAY_MEM = "Display Memory";
+    private static final String STRING_MENU_WINDOW_DISPLAY_CACHE= "Display Cache";
+
 
     private static final KeyStroke KEY_MENU_WINDOW_SAVE = null;
     private static final KeyStroke KEY_MENU_WINDOW_LOAD = null;
@@ -144,6 +147,7 @@ public class MainFrameMenuBarFactory
     private static final KeyStroke KEY_MENU_WINDOW_DISPLAY_CC = null;
     private static final KeyStroke KEY_MENU_WINDOW_DISPLAY_STATS = null;
     private static final KeyStroke KEY_MENU_WINDOW_DISPLAY_MEM = null;
+    private static final KeyStroke KEY_MENU_WINDOW_DISPLAY_CACHE = null;
 
     private static final String STRING_MENU_HELP_TOOLTIPS = "Display Tooltips";
     // currently unused:
@@ -299,6 +303,11 @@ public class MainFrameMenuBarFactory
 
         name = InternalFrameFactory.getFrameName(MemoryFrame.class);
         frame_item = addMenuItem(windowMenu, STRING_MENU_WINDOW_DISPLAY_MEM, KEY_MENU_WINDOW_DISPLAY_MEM, StateValidator.executingOrRunningStates);
+        frame_item.setName(name);
+        EventCommandLookUp.put(frame_item, new CommandChangeWindowVisibility(frame_item, mf));
+        
+        name = InternalFrameFactory.getFrameName(CacheFrame.class);
+        frame_item = addMenuItem(windowMenu, STRING_MENU_WINDOW_DISPLAY_CACHE, KEY_MENU_WINDOW_DISPLAY_CACHE, StateValidator.executingOrRunningStates);
         frame_item.setName(name);
         EventCommandLookUp.put(frame_item, new CommandChangeWindowVisibility(frame_item, mf));
     }

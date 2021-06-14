@@ -55,7 +55,7 @@ public class CommandChangeMemory implements Command
                 Integer value = ValueInput.getValue("change memory cell value", 0);
                 if (value != null)
                 {
-                    simulator.getMemory().setWord(address, new RiscVValue32(value));
+                    simulator.getMemory().storeWord(address, new RiscVValue32(value),false);
                     new CommandUpdateFrames(mf).execute();
                 }
             }
