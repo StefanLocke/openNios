@@ -31,6 +31,6 @@ public class RegisterFileRiscV {
 	}
 	
 	public void set(int place, RiscVValue32 value){
-		this.registers.put(place, value);
+		this.registers.put(place,value);
 	}
 }

@@ -53,7 +53,7 @@ public final class MemoryFrame extends OpenDLXSimInternalFrame implements Action
     //tables, scrollpane and table models
     private JTable memoryTable;
     private JButton reload;
-    private static int rows = 100, startAddr = 0;
+    public static int rows = 100, startAddr = 0;
     private JTextField rowInput;
     private JTextField addrInput;
     private JLabel rowLabel;

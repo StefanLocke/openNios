@@ -17,6 +17,16 @@ public class RiscVALU {
 		return new RiscVValue32(a.getSignedValue() * b.getSignedValue());
 	}
 	
+	public static RiscVValue32 mulUpper(RiscVValue32 a, RiscVValue32 b) {
+		return new RiscVValue32((a.getSignedValue() * b.getSignedValue()) >> 32);
+	}
+	public static RiscVValue32 mulUpperSignedOnUnsigned(RiscVValue32 a, RiscVValue32 b) {
+		return new RiscVValue32((a.getSignedValue() * b.getUnsignedValue()) >> 32);
+	}
+	public static RiscVValue32 mulUpperUnsigned(RiscVValue32 a, RiscVValue32 b) {
+		return new RiscVValue32((a.getUnsignedValue() * b.getUnsignedValue()) >> 32);
+	}
+	
 	public static RiscVValue32 div(RiscVValue32 a, RiscVValue32 b) {
 		return new RiscVValue32(a.getSignedValue() / b.getSignedValue());
 	}
@@ -35,9 +45,9 @@ public class RiscVALU {
 		long binToShift = a.getUnsignedValue();
 		System.out.println(String.format("%1$016x",binToShift));
 		binToShift = binToShift << b.getUnsignedValue();
-		binToShift = binToShift & 0xfffffffel;
+		//binToShift = binToShift & 0xfffffffel;
 		System.out.println(String.format("%1$016x",binToShift));
-		System.out.println(Long.toBinaryString(binToShift));
+
 		return new RiscVValue32(binToShift);
 	}
 	
@@ -45,9 +55,8 @@ public class RiscVALU {
 		long binToShift =  a.getUnsignedValue();
 		System.out.println(String.format("%1$016x",binToShift));
 		binToShift = binToShift >> b.getUnsignedValue();
-		binToShift = binToShift & 0x7fffffff;
+		//binToShift = binToShift & 0x7fffffff;
 		System.out.println(String.format("%1$016x",binToShift));
-		System.out.println(Long.toBinaryString(binToShift));
 		return new RiscVValue32(binToShift);
 	}
 	
@@ -76,6 +85,17 @@ public class RiscVALU {
 	public static RiscVValue32 addUpperImmediateToPc(RiscVValue32 a,RiscVValue32 pc) {
 		
 		return new RiscVValue32((0 | (a.getUnsignedValue() << 12)) + pc.getSignedValue());
+	}
+	
+	public static RiscVValue32 setLessThan(RiscVValue32 a,RiscVValue32 b) {
+		if (a.getSignedValue() < b.getSignedValue())
+			return new RiscVValue32(1);
+		return new RiscVValue32(0);
+	}
+	public static RiscVValue32 setLessThanUnsigned(RiscVValue32 a,RiscVValue32 b) {
+		if (a.getUnsignedValue() < b.getUnsignedValue())
+			return new RiscVValue32(1);
+		return new RiscVValue32(0);
 	}
 	
 	public static RiscVValue32 setLessThanImmediate(RiscVValue32 a,RiscVValue32 b) {

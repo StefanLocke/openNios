@@ -34,10 +34,10 @@ public class ExecuteRiscV {
 					currentInstruction.setAluResult(RiscVALU.shiftLeftLogical(currentInstruction.getValueA(), currentInstruction.getValueB()));
 					break;
 				case slt :
-					System.out.println("Execute - "+ currentInstruction.getFunc() + "is not yet implemented.");
+					currentInstruction.setAluResult(RiscVALU.setLessThan(currentInstruction.getValueA(),currentInstruction.getValueB()));
 					break;
 				case sltu :
-					System.out.println("Execute - "+ currentInstruction.getFunc() + "is not yet implemented.");
+					currentInstruction.setAluResult(RiscVALU.setLessThanUnsigned(currentInstruction.getValueA(),currentInstruction.getValueB()));
 					break;
 				case srl :
 					currentInstruction.setAluResult(RiscVALU.shiftRightLogical(currentInstruction.getValueA(),currentInstruction.getValueB()));
@@ -58,13 +58,13 @@ public class ExecuteRiscV {
 					currentInstruction.setAluResult(RiscVALU.mul(currentInstruction.getValueA(), currentInstruction.getValueB()));
 					break;
 				case mulh ://Mul of 2 signed 32 bits and places the upper 32 bits in the register
-					System.out.println("Execute - "+ currentInstruction.getFunc() + "is not yet implemented.");
+					currentInstruction.setAluResult(RiscVALU.mulUpper(currentInstruction.getValueA(), currentInstruction.getValueB()));
 					break;
 				case mulhsu ://Mul of a  signed  and unsigned 32 bits and places the upper 32 bits in the register
-					System.out.println("Execute - "+ currentInstruction.getFunc() + "is not yet implemented.");
+					currentInstruction.setAluResult(RiscVALU.mulUpperSignedOnUnsigned(currentInstruction.getValueA(), currentInstruction.getValueB()));
 					break;
 				case mulhu ://Mul of 2 unsigned 32 bits and places the upper 32 bits in the register
-					System.out.println("Execute - "+ currentInstruction.getFunc() + "is not yet implemented.");
+					currentInstruction.setAluResult(RiscVALU.mulUpperUnsigned(currentInstruction.getValueA(), currentInstruction.getValueB()));
 					break;
 				case div ://div of 2 signed 32 bits
 					currentInstruction.setAluResult(RiscVALU.div(currentInstruction.getValueA(), currentInstruction.getValueB()));

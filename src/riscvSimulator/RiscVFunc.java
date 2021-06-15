@@ -34,10 +34,10 @@ public enum RiscVFunc {
 	sll(RiscVOpCode.op,0b0000000,0b001),
 	slt(RiscVOpCode.op,0b0000000,0b010),
 	sltu(RiscVOpCode.op,0b0000000,0b011),
-	xor(RiscVOpCode.op,0b0000000,0b100),
 	srl(RiscVOpCode.op,0b0000000,0b101),
 	sra(RiscVOpCode.op,0b0100000,0b101),
 	or(RiscVOpCode.op,0b0000000,0b110),
+	xor(RiscVOpCode.op,0b0000000,0b100),
 	and(RiscVOpCode.op,0b0000000,0b111),
 	
 	mul(RiscVOpCode.op,0b0000001,0b000),

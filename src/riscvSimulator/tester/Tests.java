@@ -214,17 +214,413 @@ class Tests {
 		long rs2 = currentBinary.getBits(5,20);
 		long rs1V = generateRandomBinary(20);
 		long rs2V = generateRandomBinary(20);
-		
 		if (rs2 == rs1) {
 			rs1V = rs2V;
 		}
-		registers.set((int)rs1, new RiscVValue32(rs1V));
-		registers.set((int)rs2, new RiscVValue32(rs2V));
+		RiscVValue32 rs1V32 = new RiscVValue32(rs1V);
+		RiscVValue32 rs2V32 = new RiscVValue32(rs2V);
+		
+		registers.set((int)rs1, rs1V32);
+		registers.set((int)rs2, rs2V32);
 		long rd = currentBinary.getBits(5,7);
 		doSteps(currentBinary);
 		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " Rs2 = " + rs2 +" : " + registers.get((int)rs2).getSignedValue());
 		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
-		assertEquals(rs1V + rs2V , registers.get((int)rd).getSignedValue());
+		assertEquals(rs1V32.getSignedValue() + rs2V32.getSignedValue()  , registers.get((int)rd).getSignedValue());
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestSubSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.sub));
+		long rs1 = currentBinary.getBits(5,15);
+		long rs2 = currentBinary.getBits(5,20);
+		long rs1V = generateRandomBinary(20);
+		long rs2V = generateRandomBinary(20);
+		if (rs2 == rs1) {
+			rs1V = rs2V;
+		}
+		RiscVValue32 rs1V32 = new RiscVValue32(rs1V);
+		RiscVValue32 rs2V32 = new RiscVValue32(rs2V);
+		
+		registers.set((int)rs1, rs1V32);
+		registers.set((int)rs2, rs2V32);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " Rs2 = " + rs2 +" : " + registers.get((int)rs2).getSignedValue());
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		assertEquals(rs1V32.getSignedValue() - rs2V32.getSignedValue() , registers.get((int)rd).getSignedValue());
+	}
+	
+	
+	
+	@RepeatedTest(value = 100)
+	public void autoTestSltSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.slt));
+		long rs1 = currentBinary.getBits(5,15);
+		long rs2 = currentBinary.getBits(5,20);
+		long rs1V = generateRandomBinary(20);
+		long rs2V = generateRandomBinary(20);
+		if (rs2 == rs1) {
+			rs1V = rs2V;
+		}
+		RiscVValue32 rs1V32 = new RiscVValue32(rs1V);
+		RiscVValue32 rs2V32 = new RiscVValue32(rs2V);
+		
+		registers.set((int)rs1, rs1V32);
+		registers.set((int)rs2, rs2V32);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " Rs2 = " + rs2 +" : " + registers.get((int)rs2).getSignedValue());
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(rs1V32.getSignedValue()<rs2V32.getSignedValue()?1:0, registers.get((int)rd).getSignedValue());
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestSltuSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.slt));
+		long rs1 = currentBinary.getBits(5,15);
+		long rs2 = currentBinary.getBits(5,20);
+		long rs1V = generateRandomBinary(20);
+		long rs2V = generateRandomBinary(20);
+		if (rs2 == rs1) {
+			rs1V = rs2V;
+		}
+		RiscVValue32 rs1V32 = new RiscVValue32(rs1V);
+		RiscVValue32 rs2V32 = new RiscVValue32(rs2V);
+		
+		registers.set((int)rs1, rs1V32);
+		registers.set((int)rs2, rs2V32);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " Rs2 = " + rs2 +" : " + registers.get((int)rs2).getSignedValue());
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(rs1V32.getUnsignedValue()<rs2V32.getUnsignedValue()?1:0, registers.get((int)rd).getSignedValue());
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestXorSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.xor));
+		long rs1 = currentBinary.getBits(5,15);
+		long rs2 = currentBinary.getBits(5,20);
+		long rs1V = generateRandomBinary(20);
+		long rs2V = generateRandomBinary(20);
+		if (rs2 == rs1) {
+			rs1V = rs2V;
+		}
+		RiscVValue32 rs1V32 = new RiscVValue32(rs1V);
+		RiscVValue32 rs2V32 = new RiscVValue32(rs2V);
+		
+		registers.set((int)rs1, rs1V32);
+		registers.set((int)rs2, rs2V32);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " Rs2 = " + rs2 +" : " + registers.get((int)rs2).getSignedValue());
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(rs1V32.getUnsignedValue() ^ rs2V32.getUnsignedValue(), registers.get((int)rd).getSignedValue());
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestandSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.and));
+		long rs1 = currentBinary.getBits(5,15);
+		long rs2 = currentBinary.getBits(5,20);
+		long rs1V = generateRandomBinary(20);
+		long rs2V = generateRandomBinary(20);
+		if (rs2 == rs1) {
+			rs1V = rs2V;
+		}
+		RiscVValue32 rs1V32 = new RiscVValue32(rs1V);
+		RiscVValue32 rs2V32 = new RiscVValue32(rs2V);
+		
+		registers.set((int)rs1, rs1V32);
+		registers.set((int)rs2, rs2V32);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " Rs2 = " + rs2 +" : " + registers.get((int)rs2).getSignedValue());
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(rs1V32.getUnsignedValue() & rs2V32.getUnsignedValue(), registers.get((int)rd).getSignedValue());
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestOrSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.or));
+		long rs1 = currentBinary.getBits(5,15);
+		long rs2 = currentBinary.getBits(5,20);
+		long rs1V = generateRandomBinary(20);
+		long rs2V = generateRandomBinary(20);
+		if (rs2 == rs1) {
+			rs1V = rs2V;
+		}
+		RiscVValue32 rs1V32 = new RiscVValue32(rs1V);
+		RiscVValue32 rs2V32 = new RiscVValue32(rs2V);
+		
+		registers.set((int)rs1, rs1V32);
+		registers.set((int)rs2, rs2V32);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " Rs2 = " + rs2 +" : " + registers.get((int)rs2).getSignedValue());
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(rs1V32.getUnsignedValue() | rs2V32.getUnsignedValue(), registers.get((int)rd).getSignedValue());
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestSrlSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.srl));
+		long rs1 = currentBinary.getBits(5,15);
+		long rs2 = currentBinary.getBits(5,20);
+		long rs1V = generateRandomBinary(20);
+		long rs2V = generateRandomBinary(20);
+		if (rs2 == rs1) {
+			rs1V = rs2V;
+		}
+		RiscVValue32 rs1V32 = new RiscVValue32(rs1V);
+		RiscVValue32 rs2V32 = new RiscVValue32(rs2V);
+		
+		registers.set((int)rs1, rs1V32);
+		registers.set((int)rs2, rs2V32);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " Rs2 = " + rs2 +" : " + registers.get((int)rs2).getSignedValue());
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(rs1V32.getUnsignedValue()  >> rs2V32.getUnsignedValue(), registers.get((int)rd).getSignedValue());
+	}
+	@RepeatedTest(value = 100)
+	public void autoTestSllSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.sll));
+		long rs1 = currentBinary.getBits(5,15);
+		long rs2 = currentBinary.getBits(5,20);
+		long rs1V = generateRandomBinary(20);
+		long rs2V = generateRandomBinary(20);
+		if (rs2 == rs1) {
+			rs1V = rs2V;
+		}
+		RiscVValue32 rs1V32 = new RiscVValue32(rs1V);
+		RiscVValue32 rs2V32 = new RiscVValue32(rs2V);
+		
+		registers.set((int)rs1, rs1V32);
+		registers.set((int)rs2, rs2V32);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " Rs2 = " + rs2 +" : " + registers.get((int)rs2).getSignedValue());
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		assertEquals(new RiscVValue32(rs1V32.getUnsignedValue() << rs2V32.getUnsignedValue()).getUnsignedValue()  , registers.get((int)rd).getUnsignedValue());
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestSraSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.sra));
+		long rs1 = currentBinary.getBits(5,15);
+		long rs2 = currentBinary.getBits(5,20);
+		long rs1V = generateRandomBinary(20);
+		long rs2V = generateRandomBinary(20);
+		if (rs2 == rs1) {
+			rs1V = rs2V;
+		}
+		RiscVValue32 rs1V32 = new RiscVValue32(rs1V);
+		RiscVValue32 rs2V32 = new RiscVValue32(rs2V);
+		
+		registers.set((int)rs1, rs1V32);
+		registers.set((int)rs2, rs2V32);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " Rs2 = " + rs2 +" : " + registers.get((int)rs2).getSignedValue());
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(rs1V32.getUnsignedValue() >>> rs2V32.getUnsignedValue(), registers.get((int)rd).getSignedValue());
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestAddiSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.addi));
+		long rs1 = currentBinary.getBits(5,15);
+		RiscVValue32 rs1V = new RiscVValue32(generateRandomBinary(16));
+		RiscVValue32  immValue = new RiscVValue12(currentBinary.getBits(12, 20)).toValue32();
+		registers.set((int)rs1, rs1V);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " imm = " + immValue );
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(rs1V.getSignedValue() + immValue.getSignedValue(), registers.get((int)rd).getSignedValue());
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestSlliSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.slli));
+		long rs1 = currentBinary.getBits(5,15);
+		RiscVValue32 rs1V = new RiscVValue32(generateRandomBinary(16));
+		RiscVValue32  immValue = new RiscVValue12(currentBinary.getBits(12, 20)).toValue32();
+		registers.set((int)rs1, rs1V);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " imm = " + immValue );
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(new RiscVValue32((rs1V.getUnsignedValue() << immValue.getUnsignedValue())).getUnsignedValue(), registers.get((int)rd).getUnsignedValue());
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestSrliSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.srli));
+		long rs1 = currentBinary.getBits(5,15);
+		RiscVValue32 rs1V = new RiscVValue32(generateRandomBinary(16));
+		RiscVValue32  immValue = new RiscVValue12(currentBinary.getBits(12, 20)).toValue32();
+		registers.set((int)rs1, rs1V);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " imm = " + immValue );
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(rs1V.getSignedValue() >> immValue.getSignedValue(), registers.get((int)rd).getSignedValue());
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestSraiSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.srai));
+		long rs1 = currentBinary.getBits(5,15);
+		RiscVValue32 rs1V = new RiscVValue32(generateRandomBinary(16));
+		RiscVValue32  immValue = new RiscVValue12(currentBinary.getBits(12, 20)).toValue32();
+		registers.set((int)rs1, rs1V);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " imm = " + immValue );
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(rs1V.getSignedValue() >>> immValue.getSignedValue(), registers.get((int)rd).getSignedValue());
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestSltiSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.slti));
+		long rs1 = currentBinary.getBits(5,15);
+		RiscVValue32 rs1V = new RiscVValue32(generateRandomBinary(16));
+		RiscVValue32  immValue = new RiscVValue12(currentBinary.getBits(12, 20)).toValue32();
+		registers.set((int)rs1, rs1V);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " imm = " + immValue );
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(rs1V.getSignedValue()<immValue.getSignedValue()?1:0, registers.get((int)rd).getSignedValue());
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestSltiuSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.sltiu));
+		long rs1 = currentBinary.getBits(5,15);
+		RiscVValue32 rs1V = new RiscVValue32(generateRandomBinary(16));
+		RiscVValue32  immValue = new RiscVValue12(currentBinary.getBits(12, 20)).toValue32();
+		registers.set((int)rs1, rs1V);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " imm = " + immValue );
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(rs1V.getUnsignedValue()<immValue.getUnsignedValue()?1:0, registers.get((int)rd).getSignedValue());
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestXoriSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.xori));
+		long rs1 = currentBinary.getBits(5,15);
+		RiscVValue32 rs1V = new RiscVValue32(generateRandomBinary(16));
+		RiscVValue32  immValue = new RiscVValue12(currentBinary.getBits(12, 20)).toValue32();
+		registers.set((int)rs1, rs1V);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " imm = " + immValue );
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(rs1V.getUnsignedValue()^immValue.getUnsignedValue(), registers.get((int)rd).getUnsignedValue());
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestAndiSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.andi));
+		long rs1 = currentBinary.getBits(5,15);
+		RiscVValue32 rs1V = new RiscVValue32(generateRandomBinary(16));
+		RiscVValue32  immValue = new RiscVValue12(currentBinary.getBits(12, 20)).toValue32();
+		registers.set((int)rs1, rs1V);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " imm = " + immValue );
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(rs1V.getUnsignedValue()&immValue.getUnsignedValue(), registers.get((int)rd).getUnsignedValue());
+	}
+	@RepeatedTest(value = 100)
+	public void autoTestOriSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.ori));
+		long rs1 = currentBinary.getBits(5,15);
+		RiscVValue32 rs1V = new RiscVValue32(generateRandomBinary(16));
+		RiscVValue32  immValue = new RiscVValue12(currentBinary.getBits(12, 20)).toValue32();
+		registers.set((int)rs1, rs1V);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary);
+		System.out.println("Rs1 = " + rs1 +" : "+ registers.get((int)rs1).getSignedValue() + " imm = " + immValue );
+		System.out.println("Rd = " + rd + " : "+ registers.get((int)rd).getSignedValue());
+		
+		assertEquals(rs1V.getUnsignedValue()|immValue.getUnsignedValue(), registers.get((int)rd).getUnsignedValue());
 	}
 	
 	
@@ -354,9 +750,7 @@ class Tests {
 	public String binString(int length, int binary) {
 		return String.format("%"+ length +"s", Integer.toBinaryString(binary)).replace(' ', '0');
 	}
-	
-	
-	
+		
 	private void doSteps(TestInstruction instruction) {
 		System.out.println("\n\n\n");
 		System.out.println("Test  :");
