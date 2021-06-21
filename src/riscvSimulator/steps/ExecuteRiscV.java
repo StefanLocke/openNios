@@ -123,7 +123,6 @@ public class ExecuteRiscV {
 				switch (currentInstruction.getFunc()) {
 				case beq :
 					if (currentInstruction.getValueA().getSignedValue() == currentInstruction.getValueB().getSignedValue()) {
-						System.out.println(Long.toHexString(currentInstruction.getPC()) + " offset is  "  + currentInstruction.getValueToStore().getSignedValue() + " ("+ Long.toHexString(currentInstruction.getValueToStore().getSignedValue()) + ")");
 						registers.setPC(new RiscVValue32(currentInstruction.getPC() + (currentInstruction.getValueToStore().getSignedValue()<< 1 | 0b0)));
 						this.hasJumped = true;
 					}	

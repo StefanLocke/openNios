@@ -58,134 +58,7 @@ public class InstructionRiscV {
 		this.isExecuteDone = false; 
 		this.isMemoryDone = false;
 		this.isWritebackDone = false;
-		/*
-		switch(op){
 		
-		case load: {
-			this.type = RiscVType.ITYPE;
-			int func3Binary = (int) ((binaryInstruction >> 12) & 0x7); //get the func3 binary value
-			for (RiscVFunc func : RiscVFunc.values()) {
-				if (func.getFunc3Code() == func3Binary && func.getOpCode() == op) {
-					this.func = func;
-					break;
-				}
-			}
-			this.imm12 = (int) ((binaryInstruction >> 20) & 0xfff);
-			this.rd = (int) ((binaryInstruction >> 7) & 0x1f);
-			this.r1 = (int) ((binaryInstruction >> 15) & 0x1f);
-			break;
-		}
-		case jalr:
-			//TODO
-			break;
-		case miscmem :
-			//TODO
-			break;
-		case opimm : {
-			this.type = RiscVType.ITYPE;
-			int func3Binary = (int) ((binaryInstruction >> 12) & 0x7); //get the func3 binary value
-			for (RiscVFunc func : RiscVFunc.values()) {
-				if (func.getFunc3Code() == func3Binary && func.getOpCode() == op) {
-					this.func = func;
-					break;
-				}
-			}
-			this.imm12 = (int) ((binaryInstruction >> 20) & 0xfff);
-			this.rd = (int) ((binaryInstruction >> 7) & 0x1f);
-			this.r1 = (int) ((binaryInstruction >> 15) & 0x1f);
-			break;
-		}
-		case system : {
-			//TODO
-			break;
-		}
-		case store : {
-			//S-TYPE
-			this.type = RiscVType.STYPE;
-			int func3Binary = (int) ((binaryInstruction >> 12) & 0x7); //get the func3 binary value
-			for (RiscVFunc func : RiscVFunc.values()) {
-				
-				if (func.getFunc3Code() == func3Binary && func.getOpCode() == op) {
-					this.func = func;
-					break;
-				}
-			}
-			
-			int firstPart = (int)((binaryInstruction >> 25) & 0x7f);
-			int secondPart = (int) ((binaryInstruction >> 7) & 0x1f);
-			this.imm12 = ( firstPart << 5) | secondPart;
-			
-			this.r1 = (int) ((binaryInstruction >> 15) & 0x1f);
-			this.r2 = (int) ((binaryInstruction >> 20) & 0x1f);
-			break;
-		}
-		case branch: {
-			// B-TYPE
-			this.type = RiscVType.BTYPE;
-			int func3Binary = (int) ((binaryInstruction >> 12) & 0x7); //get the func3 binary value
-			for (RiscVFunc func3 : RiscVFunc.values()) {
-				if (func3.getFunc3Code() == func3Binary  && func.getOpCode() == op) {
-					this.func = func3;
-					break;
-				}
-			}
-			
-			
-			int firstPart = (int) ((binaryInstruction >> 8) & 0xf);
-			int secondPart = (int) ((binaryInstruction >> 25) & 0x3f);
-			int thirdPart = (int) ((binaryInstruction >> 7) & 0x1);
-			int fourthPart =(int) ((binaryInstruction >> 31) & 0x1);
-			
-			int tmp1 = ( firstPart << 6) | secondPart;
-			int tmp2 = ( thirdPart << 1) | fourthPart;
-			this.imm12 = ( tmp1 << 2) | tmp2;
-			
-			this.r1 = (int) ((binaryInstruction >> 15) & 0x1f);
-			this.r2 = (int) ((binaryInstruction >> 20) & 0x1f);
-			break;
-		}
-		case jal : {
-			//J-TYPE
-			this.type = RiscVType.JTYPE;
-			
-			int firstPart = (int) ((binaryInstruction >> 21) & 0x3ff);
-			int secondPart = (int) ((binaryInstruction >> 20) & 0x1);
-			int thirdPart = (int) ((binaryInstruction >> 12) & 0xff);
-			int fourthPart =(int) ((binaryInstruction >> 31) & 0x1);
-			
-			int tmp1 = ( firstPart << 1) | secondPart;
-			int tmp2 = ( thirdPart << 1) | fourthPart;
-			this.imm20 = ( tmp1 << 9) | tmp2;
-			
-			this.rd = (int) ((binaryInstruction >> 7) & 0x1f);
-			break;
-		}
-		case op : {
-			//TODO R-TYPE
-			this.type = RiscVType.RTYPE;
-			int func3Binary = (int) ((binaryInstruction >> 12) & 0x7);  //get the func3 binary value
-			int func7Binary = (int) ((binaryInstruction >> 25) & 0x7f); //get the func7 binary value
-			for (RiscVFunc func : RiscVFunc.values()) {
-				if (func.getFunc3Code() == func3Binary && func.getFunc7Code() == func7Binary && func.getOpCode() == op) {
-					this.func = func;
-					break;
-				}
-			}
-			
-			this.rd = (int) ((binaryInstruction >> 7) & 0x1f);
-			this.r1 = (int) ((binaryInstruction >> 15) & 0x1f);
-			this.r2 = (int) ((binaryInstruction >> 20) & 0x1f);
-			break;
-		}
-		case lui :
-			break;
-		case auipc :
-			//TODO U-TYPE
-			break;
-		default :
-			//TODO REST
-			break;
-		}*/
 		
 		
 		
@@ -308,7 +181,7 @@ public class InstructionRiscV {
 			
 			int firstPart = (int)((binaryInstruction >> 25) & 0x7f);
 			int secondPart = (int) ((binaryInstruction >> 7) & 0x1f);
-			this.imm12 = ( firstPart << 5 & 0x7f) | secondPart & 0x1f;
+			this.imm12 = ( firstPart << 5) | secondPart & 0x1f;
 			
 			this.r1 = (int) ((binaryInstruction >> 15) & 0x1f);
 			this.r2 = (int) ((binaryInstruction >> 20) & 0x1f);

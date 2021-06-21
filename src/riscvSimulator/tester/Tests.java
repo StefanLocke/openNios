@@ -623,6 +623,272 @@ class Tests {
 		assertEquals(rs1V.getUnsignedValue()|immValue.getUnsignedValue(), registers.get((int)rd).getUnsignedValue());
 	}
 	
+	@RepeatedTest(value = 100)
+	public void autoTestBeqSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+
+		
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.beq));
+		long rs1 = currentBinary.getBits(5,15);
+		long rs2 = currentBinary.getBits(5,20);
+		RiscVValue32 rs1V; 
+		RiscVValue32 rs2V;
+		if (rs2 == rs1) {
+			long tmp = generateRandomBinary(16);
+			rs1V = new RiscVValue32(tmp);
+			rs2V = new RiscVValue32(tmp);
+		}
+		else {
+			rs1V = new RiscVValue32(generateRandomBinary(16));
+			rs2V = new RiscVValue32(generateRandomBinary(16));
+		}
+		
+		
+		int firstPart =(int) currentBinary.getBits(4,8);//(int) ((binaryInstruction >> 8) & 0xf);
+		int secondPart = (int) currentBinary.getBits(6,25);//(int) ((binaryInstruction >> 25) & 0x3f);
+		int thirdPart = (int) currentBinary.getBits(1,7);//(int) ((binaryInstruction >> 7) & 0x1);
+		int fourthPart =(int) currentBinary.getBits(1,31);//(int) ((binaryInstruction >> 31) & 0x1);
+		
+		int tmp1 = ( (secondPart & 0x3f) << 4) | firstPart & 0xf;
+		int tmp2 = ( (fourthPart & 0x1) << 1) | thirdPart & 0x1;
+		int imm12 = (((tmp2 & 0x3) << 10) | tmp1 & 0x3ff);
+		
+		RiscVValue32 generatedPc = new RiscVValue32(generateRandomBinary(14)<<2);
+		RiscVValue32 offset = new RiscVValue12(imm12).toValue32();
+		registers.set((int)rs1, rs1V);
+		registers.set((int)rs2, rs2V);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary,generatedPc.getUnsignedValue());
+		
+		
+		long newaddress = (offset.getSignedValue() << 1) + generatedPc.getUnsignedValue();
+		if ((generatedPc.getUnsignedValue() > Math.abs(offset.getSignedValue()<<1))) {
+			assertEquals(rs1V.getUnsignedValue()==rs2V.getUnsignedValue()?newaddress:generatedPc.getUnsignedValue()+4, registers.getPC().getUnsignedValue());
+		}
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestBneSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+		
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.bne));
+		long rs1 = currentBinary.getBits(5,15);
+		long rs2 = currentBinary.getBits(5,20);
+		RiscVValue32 rs1V; 
+		RiscVValue32 rs2V;
+		if (rs2 == rs1) {
+			long tmp = generateRandomBinary(16);
+			rs1V = new RiscVValue32(tmp);
+			rs2V = new RiscVValue32(tmp);
+		}
+		else {
+			rs1V = new RiscVValue32(generateRandomBinary(16));
+			rs2V = new RiscVValue32(generateRandomBinary(16));
+		}
+		
+		
+		int firstPart =(int) currentBinary.getBits(4,8);//(int) ((binaryInstruction >> 8) & 0xf);
+		int secondPart = (int) currentBinary.getBits(6,25);//(int) ((binaryInstruction >> 25) & 0x3f);
+		int thirdPart = (int) currentBinary.getBits(1,7);//(int) ((binaryInstruction >> 7) & 0x1);
+		int fourthPart =(int) currentBinary.getBits(1,31);//(int) ((binaryInstruction >> 31) & 0x1);
+		
+		int tmp1 = ( (secondPart & 0x3f) << 4) | firstPart & 0xf;
+		int tmp2 = ( (fourthPart & 0x1) << 1) | thirdPart & 0x1;
+		int imm12 = (((tmp2 & 0x3) << 10) | tmp1 & 0x3ff);
+		
+		RiscVValue32 generatedPc = new RiscVValue32(generateRandomBinary(14)<<2);
+		RiscVValue32 offset = new RiscVValue12(imm12).toValue32();
+		registers.set((int)rs1, rs1V);
+		registers.set((int)rs2, rs2V);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary,generatedPc.getUnsignedValue());
+		
+		
+		long newaddress = (offset.getSignedValue() << 1) + generatedPc.getUnsignedValue();
+		if ((generatedPc.getUnsignedValue() > Math.abs(offset.getSignedValue()<<1))) {
+			assertEquals(rs1V.getUnsignedValue()!=rs2V.getUnsignedValue()?newaddress:generatedPc.getUnsignedValue()+4, registers.getPC().getUnsignedValue());
+		}
+		
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestBltSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+		
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.blt));
+		long rs1 = currentBinary.getBits(5,15);
+		long rs2 = currentBinary.getBits(5,20);
+		RiscVValue32 rs1V; 
+		RiscVValue32 rs2V;
+		if (rs2 == rs1) {
+			long tmp = generateRandomBinary(16);
+			rs1V = new RiscVValue32(tmp);
+			rs2V = new RiscVValue32(tmp);
+		}
+		else {
+			rs1V = new RiscVValue32(generateRandomBinary(16));
+			rs2V = new RiscVValue32(generateRandomBinary(16));
+		}
+		
+		
+		int firstPart =(int) currentBinary.getBits(4,8);//(int) ((binaryInstruction >> 8) & 0xf);
+		int secondPart = (int) currentBinary.getBits(6,25);//(int) ((binaryInstruction >> 25) & 0x3f);
+		int thirdPart = (int) currentBinary.getBits(1,7);//(int) ((binaryInstruction >> 7) & 0x1);
+		int fourthPart =(int) currentBinary.getBits(1,31);//(int) ((binaryInstruction >> 31) & 0x1);
+		
+		int tmp1 = ( (secondPart & 0x3f) << 4) | firstPart & 0xf;
+		int tmp2 = ( (fourthPart & 0x1) << 1) | thirdPart & 0x1;
+		int imm12 = (((tmp2 & 0x3) << 10) | tmp1 & 0x3ff);
+		
+		RiscVValue32 generatedPc = new RiscVValue32(generateRandomBinary(14)<<2);
+		RiscVValue32 offset = new RiscVValue12(imm12).toValue32();
+		registers.set((int)rs1, rs1V);
+		registers.set((int)rs2, rs2V);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary,generatedPc.getUnsignedValue());
+		
+		
+		long newaddress = (offset.getSignedValue() << 1) + generatedPc.getUnsignedValue();
+		if ((generatedPc.getUnsignedValue() > Math.abs(offset.getSignedValue()<<1))) {
+			assertEquals(rs1V.getSignedValue() < rs2V.getSignedValue()?newaddress:generatedPc.getUnsignedValue()+4, registers.getPC().getUnsignedValue());
+		}
+		
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestBltuSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+		
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.bltu));
+		long rs1 = currentBinary.getBits(5,15);
+		long rs2 = currentBinary.getBits(5,20);
+		RiscVValue32 rs1V; 
+		RiscVValue32 rs2V;
+		if (rs2 == rs1) {
+			long tmp = generateRandomBinary(16);
+			rs1V = new RiscVValue32(tmp);
+			rs2V = new RiscVValue32(tmp);
+		}
+		else {
+			rs1V = new RiscVValue32(generateRandomBinary(16));
+			rs2V = new RiscVValue32(generateRandomBinary(16));
+		}
+		
+		
+		int firstPart =(int) currentBinary.getBits(4,8);//(int) ((binaryInstruction >> 8) & 0xf);
+		int secondPart = (int) currentBinary.getBits(6,25);//(int) ((binaryInstruction >> 25) & 0x3f);
+		int thirdPart = (int) currentBinary.getBits(1,7);//(int) ((binaryInstruction >> 7) & 0x1);
+		int fourthPart =(int) currentBinary.getBits(1,31);//(int) ((binaryInstruction >> 31) & 0x1);
+		
+		int tmp1 = ( (secondPart & 0x3f) << 4) | firstPart & 0xf;
+		int tmp2 = ( (fourthPart & 0x1) << 1) | thirdPart & 0x1;
+		int imm12 = (((tmp2 & 0x3) << 10) | tmp1 & 0x3ff);
+		
+		RiscVValue32 generatedPc = new RiscVValue32(generateRandomBinary(14)<<2);
+		RiscVValue32 offset = new RiscVValue12(imm12).toValue32();
+		registers.set((int)rs1, rs1V);
+		registers.set((int)rs2, rs2V);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary,generatedPc.getUnsignedValue());
+		
+		
+		long newaddress = (offset.getSignedValue() << 1) + generatedPc.getUnsignedValue();
+		if ((generatedPc.getUnsignedValue() > Math.abs(offset.getSignedValue()<<1))) {
+			assertEquals(rs1V.getUnsignedValue() < rs2V.getUnsignedValue()?newaddress:generatedPc.getUnsignedValue()+4, registers.getPC().getUnsignedValue());
+		}
+		
+	}
+	
+	@RepeatedTest(value = 100)
+	public void autoTestBgeSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+		
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.bge));
+		long rs1 = currentBinary.getBits(5,15);
+		long rs2 = currentBinary.getBits(5,20);
+		RiscVValue32 rs1V; 
+		RiscVValue32 rs2V;
+		if (rs2 == rs1) {
+			long tmp = generateRandomBinary(16);
+			rs1V = new RiscVValue32(tmp);
+			rs2V = new RiscVValue32(tmp);
+		}
+		else {
+			rs1V = new RiscVValue32(generateRandomBinary(16));
+			rs2V = new RiscVValue32(generateRandomBinary(16));
+		}
+		
+		
+		int firstPart =(int) currentBinary.getBits(4,8);//(int) ((binaryInstruction >> 8) & 0xf);
+		int secondPart = (int) currentBinary.getBits(6,25);//(int) ((binaryInstruction >> 25) & 0x3f);
+		int thirdPart = (int) currentBinary.getBits(1,7);//(int) ((binaryInstruction >> 7) & 0x1);
+		int fourthPart =(int) currentBinary.getBits(1,31);//(int) ((binaryInstruction >> 31) & 0x1);
+		
+		int tmp1 = ( (secondPart & 0x3f) << 4) | firstPart & 0xf;
+		int tmp2 = ( (fourthPart & 0x1) << 1) | thirdPart & 0x1;
+		int imm12 = (((tmp2 & 0x3) << 10) | tmp1 & 0x3ff);
+		
+		RiscVValue32 generatedPc = new RiscVValue32(generateRandomBinary(14)<<2);
+		RiscVValue32 offset = new RiscVValue12(imm12).toValue32();
+		registers.set((int)rs1, rs1V);
+		registers.set((int)rs2, rs2V);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary,generatedPc.getUnsignedValue());
+		
+		
+		long newaddress = (offset.getSignedValue() << 1) + generatedPc.getUnsignedValue();
+		if ((generatedPc.getUnsignedValue() > Math.abs(offset.getSignedValue()<<1))) {
+			assertEquals(rs1V.getSignedValue() >= rs2V.getSignedValue()?newaddress:generatedPc.getUnsignedValue()+4, registers.getPC().getUnsignedValue());
+		}
+		
+	}
+	@RepeatedTest(value = 100)
+	public void autoTestBgeuSteps(RepetitionInfo rep) {
+		System.out.println("Repetition number : " + rep.getCurrentRepetition());
+		
+		currentBinary = new TestInstruction(generateInstruction(RiscVFunc.bgeu));
+		long rs1 = currentBinary.getBits(5,15);
+		long rs2 = currentBinary.getBits(5,20);
+		RiscVValue32 rs1V; 
+		RiscVValue32 rs2V;
+		if (rs2 == rs1) {
+			long tmp = generateRandomBinary(16);
+			rs1V = new RiscVValue32(tmp);
+			rs2V = new RiscVValue32(tmp);
+		}
+		else {
+			rs1V = new RiscVValue32(generateRandomBinary(16));
+			rs2V = new RiscVValue32(generateRandomBinary(16));
+		}
+		
+		
+		int firstPart =(int) currentBinary.getBits(4,8);//(int) ((binaryInstruction >> 8) & 0xf);
+		int secondPart = (int) currentBinary.getBits(6,25);//(int) ((binaryInstruction >> 25) & 0x3f);
+		int thirdPart = (int) currentBinary.getBits(1,7);//(int) ((binaryInstruction >> 7) & 0x1);
+		int fourthPart =(int) currentBinary.getBits(1,31);//(int) ((binaryInstruction >> 31) & 0x1);
+		
+		int tmp1 = ( (secondPart & 0x3f) << 4) | firstPart & 0xf;
+		int tmp2 = ( (fourthPart & 0x1) << 1) | thirdPart & 0x1;
+		int imm12 = (((tmp2 & 0x3) << 10) | tmp1 & 0x3ff);
+		
+		RiscVValue32 generatedPc = new RiscVValue32(generateRandomBinary(14)<<2);
+		RiscVValue32 offset = new RiscVValue12(imm12).toValue32();
+		registers.set((int)rs1, rs1V);
+		registers.set((int)rs2, rs2V);
+		long rd = currentBinary.getBits(5,7);
+		doSteps(currentBinary,generatedPc.getUnsignedValue());
+		
+		
+		long newaddress = (offset.getSignedValue() << 1) + generatedPc.getUnsignedValue();
+		if ((generatedPc.getUnsignedValue() > Math.abs(offset.getSignedValue()<<1))) {
+			assertEquals(rs1V.getUnsignedValue() >= rs2V.getUnsignedValue()?newaddress:generatedPc.getUnsignedValue()+4, registers.getPC().getUnsignedValue());
+		}
+		
+	}
+	
+
+	
+	
 	
 	
 	@Test
@@ -671,7 +937,7 @@ class Tests {
 			}
 			break;
 		case branch:
-				binaryInstruction = (int) (generateRandomBinary(1) << 31 | (generateRandomBinary(6) << 25 | (TestRegisters.getRandomRegister() << 20 | (TestRegisters.getRandomRegister() << 15 | (generateRandomBinary(4) << 8) | (generateRandomBinary(1) << 7 | (instr.getOpCode().getOpCode()))) )));
+				binaryInstruction = (int) (generateRandomBinary(1) << 31 | (generateRandomBinary(6) << 25 | (TestRegisters.getRandomRegister() << 20 | (TestRegisters.getRandomRegister() << 15 | (instr.getFunc3Code() << 12 | (generateRandomBinary(4) << 8) | (generateRandomBinary(1) << 7 | (instr.getOpCode().getOpCode()))) ))));
 			break;
 		
 		case jal:
@@ -752,13 +1018,27 @@ class Tests {
 	}
 		
 	private void doSteps(TestInstruction instruction) {
+		memory.storeWord(0, new RiscVValue32(instruction.getBinary()),false);
+		registers.setPC(new RiscVValue32(0));
+		step(instruction);
+	}
+	
+	private void doSteps(TestInstruction instruction, long pcStart) {
+		memory.storeWord(pcStart, new RiscVValue32(instruction.getBinary()),false);
+		registers.setPC(new RiscVValue32(pcStart));
+		step(instruction);
+	}
+	
+	
+	private void step(TestInstruction instruction) {
 		System.out.println("\n\n\n");
 		System.out.println("Test  :");
-		memory.storeWord(0, new RiscVValue32(instruction.getBinary()),false);
+	
 		FetchRiscV fetch = new FetchRiscV(registers, memory, true);
 		fetch.doFetch(0);
 		InstructionRiscV currentI = fetch.getCurrentInstruction();
 		System.out.println("---FETCH-------");
+		System.out.println("Test -Pc : " + fetch.getCurrentInstruction().getPC());
 		System.out.println("Test -Op : " + fetch.getCurrentInstruction().getOp());
 		System.out.println("Test -Func : " + fetch.getCurrentInstruction().getFunc());
 		System.out.println("Test -Rs1 : " + fetch.getCurrentInstruction().getRs1());
@@ -771,8 +1051,8 @@ class Tests {
 		DecodeRiscV decode = new DecodeRiscV(registers);
 		decode.setCurrentInstruction(currentI);
 		decode.doStep();
-		System.out.println("Test -Value A: " +currentI.getValueA());
-		System.out.println("Test -Value B : " +currentI.getValueB());
+		System.out.println("Test -Value A: s:" +currentI.getValueA().getSignedValue() + " u:" + currentI.getValueA().getUnsignedValue() );
+		System.out.println("Test -Value B: s:" +currentI.getValueB().getSignedValue() + " u:" + currentI.getValueB().getUnsignedValue() );
 		System.out.println("---------------");
 		System.out.println("---EXECUTE-----");
 		ExecuteRiscV execute = new ExecuteRiscV(registers, true);
