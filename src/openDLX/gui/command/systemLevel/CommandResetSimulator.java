@@ -23,6 +23,8 @@ package openDLX.gui.command.systemLevel;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 import openDLX.gui.MainFrame;
 import openDLX.gui.command.Command;
 import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
@@ -50,7 +52,7 @@ public class CommandResetSimulator implements Command
             mf.setRunSpeed(MainFrame.RUN_SPEED_DEFAULT);
             mf.output.clear();
 
-            for (JInternalFrame jif : mf.getinternalFrames())
+            for (JPanel jif : mf.getinternalFrames())
                 if (jif instanceof OpenDLXSimInternalFrame)
                     ((OpenDLXSimInternalFrame) jif).clean();
 

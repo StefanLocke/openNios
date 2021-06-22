@@ -93,7 +93,6 @@ public class CacheFrame extends OpenDLXSimInternalFrame implements ActionListene
 			add(controls,BorderLayout.NORTH);
 	        add(scrollpane, BorderLayout.CENTER);
 	    
-	        pack();
 	        setVisible(true);
 	    }
 	
@@ -142,9 +141,7 @@ public class CacheFrame extends OpenDLXSimInternalFrame implements ActionListene
 
 	@Override
 	public void clean() {
-		setVisible(false);
-        dispose();
-		
+		setVisible(false);	
 	}
 
 

@@ -39,7 +39,6 @@ public class CommandLoadFrameConfigurationSysLevel implements Command
     @Override
     public void execute()
     {
-        for (JInternalFrame internalFrame : mf.getinternalFrames())
-            new FrameConfiguration(internalFrame).loadFrameConfiguration();
+      
     }
 }

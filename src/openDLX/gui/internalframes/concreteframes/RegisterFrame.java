@@ -80,7 +80,7 @@ public final class RegisterFrame extends OpenDLXSimInternalFrame
         //config internal frame
         setLayout(new BorderLayout());
         add(scrollpane, BorderLayout.CENTER);
-        pack();
+     
         setVisible(true);
     }
 
@@ -88,7 +88,7 @@ public final class RegisterFrame extends OpenDLXSimInternalFrame
     public void clean()
     {
         setVisible(false);
-        dispose();
+      
     }
 
 }

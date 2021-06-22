@@ -125,7 +125,7 @@ public final class MemoryFrame extends OpenDLXSimInternalFrame implements Action
         reload.addActionListener(this);
         controlPanel.add(reload);
         add(controlPanel, BorderLayout.SOUTH);
-        pack();
+      
         setVisible(true);
     }
 
@@ -133,7 +133,7 @@ public final class MemoryFrame extends OpenDLXSimInternalFrame implements Action
     public void clean()
     {
         setVisible(false);
-        dispose();
+     
     }
 
     @Override

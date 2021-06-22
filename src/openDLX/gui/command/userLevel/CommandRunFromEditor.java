@@ -24,6 +24,7 @@ package openDLX.gui.command.userLevel;
 import java.io.File;
 
 import javax.swing.JInternalFrame;
+import javax.swing.JPanel;
 
 import openDLX.gui.MainFrame;
 import openDLX.gui.command.Command;
@@ -63,10 +64,10 @@ public class CommandRunFromEditor implements Command
                 c8.execute();
                 File configFile = c8.getConfigFile();
 
-                JInternalFrame[] intFrames = mf.getinternalFrames();
+                JPanel[] intFrames = mf.getinternalFrames();
                 String[] intFrameOrder = new String[intFrames.length];
                 for (int i = 0; i < intFrames.length; ++i)
-                    intFrameOrder[i] = intFrames[i].getTitle();
+                    intFrameOrder[i] = intFrames[i].getClass().toString();
 
                 //initialize openDLX and create internal frames, set status to executing
                 new CommandStartExecuting(mf, intFrameOrder).execute();

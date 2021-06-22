@@ -246,7 +246,6 @@ public final class ClockCycleFrame extends OpenDLXSimInternalFrame implements GU
         add(codeScrollPane, BorderLayout.WEST);
         add(cycleScrollPane, BorderLayout.WEST);
         add(clockCycleScrollPane, BorderLayout.CENTER);
-        pack();
         setVisible(true);
 
     }
@@ -361,7 +360,6 @@ public final class ClockCycleFrame extends OpenDLXSimInternalFrame implements GU
     public void clean()
     {
         setVisible(false);
-        dispose();
     }
 
 

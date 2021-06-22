@@ -118,7 +118,7 @@ public final class CodeFrame extends OpenDLXSimInternalFrame
         //config internal frame
         setLayout(new BorderLayout());
         add(scrollpane, BorderLayout.CENTER);
-        pack();
+
         setVisible(true);
     }
 
@@ -126,7 +126,7 @@ public final class CodeFrame extends OpenDLXSimInternalFrame
     public void clean()
     {
         setVisible(false);
-        dispose();
+       
     }
 
 }

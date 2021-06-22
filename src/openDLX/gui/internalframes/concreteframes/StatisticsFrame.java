@@ -40,7 +40,7 @@ public final class StatisticsFrame extends OpenDLXSimInternalFrame
         statArea.setEditable(false);
         statArea.setPreferredSize(new Dimension(200, 200));
         add(statArea);
-        pack();
+     
         setVisible(true);
 
     }
@@ -55,7 +55,7 @@ public final class StatisticsFrame extends OpenDLXSimInternalFrame
     public void clean()
     {
         setVisible(false);
-        dispose();
+     
     }
 
 }

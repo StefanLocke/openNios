@@ -91,7 +91,7 @@ public final class LogFrame extends OpenDLXSimInternalFrame
     public void clean()
     {
         setVisible(false);
-        dispose();
+   
     }
 
     @Override

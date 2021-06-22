@@ -21,6 +21,7 @@
  ******************************************************************************/
 package openDLX.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -31,7 +32,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
@@ -39,6 +42,8 @@ import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.undo.UndoManager;
 
 import alternateSimulator.Simulator;
@@ -49,6 +54,13 @@ import openDLX.gui.command.userLevel.CommandExitProgram;
 import openDLX.gui.dialog.Input;
 import openDLX.gui.dialog.Output;
 import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
+import openDLX.gui.internalframes.concreteframes.CacheFrame;
+import openDLX.gui.internalframes.concreteframes.ClockCycleFrame;
+import openDLX.gui.internalframes.concreteframes.CodeFrame;
+import openDLX.gui.internalframes.concreteframes.LogFrame;
+import openDLX.gui.internalframes.concreteframes.MemoryFrame;
+import openDLX.gui.internalframes.concreteframes.RegisterFrame;
+import openDLX.gui.internalframes.concreteframes.StatisticsFrame;
 import openDLX.gui.internalframes.concreteframes.editor.EditorFrame;
 import openDLX.gui.menubar.MainFrameMenuBarFactory;
 import openDLX.gui.menubar.StateValidator;
@@ -80,6 +92,17 @@ public class MainFrame extends JFrame implements ActionListener, ItemListener
     private JMenuItem forwardingMenuItem;
     private PipelineExceptionHandler pexHandler = null;
     private String loadedCodeFilePath="code.s";//default
+    private List<OpenDLXSimInternalFrame> components;
+    
+    
+    private JPanel container7;
+	private JPanel container2;
+	private JPanel container3;
+	private JPanel container4;
+	private JPanel container1;
+	private JPanel container5;
+	private JPanel container6;
+	private JPanel container8;
 
     private MainFrame()
     {
@@ -111,7 +134,72 @@ public class MainFrame extends JFrame implements ActionListener, ItemListener
 
     private void initialize()
     {
+    	components = new ArrayList<>();
         undoMgr = new UndoManager();
+        
+        {
+        	setLayout(new BorderLayout(0, 0));
+    		
+    		JSplitPane splitPane = new JSplitPane();
+    		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+    		
+    		JSplitPane splitPane_1 = new JSplitPane();
+    		splitPane.setLeftComponent(splitPane_1);
+    		
+    		JSplitPane splitPane_4 = new JSplitPane();
+    		splitPane_1.setLeftComponent(splitPane_4);
+    		
+    		JSplitPane splitPane_5 = new JSplitPane();
+    		splitPane_5.setOrientation(JSplitPane.VERTICAL_SPLIT);
+    		splitPane_4.setRightComponent(splitPane_5);
+    		
+    		JSplitPane splitPane_6 = new JSplitPane();
+    		splitPane_5.setLeftComponent(splitPane_6);
+    		
+    		container2 = new JPanel();
+    		splitPane_6.setLeftComponent(container2);
+    		container2.setLayout(new BorderLayout(0, 0));
+    		
+    		container3 = new JPanel();
+    		splitPane_6.setRightComponent(container3);
+    		container3.setLayout(new BorderLayout(0, 0));
+    		
+    		container4 = new JPanel();
+    		splitPane_5.setRightComponent(container4);
+    		container4.setLayout(new BorderLayout(0, 0));
+    		
+    		container1 = new JPanel();
+    		splitPane_4.setLeftComponent(container1);
+    		container1.setLayout(new BorderLayout(0, 0));
+    		splitPane_4.setDividerLocation(0.5);
+    		
+    		container5 = new JPanel();
+    		splitPane_1.setRightComponent(container5);
+    		container5.setLayout(new BorderLayout(0, 0));
+    		
+    		JSplitPane splitPane_2 = new JSplitPane();
+    		splitPane_2.setContinuousLayout(true);
+    		splitPane.setRightComponent(splitPane_2);
+    		
+    		JSplitPane splitPane_3 = new JSplitPane();
+    		splitPane_3.setOrientation(JSplitPane.VERTICAL_SPLIT);
+    		splitPane_2.setRightComponent(splitPane_3);
+    		
+    		container8 = new JPanel();
+    		splitPane_3.setRightComponent(container8);
+    		container8.setLayout(new BorderLayout(0, 0));
+    		
+    		container7 = new JPanel();
+    		splitPane_3.setLeftComponent(container7);
+    		container7.setLayout(new BorderLayout(0, 0));
+    		
+    		container6 = new JPanel();
+    		splitPane_2.setLeftComponent(container6);
+    		container6.setLayout(new BorderLayout(0, 0));
+
+			 setContentPane(splitPane);
+        }
+        
         configFile = new File("./config.cfg");
         //uses a factory to outsource creation of the menuBar
         MainFrameMenuBarFactory menuBarFactory = new MainFrameMenuBarFactory(this, this, this);
@@ -121,30 +209,25 @@ public class MainFrame extends JFrame implements ActionListener, ItemListener
         forwardingMenuItem = importantItems.get(MainFrameMenuBarFactory.STRING_MENU_SIMULATOR_FORWARDING);
 
         setMinimumSize(new Dimension(200, 200));
-        desktop = new JDesktopPane();
-        desktop.setBackground(Color.WHITE);
-        setContentPane(desktop);
+      
+       
 
         editor = EditorFrame.getInstance(this);
         editor.setUndoManager(undoMgr);
-        desktop.add(editor);
+        addInternalFrame(editor);
 
         output = Output.getInstance(mf);
         input = Input.getInstance(mf);
-
+        
+        
+        
+        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(200, 200));
         setExtendedState(MAXIMIZED_BOTH);
         setVisible(true);
 
-        /// select editor frame
-        try
-        {
-            editor.setSelected(true);
-        } catch (PropertyVetoException e1)
-        {
-            e1.printStackTrace();
-        }
+      
 
         setOpenDLXSimState(OpenDLXSimState.IDLE);
         pexHandler = new PipelineExceptionHandler(this);
@@ -170,9 +253,15 @@ public class MainFrame extends JFrame implements ActionListener, ItemListener
         return simulator;
     }
 
-    public JInternalFrame[] getinternalFrames()
+    public JPanel[] getinternalFrames()
     {
-        return desktop.getAllFrames();
+    	JPanel[] array = new JPanel[components.size()];
+    	int i = 0;
+    	for (JPanel frame : components) {
+    		array[i] = frame;
+    		i++;
+    	}
+        return  array;
     }
 
     public void setSimulator(Simulator openDLXSim)
@@ -220,7 +309,39 @@ public class MainFrame extends JFrame implements ActionListener, ItemListener
 
     public void addInternalFrame(OpenDLXSimInternalFrame mif)
     {
-        desktop.add(mif);
+    	components.add(mif);
+    	if (mif instanceof CacheFrame) {
+    		container4.add(mif);
+    		return;
+    	}
+		if (mif instanceof ClockCycleFrame) {
+		    container6.add(mif)		;
+		    return;
+		}
+		if (mif instanceof CodeFrame) {
+			container3.add(mif);
+			return;
+		}
+		if (mif instanceof LogFrame) {
+			container8.add(mif);
+			return;
+		}
+		if (mif instanceof MemoryFrame) {
+			container2.add(mif);
+			return;
+		}
+		if (mif instanceof RegisterFrame) {
+			container1.add(mif);
+			return;
+		}
+		if (mif instanceof StatisticsFrame) {
+			container7.add(mif);
+			return;
+		}
+		if (mif instanceof EditorFrame) {
+			container5.add(mif);
+			return;
+		}
     }
 
     public String getEditorText()
