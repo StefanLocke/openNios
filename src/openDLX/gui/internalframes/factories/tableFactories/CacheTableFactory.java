@@ -73,7 +73,7 @@ public class CacheTableFactory extends TableFactory {
 											(cache.findByte(i,j, 1).getUnsignedValue()))));
 					model.setValueAt("0x" +j,j,0);
 					model.setValueAt("0x" +Long.toHexString(cache.findTag(i, j)),j,1 + 2*i);
-					model.setValueAt(value.getUnsignedValue(),j,1 + 2*i + 1);
+					model.setValueAt("0x" +value.getUnsignedValue(),j,1 + 2*i + 1);
 				}
 			}
 			TableColumnModel tcm = table.getColumnModel();
