@@ -168,25 +168,15 @@ public class ExecuteRiscV {
 			case system ://TODO
 				switch (currentInstruction.getFunc()) {
 				case ecall :
+					doECall(registers.get(17).getUnsignedValue());
 					break;
 				case ebreak :
 					break;
-				case csrrw :
-					break;
-				case csrrs :
-					break;
-				case csrrc :
-					break;
-				case csrrwi :
-					break;
-				case csrrsi :
-					break;
-				case csrrci :
-					break;
 				default:
+					System.out.println("Execute - "+ currentInstruction.getOp() + "is not yet implemented.");
 					break;
 				}
-				System.out.println("Execute - "+ currentInstruction.getOp() + "is not yet implemented.");
+				
 				break;
 				
 				
@@ -259,4 +249,27 @@ public class ExecuteRiscV {
 	public boolean hasJumped(){
 		return this.hasJumped;
 	}
+	
+	
+	private void doECall(long ecallType) {
+		switch ((int)ecallType) {
+		case 63 : //SYS_read
+			doRead(ecallType, ecallType, ecallType);
+			break;
+		case 64 : //SYS_write
+			doWrite(ecallType, ecallType, ecallType);
+			break;
+			default :
+				System.out.println("ECall Code : "+ ecallType+" not supported");
+		}
+	}
+	private void doWrite(long arg1,long arg2,long arg3) {
+		System.out.println("Doing Write");
+	}
+	private void doRead(long arg1,long arg2,long arg3) {
+		System.out.println("Doing Read");
+		
+	}
+	
+
 }

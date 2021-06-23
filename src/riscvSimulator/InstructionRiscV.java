@@ -92,6 +92,30 @@ public class InstructionRiscV {
 		}
 		case miscmem:
 		case system:
+		{
+			this.type = RiscVType.ITYPE;
+			int func3Binary = (int) ((binaryInstruction >> 12) & 0x7); //get the func3 binary value
+			this.imm12 = (int) ((binaryInstruction >> 20) & 0xfff);
+			this.rd = (int) ((binaryInstruction >> 7) & 0x1f);
+			this.r1 = (int) ((binaryInstruction >> 15) & 0x1f);
+			
+			for (RiscVFunc func : RiscVFunc.values()) {
+				
+				if (func.getFunc3Code() == func3Binary && func.getOpCode() == op) {
+					this.func = func;
+					break;
+				}
+				if (0b000 == func3Binary && func.getOpCode() == op) {
+					if (imm12 == 0) {
+						this.func = RiscVFunc.ecall;
+					}
+					if (imm12 == 1) {
+						this.func = RiscVFunc.ebreak;
+					}
+				} 
+			}
+			break;
+		}
 		case load:
 		case jalr: 
 		case opimm:{//I-TYPE
@@ -107,11 +131,7 @@ public class InstructionRiscV {
 							this.func = RiscVFunc.srai;
 							
 						}
-					}
-						
-					
-					
-					
+					}	
 					break;
 				}
 			}
@@ -359,7 +379,7 @@ public class InstructionRiscV {
 		return this.pc;
 	}
 
-	public String toString(){ //TODO maybe just use types ?
+	public String toString(){
 		switch (type) {
 		case BTYPE:
 			return this.getFunc().name() + " x" + r1 + ", x" + r2 + ", 0x" + Long.toHexString(new RiscVValue12(imm12).getSignedValue()) ;

@@ -53,7 +53,7 @@ public enum RiscVFunc {
 	fencei(RiscVOpCode.miscmem,0b0000000,0b001),
 	
 	ecall(RiscVOpCode.system,0b0000000,0b000),
-	ebreak(RiscVOpCode.system,0b0000000,0b000),
+	ebreak(RiscVOpCode.system,0b0000000 ,0b000),
 	
 	csrrw(RiscVOpCode.system,0b0000000,0b001),
 	csrrs(RiscVOpCode.system,0b0000000,0b010),
