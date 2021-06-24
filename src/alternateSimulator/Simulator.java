@@ -327,7 +327,8 @@ public class Simulator{
 
         private InstructionRiscV createBubble(){
         	//Nop instruction is 0x13
-        	return new InstructionRiscV(0x13, -1, -1);
+        	//return new InstructionRiscV(0x13, -1, -1);
+        	return new InstructionRiscV(0x0e03a, -1, -1);
         }
         
         public int getSimCycles()

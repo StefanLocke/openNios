@@ -5,7 +5,7 @@ import riscvSimulator.values.RiscVValue32;
 public class RiscVALU {
 
 	public static RiscVValue32 add(RiscVValue32 a, RiscVValue32 b) {
-		System.out.println("add : " + a.getSignedValue() + " + " + b.getSignedValue() + " = " + new RiscVValue32(a.getSignedValue() + b.getSignedValue()).getSignedValue());
+		System.out.println("add : " + a + " + " + b+ " = ");
 		return new RiscVValue32(a.getSignedValue() + b.getSignedValue());
 	}
 	

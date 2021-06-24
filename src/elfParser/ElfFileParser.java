@@ -5,6 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import com.sun.org.apache.xpath.internal.operations.And;
+
+import openDLX.gui.command.systemLevel.CommandCompileCode;
 import riscvSimulator.RegisterFileRiscV;
 import riscvSimulator.RiscVMemory;
 import riscvSimulator.values.RiscVValue32;
@@ -17,7 +20,7 @@ public class ElfFileParser {
 	public ElfFileParser(RiscVMemory memory,RegisterFileRiscV registers){
 		byte[] elfBytes=null;
 		try {
-			elfBytes = Files.readAllBytes(Paths.get("./", "./fileLinked.elf"));
+			elfBytes = Files.readAllBytes(Paths.get("./", /*CommandCompileCode.LinkedElf*/ "./a.out"));
 		} catch (IOException e) {
 			System.err.println("Error while loading elf file !");
 			e.printStackTrace();

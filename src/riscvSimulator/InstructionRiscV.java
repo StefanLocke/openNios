@@ -2,8 +2,6 @@ package riscvSimulator;
 
 import java.util.ArrayList;
 
-import com.sun.tools.javac.util.List;
-
 import riscvSimulator.values.RiscVValue;
 import riscvSimulator.values.RiscVValue12;
 import riscvSimulator.values.RiscVValue20;
@@ -232,7 +230,18 @@ public class InstructionRiscV {
 		default:
 			type = RiscVType.UNKNOWN;	
 		}
-		
+		if (func != null) {
+		System.out.println("New Instruction :");
+		System.out.println("Pc : " + this.getPC());
+		System.out.println("type : " + this.getOp());
+		System.out.println("func : " + this.getFunc());
+		System.out.println("imm12 : " + this.getImm12());
+		System.out.println("imm20 : " + this.getImm20());
+		System.out.println("r1 : " + this.r1);
+		System.out.println("r2 : " + this.r2);
+		System.out.println("rd : " + this.rd);
+		System.out.println("-----------------");
+		}
 	}
 	
 	
@@ -260,16 +269,19 @@ public class InstructionRiscV {
 		
 		switch (this.getType()){
 		case BTYPE:
-			result.addAll(List.of(r1,r2));
+			result.add(r1);
+			result.add(r2);
 			break;
 		case ITYPE:
-			result.addAll(List.of(r1));
+			result.add(r1);
 			break;	
 		case RTYPE:
-			result.addAll(List.of(r1,r2));
+			result.add(r1);
+			result.add(r2);
 			break;
 		case STYPE:
-			result.addAll(List.of(r1,r2));
+			result.add(r1);
+			result.add(r2);
 			break;
 		case UNKNOWN:
 		case UTYPE:
@@ -287,6 +299,10 @@ public class InstructionRiscV {
 	//******************************************************************************************
 
 	public RiscVValue32 getValueA() {
+		if (valueA == null) {
+			System.out.println("Tried to get a null value in " + this);
+			return new RiscVValue32(0);
+		}
 		return valueA;
 	}
 
@@ -297,6 +313,10 @@ public class InstructionRiscV {
 
 
 	public RiscVValue32 getValueB() {
+		if (valueB == null) {
+			System.out.println("Tried to get a null value in " + this);
+			return new RiscVValue32(0);
+		}
 		return valueB;
 	}
 
@@ -307,6 +327,10 @@ public class InstructionRiscV {
 
 
 	public RiscVValue32 getAluResult() {
+		if (aluResult == null) {
+			System.out.println("Tried to get a null value in " + this);
+			return new RiscVValue32(0);
+		}
 		return aluResult;
 	}
 
@@ -327,6 +351,10 @@ public class InstructionRiscV {
 
 
 	public RiscVValue32 getValueLoaded() {
+		if (valueLoaded == null) {
+			System.out.println("Tried to get a null value in " + this);
+			return new RiscVValue32(0);
+		}
 		return valueLoaded;
 	}
 

@@ -36,24 +36,25 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-import com.sun.org.slf4j.internal.Logger;
-
 public class CommandCompileCode implements Command
 {
-	static final String compilerNameWindowsNios = "/external_bin/win-nios2-elf-as";
-	static final String compilerNameMacNios= "/external_bin/mac-nios2-elf-as";
-	static final String compilerNameLinuxNios = "/external_bin/lnx-nios2-elf-as";
+	public static final String compilerNameWindowsNios = "/external_bin/win-nios2-elf-as";
+	public static final String compilerNameMacNios= "/external_bin/mac-nios2-elf-as";
+	public static final String compilerNameLinuxNios = "/external_bin/lnx-nios2-elf-as";
 	
-	static final String compilerNameWindowsRV = "/external_bin/riscv32-unknown-elf-as.exe";
-	static final String compilerNameMacRV= "/external_bin/riscv32-unknown-elf-as.exe";
-	static final String compilerNameLinuxRV = "/external_bin/riscv32-unknown-elf-as.exe";
+	public static final String compilerNameWindowsRV = "/external_bin/riscv32-unknown-elf-as.exe";
+	public static final String compilerNameMacRV= "/external_bin/riscv32-unknown-elf-as.exe";
+	public static final String compilerNameLinuxRV = "/external_bin/riscv32-unknown-elf-as.exe";
 	
-	static final String linkerNameWindowsRV = "/external_bin/riscv32-unknown-elf-ld.exe";
+	public static final String linkerNameWindowsRV = "/external_bin/riscv32-unknown-elf-ld.exe";
 	
-	static final String outPutNameNios = "./nios2-elf-as";
-	static final String generatedAssemblerRV = "./rv-elf-as.exe";
+	public static final String outPutNameNios = "./nios2-elf-as";
+	public static final String generatedAssemblerRV = "./rv-elf-as.exe";
 	
-	static final String generatedLinkerRV = "./external_bin/riscv32-unknown-elf-ld.exe";
+	public static final String generatedLinkerRV = "./external_bin/riscv32-unknown-elf-ld.exe";
+	public static final String unLinkedElf = "./File.elf";
+	public static final String LinkedElf = "./LinkedFile.elf";
+
 	
     private File codeFile = null; // in 
     private File configFile = null; // out
@@ -73,7 +74,7 @@ public class CommandCompileCode implements Command
             if (codeFile != null)
             {
             	
-            	File oldElfFile = new File("./file.elf");
+            	File oldElfFile = new File(unLinkedElf);
             	if (oldElfFile.exists())
             		oldElfFile.delete();
             	
@@ -106,8 +107,8 @@ public class CommandCompileCode implements Command
                 File file = new File(generatedAssemblerRV);
                 file.setExecutable(true);
                 
-                Process ps = rt.exec(generatedAssemblerRV + " " + codeFilePath + " -o ./file.elf");
-                Process ps2 = rt.exec(generatedLinkerRV + " ./file.elf -o ./fileLinked.elf");
+                Process ps = rt.exec(generatedAssemblerRV + " " + codeFilePath + " -o " + unLinkedElf);
+                Process ps2 = rt.exec(generatedLinkerRV + unLinkedElf + "-o " + LinkedElf);
                 //Process ps = rt.exec("riscv32-unknown-elf-as.exe" + " " + codeFilePath + " -o ./file.elf");
                 ps.waitFor();
                 ps2.waitFor();
@@ -141,9 +142,9 @@ public class CommandCompileCode implements Command
         }
         catch (Exception e)
         {
-            System.err.println(e.toString());
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(mf, "Compiling/Assembling Code Failed");
+           System.err.println(e.toString());
+           e.printStackTrace();
+           JOptionPane.showMessageDialog(mf, "Compiling/Assembling Code Failed");
         }
     }
     
