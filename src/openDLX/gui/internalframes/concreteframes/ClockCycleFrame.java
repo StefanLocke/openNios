@@ -356,7 +356,7 @@ public final class ClockCycleFrame extends OpenDLXSimInternalFrame implements GU
 
 
     }
-
+    
     @Override
     public void clean()
     {

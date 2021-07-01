@@ -13,12 +13,10 @@ public interface RiscVCache {
 	static int tagSize = 32 - setSize - byteLocatorSize;
 	
 	boolean checkCache(long address);
-	void addWord(long address,RiscVValue value);
-	void addHalf(long address,RiscVValue value);
-	void addByte(long address,RiscVValue value);
-	void updateWord(long address,RiscVValue value);
-	void updateHalf(long address,RiscVValue value);
-	void updateByte(long address,RiscVValue value);
+	
+	void setWord(long address,RiscVValue value);
+	void setHalf(long address,RiscVValue value);
+	void setByte(long address,RiscVValue value);
 	RiscVValue32 getWord(long address);
 	RiscVValue16 getHalf(long address);
 	RiscVValue8 getByte(long address);

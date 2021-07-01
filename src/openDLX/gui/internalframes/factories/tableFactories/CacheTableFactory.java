@@ -7,13 +7,16 @@ import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.TableColumnModel;
 
+import openDLX.gui.internalframes.renderer.CacheFrameTableCellRenderer;
 import openDLX.gui.internalframes.renderer.ChangeableFrameTableCellRenderer;
+import openDLX.gui.internalframes.renderer.MyTableModel;
 import openDLX.gui.internalframes.util.NotSelectableTableModel;
 import riscvSimulator.RiscVMemory;
 import riscvSimulator.caches.RiscVCache;
 import riscvSimulator.caches.SimpleCache;
 import riscvSimulator.caches.SingleWayCache;
 import riscvSimulator.caches.nWayCache;
+import riscvSimulator.caches.lineCache.LineCache;
 import riscvSimulator.values.RiscVValue32;
 
 public class CacheTableFactory extends TableFactory {
@@ -100,7 +103,7 @@ public class CacheTableFactory extends TableFactory {
 				else {
 					model.addRow(new Object[] {
 							"---" ,"---" 
-							}
+					      }
 						);
 				}
 				
@@ -111,6 +114,33 @@ public class CacheTableFactory extends TableFactory {
 	        tcm.getColumn(1).setMaxWidth(150);
 	        table.setDefaultRenderer(Object.class, new ChangeableFrameTableCellRenderer());
 	
+			return table;
+		}
+		if (cache instanceof LineCache) {
+			LineCache cache = (LineCache)this.cache;
+			model = new MyTableModel();
+			table = new JTable(model);
+			table.setFocusable(false);
+			model.addColumn("SET");
+			model.addColumn("TAG");
+			for (int i = 0 ; i < Math.pow(2, cache.offsetLength) ; i++) {
+				model.addColumn("DATA[" + i + "]");
+			}
+			
+			for (int i = 0; i < cache.getSize() ; i++) {
+				model.addRow(new Object[((int) Math.pow(2, cache.offsetLength))+2]);
+				model.setValueAt(i, i, 0);
+				model.setValueAt("tag", i, 1);
+				for (int j = 0; j < Math.pow(2, cache.offsetLength) ; j++) {
+					model.setValueAt(0, i, j+2);
+				}
+			}
+			TableColumnModel tcm = table.getColumnModel();
+			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			table.setFocusable(false);
+			table.getTableHeader().setReorderingAllowed(false);
+	        table.setDefaultRenderer(Object.class, new CacheFrameTableCellRenderer());
+	        System.out.println("Created Table");
 			return table;
 		}
 		return null;

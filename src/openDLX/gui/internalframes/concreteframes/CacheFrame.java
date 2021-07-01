@@ -18,11 +18,13 @@ import javax.swing.table.TableModel;
 
 import openDLX.gui.MainFrame;
 import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
+import openDLX.gui.internalframes.concreteframes.canvas.TableCanvas;
 import openDLX.gui.internalframes.factories.tableFactories.CacheTableFactory;
 import openDLX.gui.internalframes.util.TableSizeCalculator;
 import riscvSimulator.RiscVMemory;
 import riscvSimulator.caches.SingleWayCache;
 import riscvSimulator.caches.nWayCache;
+import riscvSimulator.caches.lineCache.LineCache;
 import riscvSimulator.values.RiscVValue32;
 
 @SuppressWarnings("serial")
@@ -37,6 +39,7 @@ public class CacheFrame extends OpenDLXSimInternalFrame implements ActionListene
 	private JPopupMenu popup;
 	private JButton button;
 	private int valueFormat; // 0 = hex, 1 = bin , 2 = dec
+	private TableCanvas canvas;
 	
 	public CacheFrame(String name) {
 		super(name, false);
@@ -48,7 +51,7 @@ public class CacheFrame extends OpenDLXSimInternalFrame implements ActionListene
 	
 	
 	 @Override
-	    protected void initialize()
+	 protected void initialize()
 	    {
 		 	super.initialize();
 		 
@@ -83,15 +86,15 @@ public class CacheFrame extends OpenDLXSimInternalFrame implements ActionListene
 		 	
 		 	System.out.println("Creating CacheFrame");
 		 	cacheTable = new CacheTableFactory(memory.getCache()).createTable();
-		 	JScrollPane scrollpane = new JScrollPane(cacheTable);
-		 	scrollpane.setFocusable(false);
-		 	scrollpane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		 	//JScrollPane scrollpane = new JScrollPane(cacheTable);
+		 	canvas = new TableCanvas(cacheTable,((LineCache)memory.getCache()).offsetLength);
+		
 		 	cacheTable.setFillsViewportHeight(true);
-		 	TableSizeCalculator.setDefaultMaxTableSize(scrollpane, cacheTable,
-	                TableSizeCalculator.SET_SIZE_BOTH);
+		 	//TableSizeCalculator.setDefaultMaxTableSize(scrollpane, cacheTable,
+	       //         TableSizeCalculator.SET_SIZE_BOTH);
 	        //config internal frame
 			add(controls,BorderLayout.NORTH);
-	        add(scrollpane, BorderLayout.CENTER);
+	        add(canvas, BorderLayout.CENTER);
 	    
 	        pack();
 	        setVisible(true);
@@ -136,6 +139,44 @@ public class CacheFrame extends OpenDLXSimInternalFrame implements ActionListene
 					
 				}
 			}
+		}
+		if (memory.getCache() instanceof LineCache) {
+			LineCache cache = (LineCache) memory.getCache();
+			canvas.getAddressField().setTag(cache.getLastTag());
+			canvas.getAddressField().setSet(cache.getLastSet());
+			canvas.getAddressField().setOffset(cache.getLastOffset());
+			canvas.highlight((int)cache.getLastSet(),(int)cache.getLastOffset(),cache.getLastAction() == LineCache.ACTION_OUTPUT,cache.getLastHit());
+			canvas.getAddressField().setSelector(cache.getLastSelector());
+			canvas.hitStatus = cache.getLastHit();
+			if (cache.getLastAction() == LineCache.ACTION_INPUT) {
+				canvas.drawInputArrow((int) cache.getLastSet());
+			}
+			if (cache.getLastAction() == LineCache.ACTION_OUTPUT) {
+				canvas.drawOutputArrow((int) cache.getLastSet());
+			}
+			for (int i = 0 ; i < cache.getSize() ; i++) {
+				for (int j = 0 ; j < Math.pow(2, cache.offsetLength) ; j++) {
+					RiscVValue32 value = new RiscVValue32(cache.findByte(i,j, 3).getUnsignedValue() << 24 | 
+							(cache.findByte(i,j, 2).getUnsignedValue() << 16 | 
+									(cache.findByte(i,j, 1).getUnsignedValue() << 8 | 
+											(cache.findByte(i,j, 0).getUnsignedValue()))));
+		
+					switch (valueFormat) {
+					case 1 : //BIN
+						model.setValueAt("0x"+cache.findTag(i),i,1);
+						model.setValueAt("0b"+Long.toBinaryString(value.getUnsignedValue()),i,j+2);
+						break;
+					case 2 :
+						model.setValueAt("0x"+cache.findTag(i),i,1);
+						model.setValueAt(value.getUnsignedValue(),i,j+2);
+						break;
+					default ://HEX
+						model.setValueAt("0x"+cache.findTag(i),i,1);
+						model.setValueAt("0x"+Long.toHexString(value.getUnsignedValue()),i,j+2);
+				}
+				}
+			}
+			
 		}
 		
 	}

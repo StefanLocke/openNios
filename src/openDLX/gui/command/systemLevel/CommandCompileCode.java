@@ -52,8 +52,8 @@ public class CommandCompileCode implements Command
 	public static final String generatedAssemblerRV = "./rv-elf-as.exe";
 	
 	public static final String generatedLinkerRV = "./external_bin/riscv32-unknown-elf-ld.exe";
-	public static final String unLinkedElf = "./File.elf";
-	public static final String LinkedElf = "./LinkedFile.elf";
+	public static final String unLinkedElf = "./file.elf";
+	public static final String LinkedElf = "./linkedfile.elf";
 
 	
     private File codeFile = null; // in 
@@ -108,7 +108,7 @@ public class CommandCompileCode implements Command
                 file.setExecutable(true);
                 
                 Process ps = rt.exec(generatedAssemblerRV + " " + codeFilePath + " -o " + unLinkedElf);
-                Process ps2 = rt.exec(generatedLinkerRV + unLinkedElf + "-o " + LinkedElf);
+                Process ps2 = rt.exec(generatedLinkerRV + " " +unLinkedElf + " -o " + LinkedElf);
                 //Process ps = rt.exec("riscv32-unknown-elf-as.exe" + " " + codeFilePath + " -o ./file.elf");
                 ps.waitFor();
                 ps2.waitFor();

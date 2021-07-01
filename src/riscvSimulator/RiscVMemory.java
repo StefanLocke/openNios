@@ -7,6 +7,7 @@ import riscvSimulator.caches.RiscVCache;
 import riscvSimulator.caches.SimpleCache;
 import riscvSimulator.caches.SingleWayCache;
 import riscvSimulator.caches.nWayCache;
+import riscvSimulator.caches.lineCache.LineCache;
 import riscvSimulator.values.RiscVValue;
 import riscvSimulator.values.RiscVValue16;
 import riscvSimulator.values.RiscVValue32;
@@ -23,15 +24,18 @@ public class RiscVMemory {
 	
 	public RiscVMemory(){
 		this.memory = new HashMap<Long, RiscVValue8>();
-		cache = new nWayCache(3, 4);
+		cache = new LineCache(3, 2, this);
 	}
 	
 	public RiscVValue8 loadByte(Long addr, boolean useCache){
 		if (useCache) {
 			if (cache.checkCache(addr)) {
+				System.out.println("Cache Hit : " + Long.toHexString(addr));
 				return cache.getByte(addr);
 			}
+			System.out.println("Cache Miss : " + Long.toHexString(addr));
 		}
+		
 		if (this.memory.containsKey(addr))
 			return this.memory.get(addr).copy();
 		else
@@ -40,9 +44,11 @@ public class RiscVMemory {
 	
 	public RiscVValue16 loadHalf(long addr,boolean useCache){ 
 		if (useCache) {
-			if (cache.checkCache((int)addr)) {
+			if (cache.checkCache(addr)) {
+				System.out.println("Cache Hit : " + Long.toHexString(addr));
 				return cache.getHalf(addr);
 			}
+			System.out.println("Cache Miss : " + Long.toHexString(addr));
 		}
 		RiscVValue8 v1 = this.loadByte(addr, false);
 		RiscVValue8 v2 = this.loadByte((addr+1), false);
@@ -52,9 +58,11 @@ public class RiscVMemory {
 	
 	public RiscVValue32 loadWord(long addr,boolean useCache){
 		if (useCache) {
-			if (cache.checkCache((int)addr)) {
+			if (cache.checkCache(addr)) {
+				System.out.println("Cache Hit : " + Long.toHexString(addr));
 				return cache.getWord(addr);
 			}
+			System.out.println("Cache Miss : " + Long.toHexString(addr));
 		}
 		RiscVValue8 v1 = this.loadByte(addr, false);
 		RiscVValue8 v2 = this.loadByte((addr+1), false);
@@ -67,45 +75,32 @@ public class RiscVMemory {
 	
 	public void storeByte(long addr, RiscVValue value, boolean useCache){
 		if (useCache) {
-			if (cache.checkCache((int) addr)) {
-				cache.updateByte(addr,value);
-			}
-			else {
-				cache.addByte(addr,value);
-			}
+			cache.checkCache(addr);
+			cache.setByte(addr, value);
 		}
 		this.memory.put(addr, new RiscVValue8(value.getUnsignedValue() & 0xff));
 	}
 	
-	public void storeHalf(long addr, RiscVValue word, boolean useCache){
+	public void storeHalf(long addr, RiscVValue value, boolean useCache){
 		if (useCache) {
-			if (cache.checkCache((int) addr)) {
-				cache.updateHalf(addr,word);
-			}
-			else {
-				cache.addHalf(addr,word);
-			}
+			cache.checkCache(addr);
+			cache.setHalf(addr, value);
 		}
-		this.storeByte((int) addr, new RiscVValue8(word.getUnsignedValue() & 0xff), false);
-		this.storeByte((int) addr+1, new RiscVValue8((word.getUnsignedValue()>>8) & 0xff), false);
+		this.storeByte((int) addr, new RiscVValue8(value.getUnsignedValue() & 0xff), false);
+		this.storeByte((int) addr+1, new RiscVValue8((value.getUnsignedValue()>>8) & 0xff), false);
 	}
 	
-	public void storeWord(long addr, RiscVValue word,boolean useCache){
+	public void storeWord(long addr, RiscVValue value,boolean useCache){
 		if (useCache) {
-			if (cache.checkCache((int) addr)) {
-				cache.updateWord(addr,word);
-			}
-			else {
-				System.out.println("Adding new word ");
-				cache.addWord(addr,word);
-			}
+			cache.checkCache(addr);
+			cache.setWord(addr, value);
 		}
-		this.storeByte((int) addr, new RiscVValue8(word.getUnsignedValue() & 0xff), false);
-		this.storeByte((int) addr+1, new RiscVValue8((word.getUnsignedValue()>>8) & 0xff), false);
-		this.storeByte((int) addr+2, new RiscVValue8((word.getUnsignedValue()>>16) & 0xff), false);
-		this.storeByte((int) addr+3, new RiscVValue8((word.getUnsignedValue()>>24) & 0xff), false);
+		this.storeByte((int) addr, new RiscVValue8(value.getUnsignedValue() & 0xff), false);
+		this.storeByte((int) addr+1, new RiscVValue8((value.getUnsignedValue()>>8) & 0xff), false);
+		this.storeByte((int) addr+2, new RiscVValue8((value.getUnsignedValue()>>16) & 0xff), false);
+		this.storeByte((int) addr+3, new RiscVValue8((value.getUnsignedValue()>>24) & 0xff), false);
 		
-		System.out.println("Writing at 0x" + Long.toHexString(addr) + " : 0x" + Long.toHexString(word.getUnsignedValue()));
+		//System.out.println("Writing at 0x" + Long.toHexString(addr) + " : 0x" + Long.toHexString(value.getUnsignedValue()));
 	}
 	
 	

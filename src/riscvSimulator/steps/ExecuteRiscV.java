@@ -19,7 +19,7 @@ public class ExecuteRiscV {
 	}
 	
 	public void doStep(){
-		System.out.println("New Instruction :");
+		/*System.out.println("New Instruction :");
 		System.out.println("Pc : " + currentInstruction.getPC());
 		System.out.println("type : " + currentInstruction.getOp());
 		System.out.println("func : " + currentInstruction.getFunc());
@@ -27,8 +27,7 @@ public class ExecuteRiscV {
 		System.out.println("imm20 : " + currentInstruction.getImm20());
 		System.out.println("r1 : " + currentInstruction.getRs1());
 		System.out.println("r2 : " + currentInstruction.getRs2());
-		System.out.println("rd : " + currentInstruction.getRd());
-		System.out.println("-----------------");
+		System.out.println("-----------------");*/
 		this.hasJumped = false;
 		if (isLast){
 			switch(currentInstruction.getOp()){

@@ -52,7 +52,7 @@ public class nWayCache implements RiscVCache {
 	}
 
 	@Override
-	public void addWord(long address, RiscVValue value) {
+	public void setWord(long address, RiscVValue value) {
 		/*long set = getSet(address);
 		LinkedList<Long> addresses = new LinkedList<>();
 		for (int i = 0 ; i < wayCount; i++) {
@@ -115,7 +115,7 @@ public class nWayCache implements RiscVCache {
 	}
 
 	@Override
-	public void addHalf(long address, RiscVValue value) {
+	public void setHalf(long address, RiscVValue value) {
 		long set = getSet(address);
 		LinkedList<Long> addresses = new LinkedList<>();
 		for (int i = 0 ; i < wayCount; i++) {
@@ -153,7 +153,7 @@ public class nWayCache implements RiscVCache {
 	}
 
 	@Override
-	public void addByte(long address, RiscVValue value) {
+	public void setByte(long address, RiscVValue value) {
 		long set = getSet(address);
 		LinkedList<Long> addresses = new LinkedList<>();
 		for (int i = 0 ; i < wayCount; i++) {
@@ -188,72 +188,7 @@ public class nWayCache implements RiscVCache {
 		cachedAddresses.addFirst(address);
 		
 	}
-	
 
-	@Override
-	public void updateWord(long address, RiscVValue value) {
-		long set = getSet(address);
-		long tag = getTag(address);
-		for (int i = 0; i < wayCount; i++) {
-			if (cache.get(i).get(set).tag == tag) {
-				updateWord(i,address,value);
-				return;
-			}
-		}
-	}
-	
-	public void updateWord(int way,long address, RiscVValue value) {
-		long set = getSet(address);
-		long tag = getTag(address);
-		RiscVValue8 b1 = new RiscVValue8(value.getUnsignedValue() & 0xff);
-		RiscVValue8 b2 = new RiscVValue8((value.getUnsignedValue() >> 8) & 0xff);
-		RiscVValue8 b3 = new RiscVValue8((value.getUnsignedValue() >> 16) & 0xff);
-		RiscVValue8 b4 = new RiscVValue8((value.getUnsignedValue() >> 24) & 0xff);
-		cache.get(way).put(set, new CacheItem(tag,address, b4, b3, b2, b1));
-		cachedAddresses.remove(address);
-		cachedAddresses.addFirst(address);	
-	}
-
-	@Override
-	public void updateHalf(long address, RiscVValue value) {
-		long set = getSet(address);
-		long tag = getTag(address);
-		for (int i = 0; i < wayCount; i++) {
-			if (cache.get(i).get(set).tag == tag) {
-				updateHalf(i,address,value);
-				return;
-			}
-		}
-	}
-	public void updateHalf(int way, long address, RiscVValue value) {
-		long set = getSet(address);
-		long tag = getTag(address);
-		RiscVValue8 b1 = new RiscVValue8(value.getUnsignedValue() & 0xff);
-		RiscVValue8 b2 = new RiscVValue8((value.getUnsignedValue() >> 8) & 0xff);
-		cache.get(way).put(set, new CacheItem(tag,address, null, null, b2, b1));
-		cachedAddresses.remove(address);
-		cachedAddresses.addFirst(address);	
-	}
-
-	@Override
-	public void updateByte(long address, RiscVValue value) {
-		long set = getSet(address);
-		long tag = getTag(address);
-		for (int i = 0; i < wayCount; i++) {
-			if (cache.get(i).get(set).tag == tag) {
-				updateByte(i,address,value);
-				return;
-			}
-		}
-	}
-	public void updateByte(int way, long address, RiscVValue value) {
-		long set = getSet(address);
-		long tag = getTag(address);
-		RiscVValue8 b1 = new RiscVValue8(value.getUnsignedValue() & 0xff);	
-		cache.get(way).put(set, new CacheItem(tag,address, null, null, null, b1));
-		cachedAddresses.remove(address);
-		cachedAddresses.addFirst(address);
-	}
 
 	@Override
 	public RiscVValue32 getWord(long address) {

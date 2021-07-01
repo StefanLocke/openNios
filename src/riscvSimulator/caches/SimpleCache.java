@@ -30,7 +30,7 @@ public class SimpleCache implements RiscVCache{
 		return false;
 	}
 	@Override
-	public void addWord(long address, RiscVValue value) {
+	public void setWord(long address, RiscVValue value) {
 		cachedAdresses.addFirst(address);
 		if (cachedAdresses.size() > cacheSize) {
 			long rmAddress = cachedAdresses.removeLast();
@@ -42,7 +42,7 @@ public class SimpleCache implements RiscVCache{
 		storeWordCache(address, value);
 	}
 	@Override
-	public void addHalf(long address, RiscVValue value) {
+	public void setHalf(long address, RiscVValue value) {
 		cachedAdresses.addFirst(address);
 		if (cachedAdresses.size() > cacheSize) {
 			long rmAddress = cachedAdresses.removeLast();
@@ -52,31 +52,13 @@ public class SimpleCache implements RiscVCache{
 		storeHalfCache(address, value);
 	}
 	@Override
-	public void addByte(long address, RiscVValue value) {
+	public void setByte(long address, RiscVValue value) {
 		cachedAdresses.addFirst(address);
 		if (cachedAdresses.size() > cacheSize) {
 			long rmAddress = cachedAdresses.removeLast();
 			cache.remove(rmAddress);
 			
 		}
-		storeByteCache(address, value);
-	}
-	@Override
-	public void updateWord(long address, RiscVValue value) {
-		cachedAdresses.remove(cachedAdresses.indexOf(address));
-		cachedAdresses.addFirst(address);
-		storeWordCache(address, value);
-	}
-	@Override
-	public void updateHalf(long address, RiscVValue value) {
-		cachedAdresses.remove(cachedAdresses.indexOf(address));
-		cachedAdresses.addFirst(address);
-		storeHalfCache(address, value);
-	}
-	@Override
-	public void updateByte(long address, RiscVValue value) {
-		cachedAdresses.remove(cachedAdresses.indexOf(address));
-		cachedAdresses.addFirst(address);
 		storeByteCache(address, value);
 	}
 	@Override

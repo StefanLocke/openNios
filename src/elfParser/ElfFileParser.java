@@ -20,7 +20,7 @@ public class ElfFileParser {
 	public ElfFileParser(RiscVMemory memory,RegisterFileRiscV registers){
 		byte[] elfBytes=null;
 		try {
-			elfBytes = Files.readAllBytes(Paths.get("./", /*CommandCompileCode.LinkedElf*/ "./a.out"));
+			elfBytes = Files.readAllBytes(Paths.get("./",CommandCompileCode.LinkedElf));
 		} catch (IOException e) {
 			System.err.println("Error while loading elf file !");
 			e.printStackTrace();

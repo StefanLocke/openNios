@@ -231,7 +231,7 @@ public class InstructionRiscV {
 			type = RiscVType.UNKNOWN;	
 		}
 		if (func != null) {
-		System.out.println("New Instruction :");
+		/*System.out.println("New Instruction :");
 		System.out.println("Pc : " + this.getPC());
 		System.out.println("type : " + this.getOp());
 		System.out.println("func : " + this.getFunc());
@@ -240,7 +240,7 @@ public class InstructionRiscV {
 		System.out.println("r1 : " + this.r1);
 		System.out.println("r2 : " + this.r2);
 		System.out.println("rd : " + this.rd);
-		System.out.println("-----------------");
+		System.out.println("-----------------");*/
 		}
 	}
 	

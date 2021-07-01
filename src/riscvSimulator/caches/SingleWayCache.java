@@ -44,7 +44,7 @@ public class SingleWayCache implements RiscVCache{
 	}
 
 	@Override
-	public void addWord(long address, RiscVValue value) {
+	public void setWord(long address, RiscVValue value) {
 		long set = getSet(address);
 		long tag = getTag(address);
 		RiscVValue8 b1 = new RiscVValue8(value.getUnsignedValue() & 0xff);
@@ -58,7 +58,7 @@ public class SingleWayCache implements RiscVCache{
 	}
 
 	@Override
-	public void addHalf(long address, RiscVValue value) {
+	public void setHalf(long address, RiscVValue value) {
 		long set = getSet(address);
 		long tag = getTag(address);
 		RiscVValue8 b1 = new RiscVValue8(value.getUnsignedValue() & 0xff);
@@ -69,7 +69,7 @@ public class SingleWayCache implements RiscVCache{
 	}
 
 	@Override
-	public void addByte(long address, RiscVValue value) {
+	public void setByte(long address, RiscVValue value) {
 		long set = getSet(address);
 		long tag = getTag(address);
 		RiscVValue8 b1 = new RiscVValue8(value.getUnsignedValue() & 0xff);
@@ -78,40 +78,7 @@ public class SingleWayCache implements RiscVCache{
 		checkOverFlow();
 	}
 
-	@Override
-	public void updateWord(long address, RiscVValue value) {
-		long set = getSet(address);
-		long tag = getTag(address);
-		RiscVValue8 b1 = new RiscVValue8(value.getUnsignedValue() & 0xff);
-		RiscVValue8 b2 = new RiscVValue8((value.getUnsignedValue() >> 8) & 0xff);
-		RiscVValue8 b3 = new RiscVValue8((value.getUnsignedValue() >> 16) & 0xff);
-		RiscVValue8 b4 = new RiscVValue8((value.getUnsignedValue() >> 24) & 0xff);
-		cache.put(set, new CacheItem(tag, b4, b3, b2, b1));
-		cachedAddresses.remove(address);
-		cachedAddresses.addFirst(address);
-	}
-
-	@Override
-	public void updateHalf(long address, RiscVValue value) {
-		long set = getSet(address);
-		long tag = getTag(address);
-		RiscVValue8 b1 = new RiscVValue8(value.getUnsignedValue() & 0xff);
-		RiscVValue8 b2 = new RiscVValue8((value.getUnsignedValue() >> 8) & 0xff);
-		cache.put(set, new CacheItem(tag, null, null, b2, b1));
-		cachedAddresses.remove(address);
-		cachedAddresses.addFirst(address);
-	}
-
-	@Override
-	public void updateByte(long address, RiscVValue value) {
-		long set = getSet(address);
-		long tag = getTag(address);
-		RiscVValue8 b1 = new RiscVValue8(value.getUnsignedValue() & 0xff);	
-		cache.put(set, new CacheItem(tag, null, null, null, b1));
-		cachedAddresses.remove(address);
-		cachedAddresses.addFirst(address);
-	}
-
+	
 	@Override
 	public RiscVValue32 getWord(long address) {
 		long set = getSet(address);
