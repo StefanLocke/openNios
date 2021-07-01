@@ -23,8 +23,8 @@ import openDLX.gui.internalframes.factories.tableFactories.CacheTableFactory;
 import openDLX.gui.internalframes.util.TableSizeCalculator;
 import riscvSimulator.RiscVMemory;
 import riscvSimulator.caches.SingleWayCache;
-import riscvSimulator.caches.nWayCache;
 import riscvSimulator.caches.lineCache.LineCache;
+import riscvSimulator.caches.wayCache.nWayCache;
 import riscvSimulator.values.RiscVValue32;
 
 @SuppressWarnings("serial")

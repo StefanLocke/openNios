@@ -6,8 +6,8 @@ import java.util.List;
 import riscvSimulator.caches.RiscVCache;
 import riscvSimulator.caches.SimpleCache;
 import riscvSimulator.caches.SingleWayCache;
-import riscvSimulator.caches.nWayCache;
 import riscvSimulator.caches.lineCache.LineCache;
+import riscvSimulator.caches.wayCache.nWayCache;
 import riscvSimulator.values.RiscVValue;
 import riscvSimulator.values.RiscVValue16;
 import riscvSimulator.values.RiscVValue32;
@@ -25,6 +25,7 @@ public class RiscVMemory {
 	public RiscVMemory(){
 		this.memory = new HashMap<Long, RiscVValue8>();
 		cache = new LineCache(3, 2, this);
+		//cache = new nWayCache(3, 2, this);
 	}
 	
 	public RiscVValue8 loadByte(Long addr, boolean useCache){

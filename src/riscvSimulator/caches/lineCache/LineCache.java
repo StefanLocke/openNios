@@ -25,6 +25,11 @@ public class LineCache implements RiscVCache {
 		this.offsetLength = offsetSize;
 		this.memory = memory;
 	}
+	
+	
+	/**
+	 * Variables Used for the representation of the cache on the UI
+	 */
 	public static final int ACTION_INPUT = 1;
 	public static final int ACTION_OUTPUT = 2;
 	private long lastAddress = 0;
@@ -35,6 +40,8 @@ public class LineCache implements RiscVCache {
 	private int lastAction = -1;
 	private long lastTagChange = -1;
 	private int lastHit = -1;
+	
+	
 	@Override
 	public boolean checkCache(long address) {
 		lastAddress = address;

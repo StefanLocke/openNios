@@ -12,7 +12,10 @@ public class DataEntry {
 	RiscVValue8 byte4;
 	
 	public DataEntry() {
-		
+		byte1 = new RiscVValue8(0);
+		byte2 = new RiscVValue8(0);
+		byte3 = new RiscVValue8(0);
+		byte4 = new RiscVValue8(0);
 	}
 	
 	public void setWord(RiscVValue value) {

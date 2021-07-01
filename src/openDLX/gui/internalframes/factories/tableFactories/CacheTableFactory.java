@@ -15,8 +15,8 @@ import riscvSimulator.RiscVMemory;
 import riscvSimulator.caches.RiscVCache;
 import riscvSimulator.caches.SimpleCache;
 import riscvSimulator.caches.SingleWayCache;
-import riscvSimulator.caches.nWayCache;
 import riscvSimulator.caches.lineCache.LineCache;
+import riscvSimulator.caches.wayCache.nWayCache;
 import riscvSimulator.values.RiscVValue32;
 
 public class CacheTableFactory extends TableFactory {
