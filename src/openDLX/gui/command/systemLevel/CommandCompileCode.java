@@ -44,14 +44,15 @@ public class CommandCompileCode implements Command
 	
 	public static final String compilerNameWindowsRV = "/external_bin/riscv32-unknown-elf-as.exe";
 	public static final String compilerNameMacRV= "/external_bin/riscv32-unknown-elf-as.exe";
-	public static final String compilerNameLinuxRV = "/external_bin/riscv32-unknown-elf-as.exe";
+	public static final String compilerNameLinuxRV = "/external_bin/riscv32-unknown-elf-as";
 	
 	public static final String linkerNameWindowsRV = "/external_bin/riscv32-unknown-elf-ld.exe";
+	public static final String linkerNameLinuxRV = "/external_bin/riscv32-unknown-elf-ld";
 	
 	public static final String outPutNameNios = "./nios2-elf-as";
 	public static final String generatedAssemblerRV = "./rv-elf-as.exe";
+	public static final String generatedLinkerRV = "./rv-elf-ld.exe";
 	
-	public static final String generatedLinkerRV = "./external_bin/riscv32-unknown-elf-ld.exe";
 	public static final String unLinkedElf = "./file.elf";
 	public static final String LinkedElf = "./linkedfile.elf";
 
@@ -82,16 +83,23 @@ public class CommandCompileCode implements Command
                 Runtime rt = Runtime.getRuntime();
                 
                 InputStream is;
+                InputStream isl;
                 
                 String system = System.getProperty("os.name");
                 System.out.println("Current system is : " + system);
-                if (system.matches(".*Windows.*"))
+                if (system.matches(".*Windows.*")) {
             		is = this.getClass().getResource(compilerNameWindowsRV).openStream();
-                else if (system.matches(".*Mac.*"))
+            		isl = this.getClass().getResource(linkerNameWindowsRV).openStream();
+                }
+                else if (system.matches(".*Mac.*")) {
         			is = this.getClass().getResource(compilerNameMacRV).openStream();
-        		else
+        			isl = this.getClass().getResource(linkerNameLinuxRV).openStream();
+                	}
+                
+        		else {
         			is = this.getClass().getResource(compilerNameLinuxRV).openStream();
-                			
+        			isl= this.getClass().getResource(linkerNameLinuxRV).openStream();
+        		}
                 OutputStream os = new FileOutputStream(generatedAssemblerRV);
                 
                 byte[] b = new byte[2048];
@@ -100,12 +108,27 @@ public class CommandCompileCode implements Command
                 while ((length = is.read(b)) != -1) {
                     os.write(b, 0, length);
                 }
-
+                
                 is.close();
                 os.close();
                 
+                OutputStream osl = new FileOutputStream(generatedLinkerRV);
+                
+                byte[] bl = new byte[2048];
+                int lengthl;
+
+                while ((lengthl = isl.read(bl)) != -1) {
+                    osl.write(bl, 0, lengthl);
+                }
+                
+                isl.close();
+                osl.close();
+                
                 File file = new File(generatedAssemblerRV);
                 file.setExecutable(true);
+                
+                File filel = new File(generatedLinkerRV);
+                filel.setExecutable(true);
                 
                 Process ps = rt.exec(generatedAssemblerRV + " " + codeFilePath + " -o " + unLinkedElf);
                 Process ps2 = rt.exec(generatedLinkerRV + " " +unLinkedElf + " -o " + LinkedElf);
