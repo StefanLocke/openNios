@@ -140,6 +140,9 @@ public class CacheTableFactory extends TableFactory {
 			table.setFocusable(false);
 			table.getTableHeader().setReorderingAllowed(false);
 	        table.setDefaultRenderer(Object.class, new CacheFrameTableCellRenderer());
+	        table.setShowGrid(false);
+	        table.setRowMargin(0);
+	        tcm.setColumnMargin(0);
 	        System.out.println("Created Table");
 			return table;
 		}

@@ -2,8 +2,14 @@ package openDLX.gui.internalframes.renderer;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Label;
 
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class CacheFrameTableCellRenderer extends ChangeableFrameTableCellRenderer{
@@ -18,7 +24,14 @@ public class CacheFrameTableCellRenderer extends ChangeableFrameTableCellRendere
 		comp.setBackground(model.DEFAULT_COLOR);
 		if (coloredRow == row) comp.setBackground(model.getRowColor());
 		if (coloredRow == row && coloredData == column) comp.setBackground(model.getDataColor());
-		
+		if (column != 0) {
+			JComponent jComp = (JComponent)comp;
+			jComp.setBorder(new MatteBorder(0, 0, 1, 1, Color.BLACK));
+		}else {
+			JLabel jComp = (JLabel)comp;
+			jComp.setBorder(new MatteBorder(0, 0, 0, 1, Color.BLACK));
+			jComp.setHorizontalAlignment(SwingConstants.RIGHT);
+		}
 		return comp;
 	}
 

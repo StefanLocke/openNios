@@ -21,7 +21,10 @@
  ******************************************************************************/
 package openDLX.gui.internalframes;
 
+import java.awt.Color;
+
 import javax.swing.JInternalFrame;
+import javax.swing.SwingConstants;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 

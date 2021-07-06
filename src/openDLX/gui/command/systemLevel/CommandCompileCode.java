@@ -42,12 +42,12 @@ public class CommandCompileCode implements Command
 	public static final String compilerNameMacNios= "/external_bin/mac-nios2-elf-as";
 	public static final String compilerNameLinuxNios = "/external_bin/lnx-nios2-elf-as";
 	
-	public static final String compilerNameWindowsRV = "/external_bin/riscv32-unknown-elf-as.exe";
-	public static final String compilerNameMacRV= "/external_bin/riscv32-unknown-elf-as.exe";
-	public static final String compilerNameLinuxRV = "/external_bin/riscv32-unknown-elf-as";
+	public static final String compilerNameWindowsRV = "/external_bin/win-riscv32-unknown-elf-as.exe";
+	public static final String compilerNameMacRV= "/external_bin/lnx-riscv32-unknown-elf-as";
+	public static final String compilerNameLinuxRV = "/external_bin/lnx-riscv32-unknown-elf-as";
 	
-	public static final String linkerNameWindowsRV = "/external_bin/riscv32-unknown-elf-ld.exe";
-	public static final String linkerNameLinuxRV = "/external_bin/riscv32-unknown-elf-ld";
+	public static final String linkerNameWindowsRV = "/external_bin/win-riscv32-unknown-elf-ld.exe";
+	public static final String linkerNameLinuxRV = "/external_bin/lnx-riscv32-unknown-elf-ld";
 	
 	public static final String outPutNameNios = "./nios2-elf-as";
 	public static final String generatedAssemblerRV = "./rv-elf-as.exe";

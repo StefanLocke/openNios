@@ -18,10 +18,12 @@ import javax.swing.table.TableModel;
 
 import openDLX.gui.MainFrame;
 import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
+import openDLX.gui.internalframes.concreteframes.canvas.LineCacheCanvas;
 import openDLX.gui.internalframes.concreteframes.canvas.TableCanvas;
 import openDLX.gui.internalframes.factories.tableFactories.CacheTableFactory;
 import openDLX.gui.internalframes.util.TableSizeCalculator;
 import riscvSimulator.RiscVMemory;
+import riscvSimulator.caches.SimpleCache;
 import riscvSimulator.caches.SingleWayCache;
 import riscvSimulator.caches.lineCache.LineCache;
 import riscvSimulator.caches.wayCache.nWayCache;
@@ -86,10 +88,15 @@ public class CacheFrame extends OpenDLXSimInternalFrame implements ActionListene
 		 	
 		 	System.out.println("Creating CacheFrame");
 		 	cacheTable = new CacheTableFactory(memory.getCache()).createTable();
-		 	//JScrollPane scrollpane = new JScrollPane(cacheTable);
-		 	canvas = new TableCanvas(cacheTable,((LineCache)memory.getCache()).offsetLength);
-		
-		 	cacheTable.setFillsViewportHeight(true);
+		 	if (memory.getCache() instanceof nWayCache)
+		 		canvas = new TableCanvas(cacheTable);
+		 	if (memory.getCache() instanceof LineCache)
+		 		canvas = new LineCacheCanvas(cacheTable,((LineCache)memory.getCache()).offsetLength);
+			if (memory.getCache() instanceof SingleWayCache)
+		 		canvas = new TableCanvas(cacheTable);
+			if (memory.getCache() instanceof SimpleCache)
+		 		canvas = new TableCanvas(cacheTable);
+		 	cacheTable.setFillsViewportHeight(false);
 		 	//TableSizeCalculator.setDefaultMaxTableSize(scrollpane, cacheTable,
 	       //         TableSizeCalculator.SET_SIZE_BOTH);
 	        //config internal frame
@@ -142,6 +149,7 @@ public class CacheFrame extends OpenDLXSimInternalFrame implements ActionListene
 		}
 		if (memory.getCache() instanceof LineCache) {
 			LineCache cache = (LineCache) memory.getCache();
+			LineCacheCanvas canvas = (LineCacheCanvas)this.canvas;
 			canvas.getAddressField().setTag(cache.getLastTag());
 			canvas.getAddressField().setSet(cache.getLastSet());
 			canvas.getAddressField().setOffset(cache.getLastOffset());

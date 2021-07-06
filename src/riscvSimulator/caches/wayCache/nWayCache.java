@@ -156,14 +156,7 @@ public class nWayCache implements RiscVCache {
 	
 	
 	
-	public long findTag(int way,long set) {
-		return set;
-		
-	}
-	
-	public RiscVValue8 findByte(int way, long set, int byteNumber) {
-		return null;
-	}
+
 	
 	class CacheItem {
 		public CacheItem(int wayCount) {
@@ -282,7 +275,13 @@ public class nWayCache implements RiscVCache {
 		return set;
 	}
 
+	public RiscVValue8 findByte(long set,long tag, long selector) {
+		return new RiscVValue8(0);
+	}
 	
+	public long findTag(long set,int way) {
+		return 0;
+	}
 	@Override
 	public String toString() {
 		String r = "";
