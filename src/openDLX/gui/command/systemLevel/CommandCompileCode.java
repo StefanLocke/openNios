@@ -44,14 +44,17 @@ public class CommandCompileCode implements Command
 	
 	public static final String compilerNameWindowsRV = "/external_bin/win-riscv32-unknown-elf-as.exe";
 	public static final String compilerNameMacRV= "/external_bin/lnx-riscv32-unknown-elf-as";
-	public static final String compilerNameLinuxRV = "/external_bin/lnx-riscv32-unknown-elf-as";
+	public static final String compilerNameLinuxRV = "/external_bin/riscv64-zephyr-elf-as";
 	
 	public static final String linkerNameWindowsRV = "/external_bin/win-riscv32-unknown-elf-ld.exe";
-	public static final String linkerNameLinuxRV = "/external_bin/lnx-riscv32-unknown-elf-ld";
+	public static final String linkerNameLinuxRV = "/external_bin/riscv64-zephyr-elf-ld";
 	
 	public static final String outPutNameNios = "./nios2-elf-as";
 	public static final String generatedAssemblerRV = "./rv-elf-as.exe";
 	public static final String generatedLinkerRV = "./rv-elf-ld.exe";
+	
+	public static final String asArgs = "-march=rv32im ";
+	public static final String ldArgs = "-m elf32lriscv ";
 	
 	public static final String unLinkedElf = "./file.elf";
 	public static final String LinkedElf = "./linkedfile.elf";
@@ -130,15 +133,15 @@ public class CommandCompileCode implements Command
                 File filel = new File(generatedLinkerRV);
                 filel.setExecutable(true);
                 
-                Process ps = rt.exec(generatedAssemblerRV + " " + codeFilePath + " -o " + unLinkedElf);
-                Process ps2 = rt.exec(generatedLinkerRV + " " +unLinkedElf + " -o " + LinkedElf);
-                //Process ps = rt.exec("riscv32-unknown-elf-as.exe" + " " + codeFilePath + " -o ./file.elf");
+                Process ps = rt.exec(generatedAssemblerRV + " " + asArgs +codeFilePath + " -o " + unLinkedElf);
                 ps.waitFor();
+                Process ps2 = rt.exec(generatedLinkerRV + " " + ldArgs + unLinkedElf + " -o " + LinkedElf);
+                //Process ps = rt.exec("riscv32-unknown-elf-as.exe" + " " + codeFilePath + " -o ./file.elf");
                 ps2.waitFor();
                 ArrayList<String> errorMessage = getStringFromInputStream(ps.getErrorStream());
                 
                 if (errorMessage.size() != 0){
-                	System.out.println("Errors while compiling");
+                	System.out.println("Errors while assembling");
 	                String errorDisplayed = "";
 	                for (String oneLine : errorMessage){
 //	                	int index = 0;
@@ -161,6 +164,32 @@ public class CommandCompileCode implements Command
 	                JOptionPane.showMessageDialog(mf, errorDisplayed);
 	                
                 }
+                errorMessage = getStringFromInputStream(ps2.getErrorStream());
+                if (errorMessage.size() != 0){
+                	System.out.println("Errors while linking");
+	                String errorDisplayed = "";
+	                for (String oneLine : errorMessage){
+//	                	int index = 0;
+//	                	while (oneLine.charAt(index) != ':')
+//	                		oneLine = oneLine.substring(1);
+//	                	
+//	            		oneLine = oneLine.substring(1);
+//	            		if (oneLine.matches("[0-9]+.*")){
+//	            			String lineString = "";
+//	                    	while (oneLine.charAt(index) != ':'){
+//	                    		lineString += oneLine.charAt(0);
+//	                    		oneLine = oneLine.substring(1);
+//	                    	}
+//	                		oneLine = oneLine.substring(1);
+//	
+//	            			int line = Integer.parseInt(lineString);
+	            			errorDisplayed += oneLine + "\n";
+//	            		}
+	                }
+	                JOptionPane.showMessageDialog(mf, errorDisplayed);
+	                
+                }
+                
             }     
         }
         catch (Exception e)

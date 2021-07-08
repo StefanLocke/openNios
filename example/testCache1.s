@@ -15,7 +15,6 @@ _start:
 	sw t0,0x6c(zero)
 	addi t0,zero,13
 	sw t0,236(zero)
-	
 	lw t0,8(zero)
 	lw t0,0xc(zero)
 	lw t0,0x2c(zero)

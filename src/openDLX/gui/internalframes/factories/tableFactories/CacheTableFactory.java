@@ -57,8 +57,10 @@ public class CacheTableFactory extends TableFactory {
 		}
 		if (cache instanceof nWayCache) {
 			nWayCache cache = (nWayCache)this.cache;
-			model = new NotSelectableTableModel();
-			table = new JTable(model);
+			
+			table = new JTable();
+			model = new MyTableModel(table);
+			table.setModel(model);
 			table.setFocusable(false);
 			model.addColumn("Set");
 			for (int i = 0 ; i < cache.wayCount ; i++) {
@@ -81,7 +83,8 @@ public class CacheTableFactory extends TableFactory {
 			}
 			TableColumnModel tcm = table.getColumnModel();
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-	        table.setDefaultRenderer(Object.class, new ChangeableFrameTableCellRenderer());
+	        table.setDefaultRenderer(Object.class, new CacheFrameTableCellRenderer());
+	        ((MyTableModel)model).init();
 	        System.out.println("Created Table");
 			return table;
 		}
@@ -118,8 +121,11 @@ public class CacheTableFactory extends TableFactory {
 		}
 		if (cache instanceof LineCache) {
 			LineCache cache = (LineCache)this.cache;
-			model = new MyTableModel();
-			table = new JTable(model);
+			
+			table = new JTable();
+			model = new MyTableModel(table);
+			table.setModel(model);
+			
 			table.setFocusable(false);
 			model.addColumn("SET");
 			model.addColumn("TAG");
@@ -143,6 +149,7 @@ public class CacheTableFactory extends TableFactory {
 	        table.setShowGrid(false);
 	        table.setRowMargin(0);
 	        tcm.setColumnMargin(0);
+	        ((MyTableModel)model).init();
 	        System.out.println("Created Table");
 			return table;
 		}

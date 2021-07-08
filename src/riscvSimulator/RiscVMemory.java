@@ -24,8 +24,8 @@ public class RiscVMemory {
 	
 	public RiscVMemory(){
 		this.memory = new HashMap<Long, RiscVValue8>();
-		//cache = new LineCache(3, 2, this);
-		cache = new nWayCache(3, 2, this);
+		cache = new LineCache(3, 2, this);
+		//cache = new nWayCache(3, 2, this);
 	}
 	
 	public RiscVValue8 loadByte(Long addr, boolean useCache){

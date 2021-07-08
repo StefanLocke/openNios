@@ -24,6 +24,16 @@ public class nWayCache implements RiscVCache {
 	public int wayCount;
 	RiscVMemory memory;
 	
+	private long lastAddress = 0;
+	private long lastTag = 0;
+	private long lastSet = 0;
+	private long lastSelector = 0;
+	private long lastValue = 0;
+	
+	private int lastWay = 0;
+	private int lastHitMiss = 0;
+	private int lastAction = 0;
+	
 	public nWayCache(int setLength,int wayCount,RiscVMemory mem) {
 		cache = new HashMap<Long,CacheItem>();	
 		this.wayCount = wayCount;
@@ -36,18 +46,27 @@ public class nWayCache implements RiscVCache {
 	
 	@Override
 	public boolean checkCache(long address) {
+		lastAddress = address;
 		long tag = getTag(address);
+		lastTag = tag;
 		long set = getSet(address);
+		lastSet = set;
+		long selector = getSelector(address);
+		lastSelector = selector;
+		
 		CacheItem item = cache.get(set);
 		if (item == null) {
 			fillCache(address);
+			lastHitMiss = 0;
 			return false;
 		}
 		DataItem data = item.getFromTag(tag);
 		if (data == null) {
 			fillCache(address);
+			lastHitMiss = 0;
 			return false;
 		}
+		lastHitMiss = 1;
 		return true;
 	}
 	
@@ -64,6 +83,7 @@ public class nWayCache implements RiscVCache {
 
 	@Override
 	public void setWord(long address, RiscVValue value) {
+		lastAction = WRITE_ACTION;
 		long tag = getTag(address);
 		long set = getSet(address);
 		CacheItem item = cache.get(set);
@@ -75,6 +95,7 @@ public class nWayCache implements RiscVCache {
 
 	@Override
 	public void setHalf(long address, RiscVValue value) {
+		lastAction = WRITE_ACTION;
 		long tag = getTag(address);
 		long set = getSet(address);
 		long selector = getSelector(address);
@@ -86,6 +107,7 @@ public class nWayCache implements RiscVCache {
 	
 	@Override
 	public void setByte(long address, RiscVValue value) {
+		lastAction = WRITE_ACTION;
 		long tag = getTag(address);
 		long set = getSet(address);
 		long selector = getSelector(address);
@@ -99,6 +121,7 @@ public class nWayCache implements RiscVCache {
 
 	@Override
 	public RiscVValue32 getWord(long address) {
+		lastAction = READ_ACTION;
 		long tag = getTag(address);
 		long set = getSet(address);
 		CacheItem item = cache.get(set);
@@ -113,6 +136,7 @@ public class nWayCache implements RiscVCache {
 
 	@Override
 	public RiscVValue16 getHalf(long address) {
+		lastAction = READ_ACTION;
 		long tag = getTag(address);
 		long set = getSet(address);
 		long selector = getSelector(address);
@@ -129,6 +153,7 @@ public class nWayCache implements RiscVCache {
 
 	@Override
 	public RiscVValue8 getByte(long address) {
+		lastAction = READ_ACTION;
 		long tag = getTag(address);
 		long set = getSet(address);
 		long selector = getSelector(address);
@@ -172,6 +197,7 @@ public class nWayCache implements RiscVCache {
 					if (data[i].tag == tag) {
 						if (history.contains(tag)) history.remove(tag);
 						history.addFirst(tag);
+						lastWay = i;
 						return data[i];
 					}
 				}
@@ -181,13 +207,21 @@ public class nWayCache implements RiscVCache {
 		}
 		
 		public void putWord(long tag,RiscVValue value) {
+			DataItem d = getFromTag(tag);
+			if (d != null) {
+				d.data.setWord(value);
+				return;
+			}
+			
 			int indexToModify = 0;
 			for (int i = 0; i < data.length; i++) {
+				lastWay = i;
 				if (data[i] == null) {
 					data[i] = new DataItem();
 					data[i].tag = tag;
 					data[i].data = new DataEntry();
 					data[i].data.setWord(value);
+					return;
 				}
 				if (data[i].tag == tag) {
 					data[i].data.setWord(value);
@@ -197,11 +231,9 @@ public class nWayCache implements RiscVCache {
 					indexToModify = i;
 				}
 			}
-			System.out.println("Bad location, should not be here - 181");
+			lastWay = indexToModify;
 			data[indexToModify].tag = tag;
 			data[indexToModify].data.setWord(value);
-			
-			
 		}
 		public void putHalf(long tag,long selector,RiscVValue value) {
 			int indexToModify = 0;
@@ -275,11 +307,25 @@ public class nWayCache implements RiscVCache {
 		return set;
 	}
 
-	public RiscVValue8 findByte(long set,long tag, long selector) {
+	public RiscVValue8 findByte(long set,long way, long selector) {
+		CacheItem item = cache.get(set);
+		if (item != null) {
+			DataItem data = item.data[(int) way];
+			if (data != null) {
+				return data.data.getByte(selector);
+			}
+		}
 		return new RiscVValue8(0);
 	}
 	
 	public long findTag(long set,int way) {
+		CacheItem item = cache.get(set);
+		if (item != null) {
+			DataItem data = item.data[way];
+			if (data != null) {
+				return data.tag;
+			}
+		}
 		return 0;
 	}
 	@Override
@@ -302,42 +348,56 @@ public class nWayCache implements RiscVCache {
 
 	@Override
 	public int getLastAction() {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		return lastAction;
 	}
 
 
 
 	public long getLastAddress() {
 		// TODO Auto-generated method stub
-		return 0;
+		return lastAddress;
 	}
 
 
 
 	public long getLastSet() {
 		// TODO Auto-generated method stub
-		return 0;
+		return lastSet;
 	}
 
 
 
 	public long getLastTag() {
 		// TODO Auto-generated method stub
-		return 0;
+		return lastTag;
 	}
 
 
 
 	public long getLastValue() {
 		// TODO Auto-generated method stub
-		return 0;
+		return lastValue;
 	}
 
 
 
-	public long getLastAlternate() {
+	public int getLastWay() {
 		// TODO Auto-generated method stub
-		return 0;
+		return lastWay;
+	}
+
+
+
+	public long getLastSelector() {
+		// TODO Auto-generated method stub
+		return lastSelector;
+	}
+
+
+
+	public int getLastHitMiss() {
+		// TODO Auto-generated method stub
+		return lastHitMiss;
 	}
 }

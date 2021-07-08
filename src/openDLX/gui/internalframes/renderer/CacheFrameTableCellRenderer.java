@@ -19,11 +19,9 @@ public class CacheFrameTableCellRenderer extends ChangeableFrameTableCellRendere
 			int row, int column) {
 		Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		MyTableModel model = (MyTableModel) table.getModel();
-		int coloredRow = model.getRowToColor();
-		int coloredData= model.getDataToColor();
+		
 		//comp.setBackground(model.DEFAULT_COLOR);
-		if (coloredRow == row) comp.setBackground(model.getRowColor());
-		if (coloredRow == row && coloredData == column) comp.setBackground(model.getDataColor());
+		comp.setBackground(model.getColorOf(column, row));
 		JLabel jComp = (JLabel)comp;
 		jComp.setBorder(new MatteBorder(0, 0, 0, 1, Color.BLACK));
 		jComp.setHorizontalAlignment(SwingConstants.CENTER);

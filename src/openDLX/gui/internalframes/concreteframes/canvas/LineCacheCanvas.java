@@ -65,15 +65,16 @@ public class LineCacheCanvas extends TableCanvas  {
 	
 	private void ColorTable(int row,int col,boolean read) {
 		MyTableModel model = (MyTableModel) table.getModel();
-		model.setRowColor(row, Color.YELLOW);
+		model.resetColors();
+		model.changeRowColor(row, Color.YELLOW);
 		if (read) { 
 			if (lastHitMiss > 0) 
-				model.setBoxColor(row,col,Color.GREEN); 
+				model.changeColor(col, row,Color.GREEN); 
 			else  
-				model.setBoxColor(row,col,Color.RED);
+				model.changeColor(col,row,Color.RED);
 		}
 		else {
-			model.setBoxColor(row,col,Color.ORANGE);
+			model.changeColor(col,row,Color.ORANGE);
 		}
 		
 	}

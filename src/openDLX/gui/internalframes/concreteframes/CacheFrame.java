@@ -125,24 +125,32 @@ public class CacheFrame extends OpenDLXSimInternalFrame implements ActionListene
 		}
 		if (memory.getCache() instanceof nWayCache) {
 			nWayCache cache = (nWayCache) memory.getCache();
-			for (int i = 0 ; i < cache.wayCount ; i++) {
-				for (int j = 0 ; j < cache.getSize() ; j++) {
-					RiscVValue32 value = new RiscVValue32(cache.findByte(i,j, 4).getUnsignedValue() << 24 | 
-							(cache.findByte(i,j, 3).getUnsignedValue() << 16 | 
-									(cache.findByte(i,j, 2).getUnsignedValue() << 8 | 
-											(cache.findByte(i,j, 1).getUnsignedValue()))));
+			nWayCacheCanvas canvas = (nWayCacheCanvas)this.canvas;
+			canvas.displayEvent(cache.getLastAddress(),
+					cache.getLastTag(), 
+					cache.getLastSet(),
+					cache.getLastWay(),
+					cache.getLastSelector(),
+					cache.getLastAction() == RiscVCache.READ_ACTION,
+					cache.getLastHitMiss() ==  1);
+			for (int i = 0 ; i < cache.getSize() ; i++) {
+				for (int j = 0 ; j < cache.wayCount ; j++) {
+					RiscVValue32 value = new RiscVValue32(cache.findByte(i, j, 3).getUnsignedValue() << 24 | 
+							(cache.findByte(i, j, 2).getUnsignedValue() << 16 | 
+									(cache.findByte(i, j, 1).getUnsignedValue() << 8 | 
+											(cache.findByte(i,j, 0).getUnsignedValue()))));
 					switch (valueFormat) {
 						case 1 : //BIN
-							model.setValueAt("0x"+cache.findTag(i, j),j,1 + 2*i);
-							model.setValueAt("0b"+Long.toBinaryString(value.getUnsignedValue()),j,1 + 2*i + 1);
+							model.setValueAt("0x"+cache.findTag(i, j),i,1 + 2*j);
+							model.setValueAt("0b"+Long.toBinaryString(value.getUnsignedValue()),i,2 + 2*j);
 							break;
 						case 2 :
-							model.setValueAt("0x"+cache.findTag(i, j),j,1 + 2*i);
-							model.setValueAt(value.getUnsignedValue(),j,1 + 2*i + 1);
+							model.setValueAt("0x"+cache.findTag(i, j),i,1 + 2*j);
+							model.setValueAt(value.getUnsignedValue(),i,2 + 2*j);
 							break;
 						default ://HEX
-							model.setValueAt("0x"+cache.findTag(i, j),j,1 + 2*i);
-							model.setValueAt("0x"+Long.toHexString(value.getUnsignedValue()),j,1 + 2*i + 1);
+							model.setValueAt("0x"+cache.findTag(i, j),i,1 + 2*j);
+							model.setValueAt("0x"+Long.toHexString(value.getUnsignedValue()),i,2 + 2*j);
 					}
 					
 					

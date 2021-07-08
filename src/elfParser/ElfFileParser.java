@@ -21,6 +21,7 @@ public class ElfFileParser {
 		byte[] elfBytes=null;
 		try {
 			elfBytes = Files.readAllBytes(Paths.get("./",CommandCompileCode.LinkedElf));
+			System.out.println("Elf Size :" + elfBytes.length);
 		} catch (IOException e) {
 			System.err.println("Error while loading elf file !");
 			e.printStackTrace();
