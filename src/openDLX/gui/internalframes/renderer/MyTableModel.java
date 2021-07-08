@@ -22,9 +22,9 @@ public class MyTableModel extends NotSelectableTableModel {
 	public void setRowColor(int row, Color c) {
 			
 	      this.row = row;
-	     RowColor = c;
-	       fireTableRowsUpdated(row, row);
-	    }
+	      RowColor = c;
+	      fireTableRowsUpdated(row, row);
+	}
 	public Color getRowColor() {
 		return RowColor;
     }

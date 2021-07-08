@@ -7,65 +7,53 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 public class AddressPanel extends JPanel{
-	private JTextField tagField;
-	private JTextField setField;
-	private JTextField offsetField;
-	private JTextField selectorField;
+
 	
-	public AddressPanel() {
+	
+	private JTextField[] fields;
+	private int[] sizes;
+	public AddressPanel(int sectionAmmount,int[] sizes) {
+		this.sizes = sizes;
+		fields = new JTextField[sectionAmmount];
+		for (int i = 0; i < sectionAmmount; i++) {
+			JTextField field = new JTextField(generateZeros(sizes[i]));
+			field.setFocusable(false);
+			this.add(field);
+			fields[i] = field;
+		}
+		/*
 		tagField = new JTextField("0000000000000000000000000");
 		setField = new JTextField("000");
 		offsetField = new JTextField("00");
 		selectorField = new JTextField("00");
-		tagField.setFocusable(false);
-		setField.setFocusable(false);
-		offsetField.setFocusable(false);
-		selectorField.setFocusable(false);
-		this.add(tagField);
-		this.add(setField);
-		this.add(offsetField);
-		this.add(selectorField);
+		*/
 		this.setBackground(Color.BLACK);
 		this.setBorder(new EmptyBorder(0, 0, 0, 0));
 	}
 	
-	public int getTagMiddle() {
-		return tagField.getX() + tagField.getWidth()/2;
+	public int getSectionMiddle(int section) {
+		return fields[section].getX() + fields[section].getWidth()/2;
 	}
 	
-	public int getSetMiddle() {
-		return setField.getX() + setField.getWidth()/2;
-	}
-	
-	public int getOffsetMiddle() {
-		return offsetField.getX() + offsetField.getWidth()/2;
-	}
-	
-	public int getSelectorMiddle() {
-		return selectorField.getX() + selectorField.getWidth()/2;
-	}
 	
 	public int getTotalWidth() {
-		return tagField.getWidth() + setField.getWidth() + offsetField.getWidth() + selectorField.getWidth();
+		return  this.getWidth();
 	}
 	public int getTotalHeight() {
-		return tagField.getHeight();
+		return this.getHeight();
 	}
 	
-	public void setTag(Long tag) {
-		String s = String.format("%1$25s",Long.toBinaryString(tag)).replace(" ", "0");
-		tagField.setText(s);
+	
+	public void setContent(int section, Long value) {
+		String s = String.format("%1$"+ sizes[section] +"s",Long.toBinaryString(value)).replace(" ", "0");
+		fields[section].setText(s);
 	}
-	public void setSet(Long set) {
-		String s = String.format("%1$3s",Long.toBinaryString(set)).replace(" ", "0");
-		setField.setText(s);
-	}
-	public void setOffset(Long offset) {
-		String s = String.format("%1$2s",Long.toBinaryString(offset)).replace(" ", "0");
-		offsetField.setText(s);
-	}
-	public void setSelector(Long selector) {
-		String s = String.format("%1$2s",Long.toBinaryString(selector)).replace(" ", "0");
-		selectorField.setText(s);
+	
+	private String generateZeros(int ammount) {
+		String s = "";
+		for (int i = 0 ; i < ammount ; i ++) {
+			s =s + "0"; 
+		}
+		return s;
 	}
 }

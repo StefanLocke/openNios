@@ -20,9 +20,11 @@ import openDLX.gui.MainFrame;
 import openDLX.gui.internalframes.OpenDLXSimInternalFrame;
 import openDLX.gui.internalframes.concreteframes.canvas.LineCacheCanvas;
 import openDLX.gui.internalframes.concreteframes.canvas.TableCanvas;
+import openDLX.gui.internalframes.concreteframes.canvas.nWayCacheCanvas;
 import openDLX.gui.internalframes.factories.tableFactories.CacheTableFactory;
 import openDLX.gui.internalframes.util.TableSizeCalculator;
 import riscvSimulator.RiscVMemory;
+import riscvSimulator.caches.RiscVCache;
 import riscvSimulator.caches.SimpleCache;
 import riscvSimulator.caches.SingleWayCache;
 import riscvSimulator.caches.lineCache.LineCache;
@@ -89,9 +91,9 @@ public class CacheFrame extends OpenDLXSimInternalFrame implements ActionListene
 		 	System.out.println("Creating CacheFrame");
 		 	cacheTable = new CacheTableFactory(memory.getCache()).createTable();
 		 	if (memory.getCache() instanceof nWayCache)
-		 		canvas = new TableCanvas(cacheTable);
+		 		canvas = new nWayCacheCanvas(cacheTable,((nWayCache)memory.getCache()).getWayCount(),((nWayCache)memory.getCache()).getSetLength());
 		 	if (memory.getCache() instanceof LineCache)
-		 		canvas = new LineCacheCanvas(cacheTable,((LineCache)memory.getCache()).offsetLength);
+		 		canvas = new LineCacheCanvas(cacheTable,((LineCache)memory.getCache()).offsetLength,((LineCache)memory.getCache()).getSetLength());
 			if (memory.getCache() instanceof SingleWayCache)
 		 		canvas = new TableCanvas(cacheTable);
 			if (memory.getCache() instanceof SimpleCache)
@@ -150,18 +152,14 @@ public class CacheFrame extends OpenDLXSimInternalFrame implements ActionListene
 		if (memory.getCache() instanceof LineCache) {
 			LineCache cache = (LineCache) memory.getCache();
 			LineCacheCanvas canvas = (LineCacheCanvas)this.canvas;
-			canvas.getAddressField().setTag(cache.getLastTag());
-			canvas.getAddressField().setSet(cache.getLastSet());
-			canvas.getAddressField().setOffset(cache.getLastOffset());
-			canvas.highlight((int)cache.getLastSet(),(int)cache.getLastOffset(),cache.getLastAction() == LineCache.ACTION_OUTPUT,cache.getLastHit());
-			canvas.getAddressField().setSelector(cache.getLastSelector());
-			canvas.hitStatus = cache.getLastHit();
-			if (cache.getLastAction() == LineCache.ACTION_INPUT) {
-				canvas.drawInputArrow((int) cache.getLastSet());
-			}
-			if (cache.getLastAction() == LineCache.ACTION_OUTPUT) {
-				canvas.drawOutputArrow((int) cache.getLastSet());
-			}
+			canvas.displayEvent(cache.getLastAddress(),
+					cache.getLastTag(), 
+					cache.getLastSet(),
+					cache.getLastOffset(),
+					cache.getLastSelector(),
+					cache.getLastAction() == RiscVCache.READ_ACTION,
+					cache.getLastHitMiss() ==  1);
+		
 			for (int i = 0 ; i < cache.getSize() ; i++) {
 				for (int j = 0 ; j < Math.pow(2, cache.offsetLength) ; j++) {
 					RiscVValue32 value = new RiscVValue32(cache.findByte(i,j, 3).getUnsignedValue() << 24 | 

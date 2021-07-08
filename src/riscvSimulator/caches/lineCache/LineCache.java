@@ -27,19 +27,18 @@ public class LineCache implements RiscVCache {
 	}
 	
 	
-	/**
-	 * Variables Used for the representation of the cache on the UI
-	 */
-	public static final int ACTION_INPUT = 1;
-	public static final int ACTION_OUTPUT = 2;
+	
+	
+	
+	
 	private long lastAddress = 0;
 	private long lastSet = 0;
 	private long lastTag = 0;
 	private long lastOffset = 0;
 	private long lastSelector= 0;
-	private int lastAction = -1;
-	private long lastTagChange = -1;
-	private int lastHit = -1;
+	private long lastValue = 0;
+	private int lastHitMiss = 0;
+	private int lastAction = 0;
 	
 	
 	@Override
@@ -55,18 +54,17 @@ public class LineCache implements RiscVCache {
 		lastSelector = selector;
 		CacheItem item = cache.get(set);
 		if (item != null && item.tag == tag) { 
-			lastHit = 1;
+			lastHitMiss = 1;
 			return true;
 		}
 		fillCache(address);
-		lastHit = 0;
+		lastHitMiss = 0;
 		return false;
 	}
 	
 	private void fillCache(long address) {
 		long set = getSet(address);
 		long tag = getTag(address);
-		lastTagChange = tag;
 		int mask = (int) Math.pow(2, 2 + offsetLength);
 		long maskedAddress = (address / mask) * mask;
 		CacheItem tmp = new CacheItem(tag);
@@ -76,11 +74,13 @@ public class LineCache implements RiscVCache {
 			tmp.setWord(i, memory.loadWord(maskedAddress + i*4, false));
 		}
 		cache.put(set, tmp);
+		
 	}
 
 	@Override
 	public void setWord(long address, RiscVValue value) {
-		lastAction = ACTION_INPUT;
+		lastAction = WRITE_ACTION;
+		lastValue = value.getSignedValue();
 		long set = getSet(address);
 		long tag = getTag(address);
 		long offset = getOffset(address);
@@ -99,7 +99,8 @@ public class LineCache implements RiscVCache {
 
 	@Override
 	public void setHalf(long address, RiscVValue value) {
-		lastAction = ACTION_INPUT;
+		lastAction = WRITE_ACTION;
+		lastValue = value.getSignedValue();
 		long set = getSet(address);
 		long tag = getTag(address);
 		long offset = getOffset(address);
@@ -117,7 +118,8 @@ public class LineCache implements RiscVCache {
 
 	@Override
 	public void setByte(long address, RiscVValue value) {
-		lastAction = ACTION_INPUT;
+		lastAction = WRITE_ACTION;
+		lastValue = value.getSignedValue();
 		long set = getSet(address);
 		long tag = getTag(address);
 		long offset = getOffset(address);
@@ -125,6 +127,7 @@ public class LineCache implements RiscVCache {
 		CacheItem item = cache.get(set);
 		if (item != null) {
 			if (item.tag == tag) {
+				
 				item.setByte(offset,selector, value);
 				return;
 			}
@@ -134,37 +137,40 @@ public class LineCache implements RiscVCache {
 
 	@Override
 	public RiscVValue32 getWord(long address) {
-		lastAction = ACTION_OUTPUT;
+		lastAction = READ_ACTION;
 		long set = getSet(address);
 		long tag = getTag(address);
 		long offset = getOffset(address);
 		CacheItem item = cache.get(set);
-		
-		return item.getWord(offset);
+		RiscVValue32 result = item.getWord(offset);
+		lastValue = result.getSignedValue();
+		return  result;
 	}
 
 	@Override
 	public RiscVValue16 getHalf(long address) {
-		lastAction = ACTION_OUTPUT;
+		lastAction = READ_ACTION;
 		long set = getSet(address);
 		long tag = getTag(address);
 		long offset = getOffset(address);
 		long selector = getSelector(address);
 		CacheItem item = cache.get(set);
-		
-		return item.getHalf(offset,selector);
+		RiscVValue16 result = item.getHalf(offset,selector);
+		lastValue = result.getSignedValue();
+		return  result;
 	}
 
 	@Override
 	public RiscVValue8 getByte(long address) {
-		lastAction = ACTION_OUTPUT;
+		lastAction = READ_ACTION;
 		long set = getSet(address);
 		long tag = getTag(address);
 		long offset = getOffset(address);
 		long selector = getSelector(address);
 		CacheItem item = cache.get(set);
-		
-		return item.getByte(offset,selector);
+		RiscVValue8 result = item.getByte(offset,selector);
+		lastValue = result.getSignedValue();
+		return result;
 	}
 
 	@Override
@@ -175,8 +181,15 @@ public class LineCache implements RiscVCache {
 
 	@Override
 	public int getSize() {
-		
 		return (int) Math.pow(2, setLength);
+	}
+	
+	public int getSetLength() {
+		return setLength;
+	}
+	
+	public int getOffsetLength() {
+		return offsetLength;
 	}
 	
 	private long getTag(long address) {
@@ -210,8 +223,9 @@ public class LineCache implements RiscVCache {
 	public RiscVValue8 findByte(long set, long data, long selector) {
 		CacheItem tmp = cache.get(set);
 		if (tmp == null) return new RiscVValue8(0);
+		RiscVValue8 result = tmp.getByte(data, selector);
 		
-		return tmp.getByte(data, selector);
+		return result;
 	}
 	
 	public long findTag(long set) {
@@ -220,8 +234,9 @@ public class LineCache implements RiscVCache {
 		return tmp.tag;
 	}
 	
-	public int getLastHit() {
-		return lastHit;
+	@Override
+	public int getLastAction() {
+		return lastAction;
 	}
 	public long getLastAddress() {
 		return lastAddress;
@@ -232,18 +247,19 @@ public class LineCache implements RiscVCache {
 	public long getLastTag() {
 		return lastTag;
 	}
-	public long getLastOffset() {
-		return lastOffset;
-	}
 	public long getLastSelector() {
 		return lastSelector;
 	}
-	public int getLastAction() {
-		return lastAction;
+	
+	public long getLastValue() {
+		
+		return lastValue;
 	}
-	public long getLastTagChange() {
-		return lastTagChange;
+	public long getLastOffset() {
+		return lastOffset;
 	}
+	
+	
 	@Override
 	public String toString() {
 		String r = "";
@@ -252,4 +268,14 @@ public class LineCache implements RiscVCache {
 		}
 		return r;
 	}
+
+	public int getLastHitMiss() {
+		return lastHitMiss;
+	}
+
+	public void setLastHitMiss(int lastHitMiss) {
+		this.lastHitMiss = lastHitMiss;
+	}
+
+	
 }

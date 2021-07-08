@@ -8,49 +8,52 @@ import riscvSimulator.values.RiscVValue32;
 import riscvSimulator.values.RiscVValue8;
 
 public interface RiscVCache {
-	static int setSize = 3;
-	public static final int byteLocatorSize = 2;
-	static int tagSize = 32 - setSize - byteLocatorSize;
 	
-	boolean checkCache(long address);
+	static final int selectorSize = 2;
+	public static final int NO_ACTION = 0;
+	public static final int READ_ACTION = 1;
+	public static final int WRITE_ACTION = 2;
+	
+	public boolean checkCache(long address);
 	/**
 	 * fills the cache with the given word, at a location calculated from the address.
 	 * @param address
 	 * @param value
 	 */
-	void setWord(long address,RiscVValue value);
+	public void setWord(long address,RiscVValue value);
 	/**
 	 * fills the cache with the given Half, at a location calculated from the address.
 	 * @param address
 	 * @param value
 	 */
-	void setHalf(long address,RiscVValue value);
+	public void setHalf(long address,RiscVValue value);
 	/**
 	 * fills the cache with the given Byte, at a location calculated from the address.
 	 * @param address
 	 * @param value
 	 */
-	void setByte(long address,RiscVValue value);
+	public void setByte(long address,RiscVValue value);
 	
 	/**
 	 * Gets the Word in from the cache at the specified address.
 	 * @param address
 	 * @return
 	 */
-	RiscVValue32 getWord(long address);
+	public RiscVValue32 getWord(long address);
 	/**
 	 * Gets the Half in from the cache at the specified address.
 	 * @param address
 	 * @return
 	 */
-	RiscVValue16 getHalf(long address);
+	public RiscVValue16 getHalf(long address);
 	/**
 	 * Gets the Byte in from the cache at the specified address.
 	 * @param address
 	 * @return
 	 */
-	RiscVValue8 getByte(long address);
+	public RiscVValue8 getByte(long address);
 	
+	public int getLastAction();
 	List<Long> getCachedAddresses();
 	int getSize();
 }

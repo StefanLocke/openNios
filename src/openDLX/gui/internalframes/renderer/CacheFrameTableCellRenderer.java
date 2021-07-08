@@ -21,17 +21,18 @@ public class CacheFrameTableCellRenderer extends ChangeableFrameTableCellRendere
 		MyTableModel model = (MyTableModel) table.getModel();
 		int coloredRow = model.getRowToColor();
 		int coloredData= model.getDataToColor();
-		comp.setBackground(model.DEFAULT_COLOR);
+		//comp.setBackground(model.DEFAULT_COLOR);
 		if (coloredRow == row) comp.setBackground(model.getRowColor());
 		if (coloredRow == row && coloredData == column) comp.setBackground(model.getDataColor());
-		if (column != 0) {
-			JComponent jComp = (JComponent)comp;
-			jComp.setBorder(new MatteBorder(0, 0, 1, 1, Color.BLACK));
-		}else {
-			JLabel jComp = (JLabel)comp;
-			jComp.setBorder(new MatteBorder(0, 0, 0, 1, Color.BLACK));
-			jComp.setHorizontalAlignment(SwingConstants.RIGHT);
-		}
+		JLabel jComp = (JLabel)comp;
+		jComp.setBorder(new MatteBorder(0, 0, 0, 1, Color.BLACK));
+		jComp.setHorizontalAlignment(SwingConstants.CENTER);
+		jComp.setBorder(new MatteBorder(
+				row==0?1:0,
+				0,
+				column!=0?1:0,
+				1,
+				Color.BLACK));
 		return comp;
 	}
 

@@ -209,4 +209,10 @@ public class SingleWayCache implements RiscVCache{
 		
 		return s + "]";
 	}
+
+	@Override
+	public int getLastAction() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

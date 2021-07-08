@@ -25,6 +25,7 @@ import openDLX.gui.internalframes.concreteframes.canvas.shapes.MultiplexerGate;
 import openDLX.gui.internalframes.concreteframes.canvas.shapes.RightArrow;
 import openDLX.gui.internalframes.concreteframes.canvas.shapes.Shapes;
 import openDLX.gui.internalframes.concreteframes.canvas.shapes.Text;
+import openDLX.gui.internalframes.renderer.CacheFrameTableCellRenderer;
 import openDLX.gui.internalframes.renderer.MyTableModel;
 
 public class TableCanvas extends JPanel{
@@ -47,10 +48,9 @@ public class TableCanvas extends JPanel{
 	
 	
 	
-	int arrowSet = -1;
-	boolean arrowDirection = false; //false is input, true is output
 	
-	public TableCanvas(JTable table) {
+	
+	public TableCanvas(JTable table,AddressPanel address) {
 		
 			this.setLayout(null);
 			this.table = table;
@@ -58,8 +58,7 @@ public class TableCanvas extends JPanel{
 			tablePanel.setLayout(new BorderLayout());
 			tablePanel.add(table.getTableHeader(),BorderLayout.NORTH);
 			tablePanel.add(table,BorderLayout.CENTER);
-			
-			address = new AddressPanel();
+			this.address = address;
 			
 			table.setMaximumSize(new Dimension(getTableWidth(),getTableHeight()));
 			
@@ -67,12 +66,15 @@ public class TableCanvas extends JPanel{
 		
 			this.add(address);
 			
-			tablePanel.setBounds(50, 20,table.getPreferredSize().width, table.getPreferredSize().height + table.getTableHeader().getPreferredSize().height);
-			address.setBounds(50, getTableY() + getTableHeight() + textFieldOffset  ,address.getPreferredSize().width , address.getPreferredSize().height);
+			this.tablePanel.setBounds(50, 20,table.getPreferredSize().width, table.getPreferredSize().height + table.getTableHeader().getPreferredSize().height);
+			this.address.setBounds(50, getTableY() + getTableHeight() + textFieldOffset  ,address.getPreferredSize().width , address.getPreferredSize().height);
 			
 			
 		
 		}
+	public TableCanvas(JTable table) {
+		this(table, new AddressPanel(3, new int[]{27,3,2}));
+	}
 
 		
 		protected int getTableX() {

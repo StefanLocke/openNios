@@ -21,60 +21,66 @@ import openDLX.gui.internalframes.concreteframes.canvas.shapes.Text;
 import openDLX.gui.internalframes.renderer.MyTableModel;
 
 public class LineCacheCanvas extends TableCanvas  {
-	int coloredData;
-	int coloredSet;
-	int offsetSize;
-	public int hitStatus = -1;
 	
-	public LineCacheCanvas(JTable table,int offsetSize) {
-		super(table);
-		
-		coloredData = -1;
-		coloredSet = -1;
+	
+	int lastOffset;
+	int lastSet;
+	boolean lastOperationType;
+	int lastHitMiss;
+	
+	int offsetSize;
+	
+	
+	
+	Color currentAddressBGC = Color.WHITE;
+	Color currentRowBGC = Color.WHITE;
+	Color currentHitMissPathBGC = Color.BLACK;
+	
+	public LineCacheCanvas(JTable table,int offsetSize,int setSize) {
+		super(table,new AddressPanel(4, new int[]{32-2-setSize-offsetSize,setSize,offsetSize,2}));
+		lastOffset = -1;
+		lastSet = -1;
+		lastHitMiss = -1;
 		this.offsetSize = offsetSize;
 	}
 
-	private void hightlightDataWay(int way) {
-		coloredData = way;
+	
+	
+	
+	
+	
+	
+	
+	public void displayEvent(long address,long tag, long set, long offset,long selector,boolean read,boolean hit) {
+		this.address.setContent(0,tag);
+		this.address.setContent(1,set);
+		this.address.setContent(2,offset);
+		this.address.setContent(3,selector);
+		lastOperationType = read;
+		lastOffset = offsetSize;
+		lastSet = (int)set;
+		if (hit) this.lastHitMiss = 1; else this.lastHitMiss = 0;
+		ColorTable((int)set, (int)offset+2, read);
 	}
 	
-	
-	
-	
-	private void hightlightTab(int set,int data,boolean read,int hit) {
-		coloredSet = set;
+	private void ColorTable(int row,int col,boolean read) {
 		MyTableModel model = (MyTableModel) table.getModel();
-		model.setRowColor(set, Color.YELLOW);
-		if (read) if (hit > 0) model.setBoxColor(set,data,Color.GREEN); else  model.setBoxColor(set,data,Color.RED);
-		else model.setBoxColor(set,data,Color.ORANGE);
+		model.setRowColor(row, Color.YELLOW);
+		if (read) { 
+			if (lastHitMiss > 0) 
+				model.setBoxColor(row,col,Color.GREEN); 
+			else  
+				model.setBoxColor(row,col,Color.RED);
+		}
+		else {
+			model.setBoxColor(row,col,Color.ORANGE);
+		}
 		
 	}
 	
-	public void highlight(int set,int data,boolean read,int hit) {
-		hightlightDataWay(data);
-		hightlightTab(set,data+2,read,hit);
-	}
 	
-	public void drawInputArrow(int set) {
-		arrowDirection = false;
-		arrowSet  = set;
-	}
 	
-	public void drawOutputArrow(int set) {
-		arrowDirection = true;
-		arrowSet  = set;
-	}
-	
-	private void drawArrow(int row,Graphics2D g) {
-		Shapes s;
-		if (arrowDirection) {
-			s = new RightArrow(getTableX() + getTableWidth() + 10, getTableY() + getRowX(row) + table.getRowHeight()/2, 20, 10);
-		}
-		else {
-			s = new LeftArrow(getTableX() + getTableWidth() + 10, getTableY() + getRowX(row) + table.getRowHeight()/2, 20, 10);
-		}
-		s.draw(g);
-	}
+
 	
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -89,27 +95,36 @@ public class LineCacheCanvas extends TableCanvas  {
 		
 		drawOffsetLine(Color.BLACK, g2d,gate);
 		drawDataLines(g2d,gate);
-		if (hitStatus < 0) drawEqualsResult(Color.BLACK, g2d);
-		if (hitStatus == 0) drawEqualsResult(Color.RED, g2d);
-		if (hitStatus == 1) drawEqualsResult(Color.GREEN, g2d);
+		if (lastHitMiss < 0) drawEqualsResult(Color.BLACK, g2d);
+		if (lastHitMiss == 0) drawEqualsResult(Color.RED, g2d);
+		if (lastHitMiss == 1) drawEqualsResult(Color.GREEN, g2d);
 		drawTagLine(Color.BLACK, g2d);
-		drawSetLine(coloredSet,Color.BLACK, g2d);
+		drawSetLine(lastSet,Color.BLACK, g2d);
 		gate.draw(g2d);
-		if (arrowSet >= 0) {
-			drawArrow(arrowSet, g2d);
+		if (lastSet >= 0) {
+			drawArrow(lastSet, g2d);
 		}
 		repaint();
 	}
 	
 	
-	
+	private void drawArrow(int row,Graphics2D g) {
+		Shapes s;
+		if (!lastOperationType) {
+			s = new RightArrow(getTableX() + getTableWidth() + 10, getTableY() + getRowX(row) + table.getRowHeight()/2, 20, 10);
+		}
+		else {
+			s = new LeftArrow(getTableX() + getTableWidth() + 10, getTableY() + getRowX(row) + table.getRowHeight()/2, 20, 10);
+		}
+		s.draw(g);
+	}
 	
 	private void drawDataLines(Graphics2D g,MultiplexerGate gate) {
 		for (int i = 0; i < Math.pow(2, offsetSize); i++) {
-			if (i == coloredData) drawDataLines(i,Color.GREEN,g); else drawDataLines(i,Color.BLACK,g);
+			if (i == lastOffset) drawDataLines(i,Color.GREEN,g); else drawDataLines(i,Color.BLACK,g);
 		}
 		
-		if (coloredData >= 0) g.setColor(Color.GREEN);
+		if (lastOffset >= 0) g.setColor(Color.GREEN);
 		Point p2 = new Point(outputX + getTableX() + getTableWidth(),gate.y);
 		Text text = new Text(p2.x+5, p2.y+5,"DATA OUT");
 		g.drawLine(p2.x, p2.y, gate.x, gate.y);
@@ -137,7 +152,7 @@ public class LineCacheCanvas extends TableCanvas  {
 		
 		Point tmp2 = new Point(tmp1,-20,0);
 		Point tmp3 = new Point(tmp2.x,address.getY() + address.getHeight() + 20);
-		Point tmp4 = new Point(address.getX() + address.getSetMiddle(), tmp3.y);
+		Point tmp4 = new Point(address.getX() + address.getSectionMiddle(1), tmp3.y);
 		Point tmp5 = new Point(tmp4,0,-20);
 		drawLine(tmp1, tmp2,g);
 		drawLine(tmp2, tmp3,g);
@@ -147,7 +162,7 @@ public class LineCacheCanvas extends TableCanvas  {
 	}
 	
 	private void drawOffsetLine(Color color, Graphics2D g,MultiplexerGate gate) { //TODO set specific row
-		Point tmp1 = new Point(address.getX() + address.getOffsetMiddle(), address.getY() + address.getHeight());
+		Point tmp1 = new Point(address.getX() + address.getSectionMiddle(2), address.getY() + address.getHeight());
 		Point tmp2 = new Point(tmp1,0,20);
 		Point tmp3 = new Point(gate.x,tmp2.y);
 		Point tmp4 = new Point(gate.x,gate.y);
@@ -158,7 +173,7 @@ public class LineCacheCanvas extends TableCanvas  {
 	
 	
 	private void drawTagLine(Color color, Graphics2D g) {
-		Point tmp1 = new Point(address.getX() + address.getTagMiddle(), address.getY());
+		Point tmp1 = new Point(address.getX() + address.getSectionMiddle(0), address.getY());
 		Point tmp2 = new Point(tmp1,0,-30);
 		
 		Point tmp3 = new Point(getTableX() + getColumnX(1) + getColumnWidth(1)/2,getTableY() + getTableHeight());
@@ -175,7 +190,7 @@ public class LineCacheCanvas extends TableCanvas  {
 	
 	private void drawEqualsResult(Color color, Graphics2D g) {
 		g.setColor(color);
-		Point tmp1 = new Point(address.getX() + address.getTagMiddle(), address.getY() -45);
+		Point tmp1 = new Point(address.getX() + address.getSectionMiddle(0), address.getY() -45);
 		Point tmp2 = new Point(getTableX() + getTableWidth() + outputX,tmp1.y);
 		Text text = new Text(tmp2.x+5, tmp2.y+5,"HIT/MISS");
 		drawLine(tmp1, tmp2, g);

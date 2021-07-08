@@ -290,4 +290,54 @@ public class nWayCache implements RiscVCache {
 		}
 		return r;
 	}
+
+	public int getSetLength() {
+		return setLength;
+	}
+	
+	public int getWayCount() {
+		return wayCount;
+	}
+
+
+	@Override
+	public int getLastAction() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+
+	public long getLastAddress() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+
+	public long getLastSet() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+
+	public long getLastTag() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+
+	public long getLastValue() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+
+	public long getLastAlternate() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

@@ -133,6 +133,13 @@ public class SimpleCache implements RiscVCache{
 	public int getSize() {
 		return 5;
 	}
+
+
+	@Override
+	public int getLastAction() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 	
 }
