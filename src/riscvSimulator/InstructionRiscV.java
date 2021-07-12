@@ -101,7 +101,6 @@ public class InstructionRiscV {
 				
 				if (func.getFunc3Code() == func3Binary && func.getOpCode() == op) {
 					this.func = func;
-					break;
 				}
 				if (0b000 == func3Binary && func.getOpCode() == op) {
 					if (imm12 == 0) {

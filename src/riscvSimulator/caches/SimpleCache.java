@@ -140,6 +140,13 @@ public class SimpleCache implements RiscVCache{
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+
+	@Override
+	public boolean getLastHit() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 	
 }

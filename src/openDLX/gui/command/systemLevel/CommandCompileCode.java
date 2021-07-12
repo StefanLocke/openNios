@@ -53,8 +53,8 @@ public class CommandCompileCode implements Command
 	public static final String generatedAssemblerRV = "./rv-elf-as.exe";
 	public static final String generatedLinkerRV = "./rv-elf-ld.exe";
 	
-	public static final String asArgs = "-march=rv32im ";
-	public static final String ldArgs = "-m elf32lriscv ";
+	public static final String lnxasArgs = "-march=rv32im ";
+	public static final String lnxldArgs = "-m elf32lriscv ";
 	
 	public static final String unLinkedElf = "./file.elf";
 	public static final String LinkedElf = "./linkedfile.elf";
@@ -90,6 +90,8 @@ public class CommandCompileCode implements Command
                 
                 String system = System.getProperty("os.name");
                 System.out.println("Current system is : " + system);
+                String asArgs = "";
+                String ldArgs = "";
                 if (system.matches(".*Windows.*")) {
             		is = this.getClass().getResource(compilerNameWindowsRV).openStream();
             		isl = this.getClass().getResource(linkerNameWindowsRV).openStream();
@@ -100,6 +102,8 @@ public class CommandCompileCode implements Command
                 	}
                 
         		else {
+        			asArgs = lnxasArgs;
+        			ldArgs = lnxldArgs;
         			is = this.getClass().getResource(compilerNameLinuxRV).openStream();
         			isl= this.getClass().getResource(linkerNameLinuxRV).openStream();
         		}
@@ -144,22 +148,7 @@ public class CommandCompileCode implements Command
                 	System.out.println("Errors while assembling");
 	                String errorDisplayed = "";
 	                for (String oneLine : errorMessage){
-//	                	int index = 0;
-//	                	while (oneLine.charAt(index) != ':')
-//	                		oneLine = oneLine.substring(1);
-//	                	
-//	            		oneLine = oneLine.substring(1);
-//	            		if (oneLine.matches("[0-9]+.*")){
-//	            			String lineString = "";
-//	                    	while (oneLine.charAt(index) != ':'){
-//	                    		lineString += oneLine.charAt(0);
-//	                    		oneLine = oneLine.substring(1);
-//	                    	}
-//	                		oneLine = oneLine.substring(1);
-//	
-//	            			int line = Integer.parseInt(lineString);
 	            			errorDisplayed += oneLine + "\n";
-//	            		}
 	                }
 	                JOptionPane.showMessageDialog(mf, errorDisplayed);
 	                
@@ -168,23 +157,8 @@ public class CommandCompileCode implements Command
                 if (errorMessage.size() != 0){
                 	System.out.println("Errors while linking");
 	                String errorDisplayed = "";
-	                for (String oneLine : errorMessage){
-//	                	int index = 0;
-//	                	while (oneLine.charAt(index) != ':')
-//	                		oneLine = oneLine.substring(1);
-//	                	
-//	            		oneLine = oneLine.substring(1);
-//	            		if (oneLine.matches("[0-9]+.*")){
-//	            			String lineString = "";
-//	                    	while (oneLine.charAt(index) != ':'){
-//	                    		lineString += oneLine.charAt(0);
-//	                    		oneLine = oneLine.substring(1);
-//	                    	}
-//	                		oneLine = oneLine.substring(1);
-//	
-//	            			int line = Integer.parseInt(lineString);
+	                for (String oneLine : errorMessage) {
 	            			errorDisplayed += oneLine + "\n";
-//	            		}
 	                }
 	                JOptionPane.showMessageDialog(mf, errorDisplayed);
 	                

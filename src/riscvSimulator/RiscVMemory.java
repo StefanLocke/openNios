@@ -21,11 +21,22 @@ public class RiscVMemory {
 		return cache;
 	}
 
+	private static RiscVCache.CacheType currentCacheType = RiscVCache.CacheType.nWayCache;
 	
 	public RiscVMemory(){
 		this.memory = new HashMap<Long, RiscVValue8>();
-		cache = new LineCache(3, 2, this);
-		//cache = new nWayCache(3, 2, this);
+		switch (currentCacheType) {
+		case LineCache:
+			cache = new LineCache(3, 2, this);
+			break;
+		case nWayCache:
+			cache = new nWayCache(3, 2, this);
+			break;
+		}
+	}
+	
+	public void switchCacheType(RiscVCache.CacheType type) {
+		currentCacheType = type;
 	}
 	
 	public RiscVValue8 loadByte(Long addr, boolean useCache){

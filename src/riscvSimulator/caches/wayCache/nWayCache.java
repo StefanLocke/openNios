@@ -400,4 +400,12 @@ public class nWayCache implements RiscVCache {
 		// TODO Auto-generated method stub
 		return lastHitMiss;
 	}
+
+
+
+	@Override
+	public boolean getLastHit() {
+		
+		return lastHitMiss == 1;
+	}
 }

@@ -39,6 +39,7 @@ import javax.swing.JTextField;
 import openDLX.config.ArchCfg;
 import openDLX.gui.MainFrame;
 import openDLX.gui.Preference;
+import openDLX.gui.command.systemLevel.CommandChangeCacheType;
 import openDLX.gui.command.systemLevel.CommandResetSimulator;
 import openDLX.gui.command.userLevel.CommandResetCurrentProgram;
 
@@ -65,7 +66,10 @@ public class OptionDialog extends JDialog implements ActionListener
     private JTextField maxCyclesTextField;
     private JTextField numberExecuteTextField;
     private JTextField numberMemoryTextField;
-
+    
+    private String[] options = {"nWayCache","LineCache"};
+    private JComboBox<String> cacheTypeComboBox;
+   
 
     public OptionDialog(Frame owner)
     {
@@ -78,6 +82,7 @@ public class OptionDialog extends JDialog implements ActionListener
         confirm.addActionListener(this);
         cancel = new JButton("Cancel");
         cancel.addActionListener(this);
+        
         //the panel containing all the control buttons
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(confirm);
@@ -173,6 +178,13 @@ public class OptionDialog extends JDialog implements ActionListener
         numberMemoryTextFieldPanel.add(numberMemoryTextField);
         
         
+        //CacheType selection
+        JLabel cacheSelectionLabel = new JLabel("Cache type : ");
+        cacheTypeComboBox = new JComboBox<>(options);
+        JPanel cacheselectionPanel = new JPanel();
+        cacheselectionPanel.add(cacheSelectionLabel);
+        cacheselectionPanel.add(cacheTypeComboBox);
+        
         //this panel contains all input components = top level panel
         JPanel optionPanel = new JPanel();
         optionPanel.setLayout(new GridLayout(0, 1));
@@ -183,6 +195,7 @@ public class OptionDialog extends JDialog implements ActionListener
         optionPanel.add(maxCyclesTextFieldPanel);
         optionPanel.add(numberExecuteTextFieldPanel);
         optionPanel.add(numberMemoryTextFieldPanel);
+        optionPanel.add(cacheselectionPanel);
 
         //adds the top-level-panel to the Dialog frame
         add(optionPanel, BorderLayout.CENTER);
@@ -233,7 +246,10 @@ public class OptionDialog extends JDialog implements ActionListener
 
             ArchCfg.memory_stage = Integer.parseInt(numberMemoryTextField.getText());
             Preference.pref.put(Preference.numberMemoryStage, numberMemoryTextField.getText());
-
+            
+            
+            CommandChangeCacheType cacheChange = new CommandChangeCacheType(MainFrame.getInstance(),cacheTypeComboBox.getSelectedItem().toString());
+            cacheChange.execute();
             CommandResetCurrentProgram reset = new CommandResetCurrentProgram(MainFrame.getInstance());
             reset.execute();
             

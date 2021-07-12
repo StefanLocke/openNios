@@ -23,8 +23,8 @@ import openDLX.gui.internalframes.renderer.MyTableModel;
 public class LineCacheCanvas extends TableCanvas  {
 	
 	
-	int lastOffset;
-	int lastSet;
+	long lastOffset;
+	long lastSet;
 	boolean lastOperationType;
 	int lastHitMiss;
 	
@@ -57,13 +57,13 @@ public class LineCacheCanvas extends TableCanvas  {
 		this.address.setContent(2,offset);
 		this.address.setContent(3,selector);
 		lastOperationType = read;
-		lastOffset = offsetSize;
-		lastSet = (int)set;
+		lastOffset = offset;
+		lastSet = set;
 		if (hit) this.lastHitMiss = 1; else this.lastHitMiss = 0;
-		ColorTable((int)set, (int)offset+2, read);
+		ColorTable((int)set, (int)offset+2, read,hit);
 	}
 	
-	private void ColorTable(int row,int col,boolean read) {
+	private void ColorTable(int row,int col,boolean read,boolean hit) {
 		MyTableModel model = (MyTableModel) table.getModel();
 		model.resetColors();
 		model.changeRowColor(row, Color.YELLOW);
@@ -75,6 +75,9 @@ public class LineCacheCanvas extends TableCanvas  {
 		}
 		else {
 			model.changeColor(col,row,Color.ORANGE);
+		}
+		if (!hit) {
+			model.changeColor(1,row,Color.ORANGE);
 		}
 		
 	}
@@ -100,10 +103,10 @@ public class LineCacheCanvas extends TableCanvas  {
 		if (lastHitMiss == 0) drawEqualsResult(Color.RED, g2d);
 		if (lastHitMiss == 1) drawEqualsResult(Color.GREEN, g2d);
 		drawTagLine(Color.BLACK, g2d);
-		drawSetLine(lastSet,Color.BLACK, g2d);
+		drawSetLine((int) lastSet,Color.BLACK, g2d);
 		gate.draw(g2d);
 		if (lastSet >= 0) {
-			drawArrow(lastSet, g2d);
+			drawArrow((int) lastSet, g2d);
 		}
 		repaint();
 	}
@@ -111,7 +114,7 @@ public class LineCacheCanvas extends TableCanvas  {
 	
 	private void drawArrow(int row,Graphics2D g) {
 		Shapes s;
-		if (!lastOperationType) {
+		if (lastOperationType) {
 			s = new RightArrow(getTableX() + getTableWidth() + 10, getTableY() + getRowX(row) + table.getRowHeight()/2, 20, 10);
 		}
 		else {

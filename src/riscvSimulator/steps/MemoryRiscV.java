@@ -20,8 +20,9 @@ public class MemoryRiscV {
 		this.memory = memory;
 	}
 	
-	public void doStep(){
+	public boolean doStep(){
 		//Main job is to write the operation result in regfile
+		boolean hit = true;
 		if (!isLast){
 				switch (currentInstruction.getOp()) {
 					case store :
@@ -43,18 +44,23 @@ public class MemoryRiscV {
 						switch (currentInstruction.getFunc()) {
 						case lb :
 							currentInstruction.setAluResult(new RiscVValue32(memory.loadByte(currentInstruction.getAluResult().getUnsignedValue(), true).getUnsignedValue()));
+							hit = memory.getCache().getLastHit();
 							break;
 						case lh :
 							currentInstruction.setAluResult(new RiscVValue32(memory.loadHalf(currentInstruction.getAluResult().getUnsignedValue(), true).getUnsignedValue()));
+							hit = memory.getCache().getLastHit();
 							break;
 						case lw :
 							currentInstruction.setAluResult(memory.loadWord(currentInstruction.getAluResult().getUnsignedValue(),true));
+							hit = memory.getCache().getLastHit();
 							break;
 						case lbu :
 							System.err.println("Operation not implemented in memory stage !");
+							hit = memory.getCache().getLastHit();
 							break;
 						case lhu :
 							System.err.println("Operation not implemented in memory stage !");
+							hit = memory.getCache().getLastHit();
 							break;
 						default:
 							break;
@@ -64,6 +70,7 @@ public class MemoryRiscV {
 						break;
 				}
 		}
+		return hit;
 	}
 	
 	public InstructionRiscV getCurrentInstruction(){

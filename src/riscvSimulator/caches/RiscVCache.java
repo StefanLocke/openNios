@@ -9,6 +9,11 @@ import riscvSimulator.values.RiscVValue8;
 
 public interface RiscVCache {
 	
+	
+	public static enum CacheType {
+		nWayCache,
+		LineCache
+	}
 	static final int selectorSize = 2;
 	public static final int NO_ACTION = 0;
 	public static final int READ_ACTION = 1;
@@ -52,6 +57,9 @@ public interface RiscVCache {
 	 * @return
 	 */
 	public RiscVValue8 getByte(long address);
+	
+	public boolean getLastHit();
+
 	
 	public int getLastAction();
 	List<Long> getCachedAddresses();

@@ -277,5 +277,11 @@ public class LineCache implements RiscVCache {
 		this.lastHitMiss = lastHitMiss;
 	}
 
+	@Override
+	public boolean getLastHit() {
+		
+		return lastHitMiss == 1;
+	}
+
 	
 }

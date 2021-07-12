@@ -83,7 +83,13 @@ public class CacheTableFactory extends TableFactory {
 			}
 			TableColumnModel tcm = table.getColumnModel();
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			table.setFocusable(false);
+			table.getTableHeader().setReorderingAllowed(false);
+			table.getTableHeader().setResizingAllowed(false);
 	        table.setDefaultRenderer(Object.class, new CacheFrameTableCellRenderer());
+	        table.setShowGrid(false);
+	        table.setRowMargin(0);
+	        tcm.setColumnMargin(0);
 	        ((MyTableModel)model).init();
 	        System.out.println("Created Table");
 			return table;
@@ -145,6 +151,7 @@ public class CacheTableFactory extends TableFactory {
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 			table.setFocusable(false);
 			table.getTableHeader().setReorderingAllowed(false);
+			table.getTableHeader().setResizingAllowed(false);
 	        table.setDefaultRenderer(Object.class, new CacheFrameTableCellRenderer());
 	        table.setShowGrid(false);
 	        table.setRowMargin(0);

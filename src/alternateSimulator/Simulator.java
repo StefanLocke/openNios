@@ -25,6 +25,7 @@ import openDLX.gui.GUI_CONST;
 import openDLX.util.Statistics;
 import riscvSimulator.InstructionRiscV;
 import riscvSimulator.RegisterFileRiscV;
+import riscvSimulator.RiscVFunc;
 import riscvSimulator.RiscVMemory;
 import riscvSimulator.RiscVOpCode;
 import riscvSimulator.steps.DecodeRiscV;
@@ -40,6 +41,9 @@ public class Simulator{
 	private Properties config;
     private Statistics stat;
     private boolean caught_break = false;
+    private boolean caught_miss = false;
+    private int miss_skip_cycles = 5;
+    private int miss_skip_counter = miss_skip_cycles;
     private int clock_cycle;
     private int sim_cycles;
     private boolean finished;
@@ -167,6 +171,7 @@ public class Simulator{
             	this.memoryStages.add(new MemoryRiscV(registerFile, memory, i==numberMemory-1));
             this.writeBackStages.add(new WriteBackRiscV(registerFile));
             
+            
             //Initialization of memory
             initializeMemory();
             initializePipeline();
@@ -188,13 +193,24 @@ public class Simulator{
          ******************************/
         public void step() throws PipelineException
         {
-            if (clock_cycle < sim_cycles && !caught_break)
+        	
+        	if (clock_cycle < sim_cycles && !caught_break)
             {
-         
+        		
             	//We store the current fetched instruction number to detect stall
             	long numberFetchedInstrBefore = this.numberFetch;
             	//We perform the cycle in the pipeline
-                caught_break = simulateCycle();
+            	if (caught_miss) {
+            		System.out.println("Skipping cycle : miss");
+            		miss_skip_counter--;
+            		if (miss_skip_counter < 1) {
+            			miss_skip_counter = miss_skip_cycles;
+            			caught_miss = false;
+            		}
+            	}
+        		else {
+        			caught_break = simulateCycle();
+        		}
 
 
                 stat.countCycle();
@@ -212,7 +228,7 @@ public class Simulator{
                 	cycleDescription.setStall(true);
 
 
-                gui.addCycleLog(cycleDescription);         
+                gui.addCycleLog(cycleDescription);        
                 
             }
             else if (caught_break)
@@ -280,7 +296,9 @@ public class Simulator{
             	this.decodeStages.get(0).setCurrentInstruction(createBubble());
             	for (ExecuteRiscV oneExecuteStage : this.executeStages)
             		oneExecuteStage.setCurrentInstruction(createBubble());
+         
             }
+  
             else if (this.decodeStages.get(0).hasJumped()){
             	//We clear previous cycle (current decode)
             	this.decodeStages.get(0).setCurrentInstruction(createBubble());
@@ -292,8 +310,8 @@ public class Simulator{
             //We perform each step
             this.writeBackStages.get(0).doStep();
             
-            for (MemoryRiscV oneMemory : this.memoryStages)
-            	oneMemory.doStep();
+            for (MemoryRiscV oneMemory : this.memoryStages) 
+            	this.caught_miss = !oneMemory.doStep() || caught_miss;
 
             for (ExecuteRiscV oneExecute : this.executeStages)
             	oneExecute.doStep();
@@ -319,8 +337,9 @@ public class Simulator{
             	this.decodeStages.get(0).setStalled(true);
             
             //We check if WB stage is executing a trap.
-           // if (writeBackStages.get(0).getCurrentInstruction().getOp().equals(RiscVOpCode.RTYPE) && writeBackStages.get(0).getCurrentInstruction().getOpx().equals(niosOpxCode.trap))
-           // 	this.finished = true; //TODO FIX
+           if (writeBackStages.get(0).getCurrentInstruction().getFunc() == RiscVFunc.ebreak) {
+            	this.finished = true; //TODO FIX
+           }
             
             return caught_break;
         }

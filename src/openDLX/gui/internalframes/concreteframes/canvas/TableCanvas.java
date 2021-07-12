@@ -43,7 +43,7 @@ public class TableCanvas extends JPanel{
 	protected JPanel tablePanel ;
 	protected AddressPanel address;
 	
-	protected int textFieldOffset = 150;
+	protected int textFieldOffset = 200;
 	protected int outputX = 50; //100 + tableX + table width
 	
 	

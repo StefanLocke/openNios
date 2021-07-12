@@ -9,7 +9,9 @@ import java.awt.RenderingHints;
 
 import javax.swing.JTable;
 
+import openDLX.gui.internalframes.concreteframes.canvas.shapes.EqualsGate;
 import openDLX.gui.internalframes.concreteframes.canvas.shapes.MultiplexerGate;
+import openDLX.gui.internalframes.concreteframes.canvas.shapes.Shapes;
 import openDLX.gui.internalframes.concreteframes.canvas.shapes.Text;
 import openDLX.gui.internalframes.renderer.MyTableModel;
 
@@ -76,6 +78,7 @@ public class nWayCacheCanvas extends TableCanvas {
 		Point p = new Point(getTableX() + getTableWidth() + 20, getTableY() + getTableHeight() + 37);
 		MultiplexerGate gate = new MultiplexerGate(p.x, p.y, 20, 60);
 		drawDataLines(g2d, gate);
+		drawTagLines(g2d);
 		gate.draw(g2d);
 		drawSetLine(lastSet, LINE_COLOR, g2d);
 	}
@@ -120,6 +123,35 @@ public class nWayCacheCanvas extends TableCanvas {
 		g.drawLine(tmp1.x, tmp1.y, tmp2.x, tmp2.y);
 		g.drawLine(tmp2.x, tmp2.y, tmp3.x, tmp3.y);	
 		g.setColor(Color.BLACK);
+	}
+	
+	private void drawTagLines(Graphics2D g) {
+		Point tmp1 = new Point(address.getX() + address.getSectionMiddle(0), address.getY());
+		Point tmp2 = new Point(tmp1,0,-20);
+		drawLine(tmp1, tmp2, g);
+		for (int i = 0; i < wayCount; i++) {
+			drawTagLine(i, g);
+		}
+		
+	}
+	private void drawTagLine(int way,Graphics2D g) {
+		Point tmp1 = new Point(getTableX() + getColumnX(way*2 + 1) + getColumnWidth(way*2 + 1)/2 , getTableY()+getTableHeight());
+		Point tmp2 = new Point(tmp1,0,80 + way*25);
+		Shapes s  = new EqualsGate(tmp2.x, tmp2.y, 30, 30);
+		Point tmp3 = new Point(tmp2.x,address.getY()-20);
+		Point tmp4;
+		if (way > 0) 
+			tmp4 = new Point(getTableX() + getColumnX((way-1)*2 + 1) + getColumnWidth((way-1)*2 + 1)/2 ,address.getY()-20);
+		else 
+			tmp4 = new Point(address.getX() + address.getSectionMiddle(0),address.getY()-20);
+		
+		Point tmp5 = new Point(getTableX() + getTableWidth() + 20,tmp2.y);
+		drawLine(tmp1, tmp2, g);
+		drawLine(tmp3, tmp2, g);
+		drawLine(tmp3, tmp4, g);
+		drawLine(tmp2, tmp5, g);
+		s.draw(g);
+		
 	}
 	
 	private void drawLine(Point p1, Point p2,Graphics2D g) {
