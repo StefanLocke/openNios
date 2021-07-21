@@ -20,5 +20,5 @@ _start:
 	lw t0,0x2c(zero)
 	lw t0,0x6c(zero)
 	lw t0,236(zero)
-	jal _start
+	ebreak
 

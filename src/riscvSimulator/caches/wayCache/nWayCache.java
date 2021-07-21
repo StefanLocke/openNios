@@ -400,6 +400,21 @@ public class nWayCache implements RiscVCache {
 		// TODO Auto-generated method stub
 		return lastHitMiss;
 	}
+	
+	public int getValid(int set,int way) {
+		CacheItem item = cache.get((long)set);
+		if (item == null) {
+			
+			
+			return 0;
+		}
+		if (item.data[way] == null) {
+		
+			return 0;
+		}
+		
+		return 1;
+	}
 
 
 

@@ -27,6 +27,7 @@ public class MyTableModel extends NotSelectableTableModel {
 		width = table.getColumnCount();
 		height = table.getRowCount();
 		colors = new Color[width][height];
+	
 		resetColors();
 	}
 	
@@ -59,4 +60,5 @@ public class MyTableModel extends NotSelectableTableModel {
 	public Color getColorOf(int x,int y) {
 		return colors[x][y];
 	}
+	
 }

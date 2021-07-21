@@ -8,6 +8,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumnModel;
 
 import openDLX.gui.internalframes.renderer.CacheFrameTableCellRenderer;
+import openDLX.gui.internalframes.renderer.CenteredHeaderRenderer;
 import openDLX.gui.internalframes.renderer.ChangeableFrameTableCellRenderer;
 import openDLX.gui.internalframes.renderer.MyTableModel;
 import openDLX.gui.internalframes.util.NotSelectableTableModel;
@@ -20,7 +21,18 @@ import riscvSimulator.caches.wayCache.nWayCache;
 import riscvSimulator.values.RiscVValue32;
 
 public class CacheTableFactory extends TableFactory {
-
+	
+	public static final int LINECACHE_SET_COL = 0;
+	public static final int LINECACHE_VALID_COL = 1;
+	public static final int LINECACHE_TAG_COL = 2;
+	public static final int LINECACHE_DATA_OFFSET = 3;
+	
+	public static final int NWAY_SET_COL = 0;
+	public static final int NWAY_WAY_SIZE = 3;
+	public static final int NWAY_WAY_OFFSET = 1;
+	public static final int NWAY_VALID_OFFSET = 0;
+	public static final int NWAY_TAG_OFFSET = 1;
+	public static final int NWAY_DATA_OFFSET = 2;
 	private RiscVCache cache;
 	
 	public CacheTableFactory(RiscVCache cache) {
@@ -64,8 +76,9 @@ public class CacheTableFactory extends TableFactory {
 			table.setFocusable(false);
 			model.addColumn("Set");
 			for (int i = 0 ; i < cache.wayCount ; i++) {
-				model.addColumn("Way " + i + " -- Tag");
-				model.addColumn("Way " + i + " -- Value");
+				model.addColumn("WAY[" + i + "].Valid");
+				model.addColumn("WAY[" + i + "].Tag");
+				model.addColumn("WAY[" + i + "].Value");
 			}
 			
 			for (int j = 0 ; j < cache.getSize() ; j++) {
@@ -76,9 +89,10 @@ public class CacheTableFactory extends TableFactory {
 							(cache.findByte(i,j, 3).getUnsignedValue() << 16 | 
 									(cache.findByte(i,j, 2).getUnsignedValue() << 8 | 
 											(cache.findByte(i,j, 1).getUnsignedValue()))));
-					model.setValueAt("0x" +j,j,0);
-					model.setValueAt("0x" +Long.toHexString(cache.findTag(i, j)),j,1 + 2*i);
-					model.setValueAt("0x" +value.getUnsignedValue(),j,1 + 2*i + 1);
+					model.setValueAt("0x" +j,j,NWAY_SET_COL);
+					model.setValueAt("0", j, NWAY_WAY_OFFSET + NWAY_VALID_OFFSET + i * NWAY_WAY_SIZE);
+					model.setValueAt("0x" +Long.toHexString(cache.findTag(i, j)),j,NWAY_WAY_OFFSET + NWAY_TAG_OFFSET + i * NWAY_WAY_SIZE);
+					model.setValueAt("0x" +value.getUnsignedValue(),j,NWAY_WAY_OFFSET + NWAY_DATA_OFFSET + i * NWAY_WAY_SIZE);
 				}
 			}
 			TableColumnModel tcm = table.getColumnModel();
@@ -89,7 +103,10 @@ public class CacheTableFactory extends TableFactory {
 	        table.setDefaultRenderer(Object.class, new CacheFrameTableCellRenderer());
 	        table.setShowGrid(false);
 	        table.setRowMargin(0);
+	        table.getTableHeader().setDefaultRenderer(new CenteredHeaderRenderer());
+	        table.setPreferredSize(new Dimension(500,table.getPreferredSize().height));
 	        tcm.setColumnMargin(0);
+	        
 	        ((MyTableModel)model).init();
 	        System.out.println("Created Table");
 			return table;
@@ -134,6 +151,7 @@ public class CacheTableFactory extends TableFactory {
 			
 			table.setFocusable(false);
 			model.addColumn("SET");
+			model.addColumn("VALID");
 			model.addColumn("TAG");
 			for (int i = 0 ; i < Math.pow(2, cache.offsetLength) ; i++) {
 				model.addColumn("DATA[" + i + "]");
@@ -141,10 +159,11 @@ public class CacheTableFactory extends TableFactory {
 			
 			for (int i = 0; i < cache.getSize() ; i++) {
 				model.addRow(new Object[((int) Math.pow(2, cache.offsetLength))+2]);
-				model.setValueAt(i, i, 0);
-				model.setValueAt("tag", i, 1);
+				model.setValueAt("0x" + Integer.toHexString(i), i, LINECACHE_SET_COL);
+				model.setValueAt("0", i, LINECACHE_VALID_COL);
+				model.setValueAt("0x0", i, LINECACHE_TAG_COL);
 				for (int j = 0; j < Math.pow(2, cache.offsetLength) ; j++) {
-					model.setValueAt(0, i, j+2);
+					model.setValueAt("0x0", i, j+LINECACHE_DATA_OFFSET);
 				}
 			}
 			TableColumnModel tcm = table.getColumnModel();
@@ -155,6 +174,8 @@ public class CacheTableFactory extends TableFactory {
 	        table.setDefaultRenderer(Object.class, new CacheFrameTableCellRenderer());
 	        table.setShowGrid(false);
 	        table.setRowMargin(0);
+	        table.setPreferredSize(new Dimension(500,table.getPreferredSize().height));
+	        table.getTableHeader().setDefaultRenderer(new CenteredHeaderRenderer());
 	        tcm.setColumnMargin(0);
 	        ((MyTableModel)model).init();
 	        System.out.println("Created Table");

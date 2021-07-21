@@ -139,18 +139,17 @@ public class CacheFrame extends OpenDLXSimInternalFrame implements ActionListene
 							(cache.findByte(i, j, 2).getUnsignedValue() << 16 | 
 									(cache.findByte(i, j, 1).getUnsignedValue() << 8 | 
 											(cache.findByte(i,j, 0).getUnsignedValue()))));
+					model.setValueAt("0x"+cache.findTag(i, j),i,CacheTableFactory.NWAY_WAY_OFFSET + CacheTableFactory.NWAY_TAG_OFFSET + j * CacheTableFactory.NWAY_WAY_SIZE);
+					model.setValueAt(cache.getValid(i, j),i,CacheTableFactory.NWAY_WAY_OFFSET + CacheTableFactory.NWAY_VALID_OFFSET + j * CacheTableFactory.NWAY_WAY_SIZE);
 					switch (valueFormat) {
-						case 1 : //BIN
-							model.setValueAt("0x"+cache.findTag(i, j),i,1 + 2*j);
-							model.setValueAt("0b"+Long.toBinaryString(value.getUnsignedValue()),i,2 + 2*j);
+						case 1 : //BIN							
+							model.setValueAt("0b"+Long.toBinaryString(value.getUnsignedValue()),i,CacheTableFactory.NWAY_WAY_OFFSET + CacheTableFactory.NWAY_DATA_OFFSET + j * CacheTableFactory.NWAY_WAY_SIZE);
 							break;
 						case 2 :
-							model.setValueAt("0x"+cache.findTag(i, j),i,1 + 2*j);
-							model.setValueAt(value.getUnsignedValue(),i,2 + 2*j);
+							model.setValueAt(value.getUnsignedValue(),i,CacheTableFactory.NWAY_WAY_OFFSET + CacheTableFactory.NWAY_DATA_OFFSET + j * CacheTableFactory.NWAY_WAY_SIZE);
 							break;
-						default ://HEX
-							model.setValueAt("0x"+cache.findTag(i, j),i,1 + 2*j);
-							model.setValueAt("0x"+Long.toHexString(value.getUnsignedValue()),i,2 + 2*j);
+						default ://HEX	
+							model.setValueAt("0x"+Long.toHexString(value.getUnsignedValue()),i,CacheTableFactory.NWAY_WAY_OFFSET + CacheTableFactory.NWAY_DATA_OFFSET + j * CacheTableFactory.NWAY_WAY_SIZE);
 					}
 					
 					
@@ -174,19 +173,17 @@ public class CacheFrame extends OpenDLXSimInternalFrame implements ActionListene
 							(cache.findByte(i,j, 2).getUnsignedValue() << 16 | 
 									(cache.findByte(i,j, 1).getUnsignedValue() << 8 | 
 											(cache.findByte(i,j, 0).getUnsignedValue()))));
-		
+					model.setValueAt("0x"+cache.findTag(i),i,CacheTableFactory.LINECACHE_TAG_COL);
+					model.setValueAt(cache.getValid(i),i,CacheTableFactory.LINECACHE_VALID_COL);
 					switch (valueFormat) {
-					case 1 : //BIN
-						model.setValueAt("0x"+cache.findTag(i),i,1);
-						model.setValueAt("0b"+Long.toBinaryString(value.getUnsignedValue()),i,j+2);
+					case 1 : 	//BIN
+						model.setValueAt("0b"+Long.toBinaryString(value.getUnsignedValue()),i,j+CacheTableFactory.LINECACHE_DATA_OFFSET);
 						break;
-					case 2 :
-						model.setValueAt("0x"+cache.findTag(i),i,1);
-						model.setValueAt(value.getUnsignedValue(),i,j+2);
+					case 2 : 	//DEC				
+						model.setValueAt(value.getUnsignedValue(),i,j+CacheTableFactory.LINECACHE_DATA_OFFSET);
 						break;
-					default ://HEX
-						model.setValueAt("0x"+cache.findTag(i),i,1);
-						model.setValueAt("0x"+Long.toHexString(value.getUnsignedValue()),i,j+2);
+					default :	//HEX
+						model.setValueAt("0x"+Long.toHexString(value.getUnsignedValue()),i,j+CacheTableFactory.LINECACHE_DATA_OFFSET);
 				}
 				}
 			}

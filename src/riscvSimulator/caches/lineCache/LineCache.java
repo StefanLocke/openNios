@@ -259,6 +259,10 @@ public class LineCache implements RiscVCache {
 		return lastOffset;
 	}
 	
+	public int getValid(long set) {
+		return (null == cache.get(set))?0:1;
+	}
+	
 	
 	@Override
 	public String toString() {

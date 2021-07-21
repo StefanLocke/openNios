@@ -44,6 +44,7 @@ public class Preference
     public static final String displayMemoryAsHex = "displayMemoryAsHex";
     public static final String showExitMessage = "showexitmessage";
     public static final String lookAndFeel = "lookandfeel";
+    public static final String cacheType = "cacheType";
     // TODO implement option
     public static final String displayRegistersAsHex = "displayRegistersAsHex";
 

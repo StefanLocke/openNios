@@ -2,6 +2,7 @@ package riscvSimulator.steps;
 
 import java.util.ArrayList;
 
+import openDLX.util.Statistics;
 import riscvSimulator.InstructionRiscV;
 import riscvSimulator.RegisterFileRiscV;
 import riscvSimulator.RiscVMemory;
@@ -23,7 +24,7 @@ public class MemoryRiscV {
 	public boolean doStep(){
 		//Main job is to write the operation result in regfile
 		boolean hit = true;
-		if (!isLast){
+		if (isLast){
 				switch (currentInstruction.getOp()) {
 					case store :
 						switch (currentInstruction.getFunc()) {
@@ -39,6 +40,8 @@ public class MemoryRiscV {
 						default:
 							break;
 						}
+						System.out.println("Store stage done");
+						Statistics.getInstance().countMemWrite();
 						break;
 					case load :
 						switch (currentInstruction.getFunc()) {
@@ -65,10 +68,15 @@ public class MemoryRiscV {
 						default:
 							break;
 						}
+						System.out.println("Load stage done");
+						Statistics.getInstance().countMemRead();
+						if (hit) Statistics.getInstance().countCacheHits();
+						else Statistics.getInstance().countCacheMisses();
 						break;
 					default:
 						break;
 				}
+				
 		}
 		return hit;
 	}

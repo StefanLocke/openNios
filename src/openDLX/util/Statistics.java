@@ -37,6 +37,8 @@ public class Statistics
 	private int memory_reads;
 	private int memory_writes;
 	private int pipelineFreeze;
+	private int cache_hits;
+	private int cache_misses;
 	
 
 	private Properties config;
@@ -78,6 +80,13 @@ public class Statistics
 	public int getPipelineFreeze(){
 		return this.pipelineFreeze;
 	}
+	
+	public int getCacheMisses() {
+		return cache_misses;
+	}
+	public int getCacheHits() {
+		return cache_hits;
+	}
 
 
 	/* 
@@ -111,6 +120,14 @@ public class Statistics
 	public void countPipelineFreeze(){
 		pipelineFreeze++;
 	}
+	
+	public void countCacheMisses() {
+		cache_misses++;
+	}
+	
+	public void countCacheHits() {
+		cache_hits++;
+	}
 
 
 	
@@ -130,10 +147,11 @@ public class Statistics
 		stats += "-------- SIMULATION STATISTICS --------\n";
 		stats += "Cycles: " + getCycles() + "\n";
 		stats += "Executed instructions: " + getInstructions() + "\n";
-		stats += "Number of cycles freezed due to pipeline hazards: " + getPipelineFreeze() + "";
+		stats += "Number of cycles freezed due to pipeline hazards: " + getPipelineFreeze() + "\n";
 		stats += "Performed fetches: " + getFetches() + "\n";
-		
-		stats += "Memory accesses: " + (getMemory_reads() + getMemory_writes()) + " (reads: " + getMemory_reads() + ", writes: " + getMemory_writes() + ")\n";
+		stats += "Cache Hits   : " + getCacheHits() + "\n";
+		stats += "Cache Misses : " + getCacheMisses() + "\n";
+		stats += "Memory accesses: " + (getMemory_reads() + getMemory_writes()) + " \n\t   reads: " + getMemory_reads() + "\n\t  writes: " + getMemory_writes() + "\n";
 		stats += "-------- SIMULATION STATISTICS --------\n";
 		
 		return stats;
@@ -153,6 +171,8 @@ public class Statistics
 		fetches = 0;
 		memory_reads = 0;
 		memory_writes = 0;
+		cache_hits = 0;
+		cache_misses = 0;
 
 	}
 

@@ -26,7 +26,7 @@ public class CacheFrameTableCellRenderer extends ChangeableFrameTableCellRendere
 		jComp.setBorder(new MatteBorder(0, 0, 0, 1, Color.BLACK));
 		jComp.setHorizontalAlignment(SwingConstants.CENTER);
 		jComp.setBorder(new MatteBorder(
-				row==0?1:0,
+				row==0&&column!=0?1:0,
 				0,
 				column!=0?1:0,
 				1,

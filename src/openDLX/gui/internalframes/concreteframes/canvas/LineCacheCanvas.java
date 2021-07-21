@@ -12,12 +12,15 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 
+import openDLX.gui.internalframes.concreteframes.canvas.LineCacheCanvas.Point;
+import openDLX.gui.internalframes.concreteframes.canvas.shapes.AndGate;
 import openDLX.gui.internalframes.concreteframes.canvas.shapes.EqualsGate;
 import openDLX.gui.internalframes.concreteframes.canvas.shapes.LeftArrow;
 import openDLX.gui.internalframes.concreteframes.canvas.shapes.MultiplexerGate;
 import openDLX.gui.internalframes.concreteframes.canvas.shapes.RightArrow;
 import openDLX.gui.internalframes.concreteframes.canvas.shapes.Shapes;
 import openDLX.gui.internalframes.concreteframes.canvas.shapes.Text;
+import openDLX.gui.internalframes.factories.tableFactories.CacheTableFactory;
 import openDLX.gui.internalframes.renderer.MyTableModel;
 
 public class LineCacheCanvas extends TableCanvas  {
@@ -56,6 +59,7 @@ public class LineCacheCanvas extends TableCanvas  {
 		this.address.setContent(1,set);
 		this.address.setContent(2,offset);
 		this.address.setContent(3,selector);
+		this.address.setAddress(address);
 		lastOperationType = read;
 		lastOffset = offset;
 		lastSet = set;
@@ -66,25 +70,32 @@ public class LineCacheCanvas extends TableCanvas  {
 	private void ColorTable(int row,int col,boolean read,boolean hit) {
 		MyTableModel model = (MyTableModel) table.getModel();
 		model.resetColors();
-		model.changeRowColor(row, Color.YELLOW);
+		if (hit) {
+			model.changeRowColor(row, Color.YELLOW);
+			model.changeColor(0, row,Color.WHITE); 
+		}else {
+			model.changeRowColor(row,Color.ORANGE);
+			model.changeColor(0, row,Color.WHITE); 
+		}
+		
 		if (read) { 
 			if (lastHitMiss > 0) 
 				model.changeColor(col, row,Color.GREEN); 
-			else  
+			else 
 				model.changeColor(col,row,Color.RED);
 		}
 		else {
 			model.changeColor(col,row,Color.ORANGE);
 		}
-		if (!hit) {
-			model.changeColor(1,row,Color.ORANGE);
-		}
+		
 		
 	}
 	
 	
 	
 
+	EqualsGate equalsGate;
+	AndGate andGate;
 	
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -141,7 +152,7 @@ public class LineCacheCanvas extends TableCanvas  {
 	
 	private void drawDataLines(int col,Color color, Graphics2D g) {
 		g.setColor(color);
-		Point tmp1 = new Point(getTableX() + getColumnX(col + 2) + getColumnWidth(col + 2)/2, getTableY() + getTableHeight());
+		Point tmp1 = new Point(getTableX() + getColumnX(col + CacheTableFactory.LINECACHE_DATA_OFFSET) + getColumnWidth(col + CacheTableFactory.LINECACHE_DATA_OFFSET)/2, getTableY() + getTableHeight());
 		Point tmp2 = new Point(tmp1,0, 60 - (int)(60/ Math.pow(2, offsetSize) )*col);
 		Point tmp3 = new Point(getTableX() + getTableWidth() + 20, tmp2.y);
 		g.drawLine(tmp1.x, tmp1.y, tmp2.x, tmp2.y);
@@ -180,31 +191,67 @@ public class LineCacheCanvas extends TableCanvas  {
 		Point tmp1 = new Point(address.getX() + address.getSectionMiddle(0), address.getY());
 		Point tmp2 = new Point(tmp1,0,-30);
 		
-		Point tmp3 = new Point(getTableX() + getColumnX(1) + getColumnWidth(1)/2,getTableY() + getTableHeight());
-		Point tmp4 = new Point(tmp3,0,20);
+		Point tmp3 = new Point(getTableX() + getColumnX(CacheTableFactory.LINECACHE_TAG_COL) + getColumnWidth(CacheTableFactory.LINECACHE_TAG_COL)/2,getTableY() + getTableHeight());
+		Point tmp4 = new Point(getTableX() + getColumnX(CacheTableFactory.LINECACHE_TAG_COL) + getColumnWidth(CacheTableFactory.LINECACHE_TAG_COL)/2,tmp2.y-40);
 		Point tmp5 = new Point(tmp2.x,tmp4.y);
-		EqualsGate equal = new EqualsGate(tmp2.x, tmp2.y-15, 30, 30);
+		equalsGate = new EqualsGate(tmp2.x, tmp2.y-15, 30, 30);
 		drawLine(tmp1, tmp2,g);
 		drawLine(tmp3, tmp4,g);
 		drawLine(tmp5, tmp4,g);
 		drawLine(tmp5, tmp2,g);
-		equal.draw(g);
+		equalsGate.draw(g);
 		
 	}
 	
 	private void drawEqualsResult(Color color, Graphics2D g) {
+		
+		
+		
 		g.setColor(color);
 		Point tmp1 = new Point(address.getX() + address.getSectionMiddle(0), address.getY() -45);
 		Point tmp2 = new Point(getTableX() + getTableWidth() + outputX,tmp1.y);
+		
 		Text text = new Text(tmp2.x+5, tmp2.y+5,"HIT/MISS");
-		drawLine(tmp1, tmp2, g);
+		//drawLine(tmp1, tmp2, g);
+	
 		g.setColor(LINE_COLOR);
+		andGate = new AndGate(getTableX() + getColumnX(CacheTableFactory.LINECACHE_DATA_OFFSET), address.getY() -45, 40, 30);
+		drawHPath(tmp1, new Point(andGate.getInX(),andGate.getInYBis()-5), 0.5, g);
+		Point p1 = new Point(getTableX() + getColumnX(CacheTableFactory.LINECACHE_VALID_COL) + getColumnWidth(CacheTableFactory.LINECACHE_VALID_COL)/2, getTableY() + getTableHeight());
+		Point p2 = new Point(p1, 0, 80);
+		drawLine(p1, p2, g);
+		Point p3 = new Point(andGate.getInX(),andGate.getInY()+5);
+		Point p6 = new Point(andGate.x,andGate.y);
+		Point p4 = new Point(getTableX() + getTableWidth() + outputX,andGate.y );
+		drawLine(p6, p4, g);
+		drawHPath(p2, p3, 0.8, g);
+		andGate.draw(g);
 		text.draw(g);
+		
 		
 	}
 	
 	private void drawLine(Point p1, Point p2,Graphics2D g) {
 		g.drawLine(p1.x, p1.y, p2.x, p2.y);
+	}
+	
+	private void drawHPath(Point p1, Point p2,double pos,Graphics2D g) {
+		double position = pos;
+		if (position > 1 ) position = 1;
+		if (position < 0 ) position = 0;
+		
+		int distance = Math.abs(p1.x - p2.x);
+		int xBreak;
+		if (p1.x < p2.x) xBreak = (int) (p1.x + distance * pos);
+		else xBreak = (int) (p2.x + distance * pos);
+		Point tmp1 = new Point(xBreak, p1.y);
+		Point tmp2 = new Point(xBreak, p2.y);
+		drawLine(p1,tmp1,g);
+		drawLine(tmp1, tmp2, g);
+		drawLine(p2,tmp2,g);
+	}
+	private void drawVPath(Point p1, Point p2,double pos,Graphics2D g) {
+		
 	}
 	class Point{
 		public int x;

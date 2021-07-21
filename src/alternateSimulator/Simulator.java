@@ -201,7 +201,7 @@ public class Simulator{
             	long numberFetchedInstrBefore = this.numberFetch;
             	//We perform the cycle in the pipeline
             	if (caught_miss) {
-            		System.out.println("Skipping cycle : miss");
+            		//System.out.println("Skipping cycle : miss");
             		miss_skip_counter--;
             		if (miss_skip_counter < 1) {
             			miss_skip_counter = miss_skip_cycles;
@@ -220,8 +220,12 @@ public class Simulator{
                 cycleDescription.addPipelineState(this.decodeStages.get(0).getCurrentInstruction(), GUI_CONST.DECODE);
                 for (ExecuteRiscV oneExecuteStage : executeStages)
                 	cycleDescription.addPipelineState(oneExecuteStage.getCurrentInstruction(), GUI_CONST.EXECUTE);
-                for (MemoryRiscV oneMemoryStage : memoryStages)
-                	cycleDescription.addPipelineState(oneMemoryStage.getCurrentInstruction(), GUI_CONST.MEMORY);
+                for (MemoryRiscV oneMemoryStage : memoryStages) {
+                	if (caught_miss)
+                		cycleDescription.addPipelineState(oneMemoryStage.getCurrentInstruction(), GUI_CONST.MISS);
+                	else
+                    	cycleDescription.addPipelineState(oneMemoryStage.getCurrentInstruction(), GUI_CONST.MEMORY);
+                }
                 cycleDescription.addPipelineState(this.writeBackStages.get(0).getCurrentInstruction(), GUI_CONST.WRITEBACK);
                 cycleDescription.setFetchedInstruction(this.fetchStages.get(0).getCurrentInstruction());
                 if (numberFetchedInstrBefore == this.numberFetch)
@@ -310,8 +314,10 @@ public class Simulator{
             //We perform each step
             this.writeBackStages.get(0).doStep();
             
-            for (MemoryRiscV oneMemory : this.memoryStages) 
-            	this.caught_miss = !oneMemory.doStep() || caught_miss;
+            for (MemoryRiscV oneMemory : this.memoryStages) {
+            	boolean miss = !oneMemory.doStep();
+            	this.caught_miss = miss || caught_miss;
+            }
 
             for (ExecuteRiscV oneExecute : this.executeStages)
             	oneExecute.doStep();

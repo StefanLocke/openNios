@@ -27,6 +27,8 @@ public class ElfFileParser {
 			e.printStackTrace();
 		}
 		
+		
+		registers.set(2, new RiscVValue32(0xf000));
 		byte instructionSize = elfBytes[4];
 		byte endianness = elfBytes[5];
 		byte abi = elfBytes[7];

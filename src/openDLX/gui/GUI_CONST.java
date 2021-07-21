@@ -30,13 +30,14 @@ public interface GUI_CONST
     static final String DECODE = "ID";
     static final String EXECUTE = "EX";
     static final String MEMORY = "MEM";
+    static final String MISS = "MSS";
     static final String WRITEBACK = "WB";
     static final Color IF_COLOR = new Color(250, 251, 119);
     static final Color EX_COLOR = Color.RED;
     static final Color ID_COLOR = new Color(182, 115, 8);
     static final Color WB_COLOR = Color.LIGHT_GRAY;
     static final Color MEM_COLOR = Color.GREEN;
-
+    static final Color MISS_COLOR = Color.GRAY;
     /*current state of the program
      LAZY = no openDLXSim loaded
      EXECUTING = openDLXSim Loaded 

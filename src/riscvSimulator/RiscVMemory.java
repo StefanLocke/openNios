@@ -75,7 +75,7 @@ public class RiscVMemory {
 				return cache.getWord(addr);
 			}
 			System.out.println("Cache Miss : " + Long.toHexString(addr));
-		}
+		}	
 		RiscVValue8 v1 = this.loadByte(addr, false);
 		RiscVValue8 v2 = this.loadByte((addr+1), false);
 		RiscVValue8 v3 = this.loadByte((addr+2), false);
