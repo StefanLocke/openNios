@@ -39,7 +39,6 @@ import javax.swing.JTextField;
 import openDLX.config.ArchCfg;
 import openDLX.gui.MainFrame;
 import openDLX.gui.Preference;
-import openDLX.gui.command.systemLevel.CommandChangeCacheType;
 import openDLX.gui.command.systemLevel.CommandResetSimulator;
 import openDLX.gui.command.userLevel.CommandResetCurrentProgram;
 
@@ -67,7 +66,7 @@ public class OptionDialog extends JDialog implements ActionListener
     private JTextField numberExecuteTextField;
     private JTextField numberMemoryTextField;
     
-    private String[] options = {"nWayCache","LineCache"};
+    private String[] options = {"nWayCache","lineCache"};
     private JComboBox<String> cacheTypeComboBox;
    
 
@@ -181,6 +180,7 @@ public class OptionDialog extends JDialog implements ActionListener
         //CacheType selection
         JLabel cacheSelectionLabel = new JLabel("Cache type : ");
         cacheTypeComboBox = new JComboBox<>(options);
+        cacheTypeComboBox.setSelectedItem(ArchCfg.cache_type);
         JPanel cacheselectionPanel = new JPanel();
         cacheselectionPanel.add(cacheSelectionLabel);
         cacheselectionPanel.add(cacheTypeComboBox);
@@ -247,9 +247,9 @@ public class OptionDialog extends JDialog implements ActionListener
             ArchCfg.memory_stage = Integer.parseInt(numberMemoryTextField.getText());
             Preference.pref.put(Preference.numberMemoryStage, numberMemoryTextField.getText());
             
+            ArchCfg.cache_type = cacheTypeComboBox.getSelectedItem().toString();
+            Preference.pref.put(Preference.cacheType,cacheTypeComboBox.getSelectedItem().toString());
             
-            CommandChangeCacheType cacheChange = new CommandChangeCacheType(MainFrame.getInstance(),cacheTypeComboBox.getSelectedItem().toString());
-            cacheChange.execute();
             CommandResetCurrentProgram reset = new CommandResetCurrentProgram(MainFrame.getInstance());
             reset.execute();
             

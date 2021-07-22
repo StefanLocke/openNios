@@ -64,9 +64,11 @@ public class ArchCfg
 
     public static int max_cycles = Preference.pref.getInt(Preference.maxCyclesPreferenceKey, 10000);
     
-    public static int execute_stage = Preference.pref.getInt("numberexecutestage", 3);
+    public static int execute_stage = Preference.pref.getInt(Preference.numberExecuteStage, 3);
 
-    public static int memory_stage = Preference.pref.getInt("numbermemorystage", 2);
+    public static int memory_stage = Preference.pref.getInt(Preference.numberMemoryStage, 2);
+    
+    public static String cache_type = Preference.pref.get(Preference.cacheType, "lineCache");
 
     
     public static void registerArchitectureConfig(Properties config)

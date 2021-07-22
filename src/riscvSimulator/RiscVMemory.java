@@ -3,6 +3,8 @@ package riscvSimulator;
 import java.util.HashMap;
 import java.util.List;
 
+import openDLX.config.ArchCfg;
+import openDLX.gui.Preference;
 import riscvSimulator.caches.RiscVCache;
 import riscvSimulator.caches.SimpleCache;
 import riscvSimulator.caches.SingleWayCache;
@@ -21,23 +23,21 @@ public class RiscVMemory {
 		return cache;
 	}
 
-	private static RiscVCache.CacheType currentCacheType = RiscVCache.CacheType.nWayCache;
+	
 	
 	public RiscVMemory(){
 		this.memory = new HashMap<Long, RiscVValue8>();
-		switch (currentCacheType) {
-		case LineCache:
+		switch (ArchCfg.cache_type) {
+		case "lineCache":
 			cache = new LineCache(3, 2, this);
 			break;
-		case nWayCache:
+		case "nWayCache":
 			cache = new nWayCache(3, 2, this);
 			break;
 		}
 	}
 	
-	public void switchCacheType(RiscVCache.CacheType type) {
-		currentCacheType = type;
-	}
+	
 	
 	public RiscVValue8 loadByte(Long addr, boolean useCache){
 		if (useCache) {
