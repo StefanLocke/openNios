@@ -32,7 +32,7 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}" includeantruntime="false">
             <src path="src"/>
-            <classpath refid="openDLX.classpath"/>
+            <classpath refid="openSim.classpath"/>
         </javac>
     </target>
 	<target name="create_run_jar">
@@ -51,7 +51,7 @@
 			<copy file="img/openDLX-quadrat16x16.png" tofile="./bin/img/openDLX-quadrat16x16.png"/>
         <jar destfile="openNios.jar" filesetmanifest="mergewithoutmain">
             <manifest>
-                <attribute name="Main-Class" value="openDLX.main.OpenDLXSimulatorMain"/>
+                <attribute name="Main-Class" value="openSim.main.OpenDLXSimulatorMain"/>
 				<attribute name="Class-Path" value="."/>
 				<attribute name="Implementation-Vendor" value="University of Augsburg"/>
 				<attribute name="Implementation-Title" value="openDLX"/>

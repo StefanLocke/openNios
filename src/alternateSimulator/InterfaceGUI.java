@@ -2,8 +2,8 @@ package alternateSimulator;
 
 import java.util.Properties;
 
-import openDLX.util.ClockCycleLog;
-import openDLX.util.Statistics;
+import openSim.util.ClockCycleLog;
+import openSim.util.Statistics;
 
 public class InterfaceGUI {
 

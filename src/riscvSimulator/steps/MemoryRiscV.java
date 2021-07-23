@@ -2,7 +2,7 @@ package riscvSimulator.steps;
 
 import java.util.ArrayList;
 
-import openDLX.util.Statistics;
+import openSim.util.Statistics;
 import riscvSimulator.InstructionRiscV;
 import riscvSimulator.RegisterFileRiscV;
 import riscvSimulator.RiscVMemory;

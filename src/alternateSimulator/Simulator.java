@@ -6,23 +6,6 @@ import java.util.Properties;
 
 import alternateSimulator.CycleDescription;
 import alternateSimulator.InterfaceGUI;
-/*
-import niosSimulator.Decode;
-import niosSimulator.Execute;
-import niosSimulator.Fetch;
-import niosSimulator.Instruction;
-import niosSimulator.Memory;
-import niosSimulator.NiosMemory;
-import niosSimulator.RegisterFile;
-import niosSimulator.WriteBack;
-import niosSimulator.niosOpCode;
-import niosSimulator.niosOpxCode;
-*/
-import openDLX.config.ArchCfg;
-
-import openDLX.exception.PipelineException;
-import openDLX.gui.GUI_CONST;
-import openDLX.util.Statistics;
 import riscvSimulator.InstructionRiscV;
 import riscvSimulator.RegisterFileRiscV;
 import riscvSimulator.RiscVFunc;
@@ -34,6 +17,10 @@ import riscvSimulator.steps.FetchRiscV;
 import riscvSimulator.steps.MemoryRiscV;
 import riscvSimulator.steps.WriteBackRiscV;
 import elfParser.ElfFileParser;
+import openSim.config.ArchCfg;
+import openSim.exception.PipelineException;
+import openSim.gui.GUI_CONST;
+import openSim.util.Statistics;
 
 public class Simulator{
 

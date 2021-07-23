@@ -3,7 +3,7 @@ package alternateSimulator;
 import java.util.HashMap;
 
 import niosSimulator.Instruction;
-import openDLX.gui.GUI_CONST;
+import openSim.gui.GUI_CONST;
 import riscvSimulator.InstructionRiscV;
 
 public class CycleDescription {

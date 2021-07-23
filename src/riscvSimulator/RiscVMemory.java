@@ -3,8 +3,8 @@ package riscvSimulator;
 import java.util.HashMap;
 import java.util.List;
 
-import openDLX.config.ArchCfg;
-import openDLX.gui.Preference;
+import openSim.config.ArchCfg;
+import openSim.gui.Preference;
 import riscvSimulator.caches.RiscVCache;
 import riscvSimulator.caches.SimpleCache;
 import riscvSimulator.caches.SingleWayCache;
